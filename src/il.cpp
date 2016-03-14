@@ -3,16 +3,6 @@
 #include "warnings.h"
 #include "target.h"
 
-#define pop(t) (eml(L"pop " << t))
-#define em(s) emCODE(s)
-#define eml(s) emlCODE(s)
-#define emCODE(s) (*ss_code << s)
-#define emlCODE(s) (*ss_code << s << std::endl)
-#define emBSS(s) (*ss_bss << s)
-#define emlBSS(s) (*ss_bss << s << std::endl)
-#define emDATA(s) (*ss_data << s)
-#define emlDATA(s) (*ss_data << s << std::endl)
-
 int stack = 0;
 
 using namespace std;
@@ -32,12 +22,6 @@ il::~il()
     delete ss_code;
     delete ss_data;
     delete ss_bss;
-}
-
-void il::push(schar* t)
-{
-    PushNode n = PushNode(new IdentNode(t));    //identnode gets freed by ~PushNode()
-    generate(&n);
 }
 
 void il::generate(ProgramNode* code)
@@ -70,7 +54,7 @@ void il::generate(AssignNode* code)
 
 void il::generate(NumNode* code)
 {
-
+    push(code->num);
 };
 
 void il::generate(IdentNode* code)
@@ -88,11 +72,10 @@ void il::generate(PushNode* code)
     IdentNode* i = dynamic_cast<IdentNode*>(code->v);
     NumNode*   n = dynamic_cast<NumNode*  >(code->v);
 
-    em(L"push ");
     if (i)
-        eml(i->str);
+        push(i->str);
     else if (n)
-        eml(n->num);
+        push(n->num);
     else
         ERR(err_t::GEN_IL);
 };
@@ -102,7 +85,7 @@ void il::generate(PopNode* code)
     if (code->target)
         *ss << L"pop " << code->target->str;
     else
-        *ss << L"add esp, " << __BITS__;
+        *ss << L"add esp, " << __BYTES__;
 };
 
 void il::generate(ASMNode* code)
@@ -121,9 +104,131 @@ void il::generate(StringNode* code)
     push(name.c_str());
 };
 
-void il::generate(OperatorNode* code)
+void il::generate_op_add()
+{
+    pop(eax);
+    pop(ecx);
+    eml(L"add " << eax << L", " << ecx);
+    push(eax);
+}
+
+void il::generate_op_sub()
+{
+    pop(eax);
+    pop(ecx);
+    eml(L"sub " << eax << L", " << ecx);
+    push(eax);
+}
+
+void il::generate_op_mul()
+{
+    pop(eax);
+    pop(ecx);
+    eml(L"mul " << ecx);
+    push(eax);
+}
+
+void il::generate_op_div()
+{
+    pop(eax);
+    pop(ecx);
+    eml(L"xor " << edx << L", " << edx);
+    eml(L"div " << ecx);
+    push(eax);
+}
+
+void il::generate_op_drf()
+{
+    pop(eax);
+    eml(L"mov " << eax << L", [" << eax << L']');
+    push(eax);
+}
+
+void il::generate_op_equ()
+{
+    generate_op_neq();
+    generate_op_not();
+}
+
+void il::generate_op_sml()
 {
 
+}
+
+void il::generate_op_grt()
+{
+
+}
+
+void il::generate_op_neq()
+{
+    pop(eax);
+    pop(ecx);
+    eml(L"xor " << eax << L", " << eax);
+    eml(L"call boolNormalize");
+    push(eax);
+}
+
+void il::generate_op_not()
+{
+    pop(eax);
+    eml(L"call boolNot");
+    push(eax);
+}
+
+void il::generate_op_pop()
+{
+    eml(L"add esp, " << __BYTES__);
+}
+
+void il::generate_op_cpy()
+{
+    pop(eax);
+    push(eax);
+    push(eax);
+}
+
+void il::generate(OperatorNode* code)
+{
+    switch (code->oper)
+    {
+        case op::ADD:
+            generate_op_add();
+            break;
+        case op::SUB:
+            generate_op_sub();
+            break;
+        case op::MUL:
+            generate_op_mul();
+            break;
+        case op::DIV:
+            generate_op_div();
+            break;
+        case op::DRF:
+            generate_op_drf();
+            break;
+        case op::EQU:
+            generate_op_equ();
+            break;
+        case op::SML:
+            generate_op_sml();
+            break;
+        case op::GRT:
+            generate_op_grt();
+            break;
+        case op::NEQ:
+            generate_op_neq();
+            break;
+        case op::POP:
+            generate_op_pop();
+            break;
+        case op::CPY:
+            generate_op_cpy();
+            break;
+        default:
+            ERR(err_t::GEN_IL);
+            break;
+    }
 };
 
 void il::generate(ReturnNode* code)
@@ -178,7 +283,7 @@ void il::generate(ListArgNode* code)
 
 void il::generate(FunctionHeaderNode* code)
 {
-
+    int a;
 };
 
 void il::generate(FunctionNode* code)

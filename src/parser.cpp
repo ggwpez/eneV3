@@ -313,11 +313,13 @@ ListArgUNode* parser::parse_arg_list(int s, int& l)
 {
     int arg_l = 0; l = 0;
     std::vector<ArgUNode*>* args = new std::vector<ArgUNode*>();
+    ListArgUNode* ret = new ListArgUNode(args);
+    ret->set_pos(input[s]);
 
     tassert(tok_type::LBRK, input[s +l]); l++;
 
     if (input[s +l]->type == tok_type::RBRK)            //no arguments there!
-        return l++, new ListArgUNode(args);
+        return l++, ret;
 
     ArgUNode* arg0 = parse_arg(s +l, arg_l);
     args->push_back(arg0);
@@ -327,7 +329,8 @@ ListArgUNode* parser::parse_arg_list(int s, int& l)
 
     tassert(tok_type::RBRK, input[s +l]); l++;
 
-    return new ListArgUNode(args);
+    ret->set_pos_end(input[s +l]);
+    return ret;
 }
 
 ArgUNode* parser::parse_arg(int s, int& l)

@@ -6,6 +6,8 @@
 #include <typeinfo>
 #include <stdarg.h>
 
+#define e_out std::wcerr
+
 enum class err_t
 {
     GEN,
@@ -25,6 +27,7 @@ enum class err_t
     SC_FUN_NAME_UNKOWN,
     SC_TYPE_NAME_UNKOWN,
     SC_TYPE_EXISTS_ALREADY,
+    SC_FUN_HEAD_EXISTS_ALREADY,
     SC_FUN_EXISTS_ALREADY,
     SC_VAR_EXISTS_ALREADY,
     size

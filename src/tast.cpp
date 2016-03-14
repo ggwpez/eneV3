@@ -213,7 +213,7 @@ void FunctionHeaderNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionNode::FunctionNode(FunctionHeaderNode* head, BlockNode* code)
+FunctionNode::FunctionNode(FunctionHeaderNode* head, BlockNode* code) : ast(head, code)
 {
     this->head = head;
     this->code = code;
@@ -234,7 +234,7 @@ void FunctionNode::print(std::wostream& out) const
     out << L">>";
 }
 
-ListArgNode::ListArgNode(std::vector<ArgNode *> *items)
+ListArgNode::ListArgNode(std::vector<ArgNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
 {
     this->items = items;
 }
@@ -255,7 +255,7 @@ void ListArgNode::print(std::wostream &out) const
     out << L">>";
 }
 
-FunctionCallNode::FunctionCallNode(IdentNode* target, ListNode* args)
+FunctionCallNode::FunctionCallNode(IdentNode* target, ListNode* args) : ast(target, args)
 {
     this->target = target;
     this->args = args;
@@ -276,7 +276,7 @@ FunctionCallNode::~FunctionCallNode()
     delete this->args;
 }
 
-ReturnNode::ReturnNode(ExpressionTermNode* val)
+ReturnNode::ReturnNode(ExpressionTermNode* val) : ast(val)
 {
     this->val = val;
 }
@@ -293,7 +293,7 @@ void ReturnNode::print(std::wostream& out) const
     out << L">>";
 }
 
-IfNode::IfNode(ExpressionTermNode* cond, BlockNode* true_block, BlockNode* false_block)
+IfNode::IfNode(ExpressionTermNode* cond, BlockNode* true_block, BlockNode* false_block) : ast(cond, false_block ? false_block : true_block)
 {
     this->cond = cond;
     this->true_block = true_block;
@@ -312,7 +312,7 @@ void IfNode::print(std::wostream& out) const
 
 }
 
-WhileNode::WhileNode(ExpressionTermNode* cond, BlockNode* block)
+WhileNode::WhileNode(ExpressionTermNode* cond, BlockNode* block) : ast(cond, block)
 {
     this->cond = cond;
     this->block = block;

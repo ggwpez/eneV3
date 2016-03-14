@@ -57,7 +57,7 @@ ExpressionTermUNode::ExpressionTermUNode(uast_arr* exps) : ast(exps->empty() ? n
 
 void ExpressionTermUNode::print(std::wostream& out) const
 {
-    out << L"<FunctionUNode <exps ";
+    out << L"<ExpressionTermUNode <exps ";
     for (uast* it : *this->exps)
         it->print(out), out << L' ';
     out << L">>";

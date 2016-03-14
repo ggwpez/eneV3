@@ -3,9 +3,21 @@
 
 #include <sstream>
 
+#include "target.h"
 #include "uast.h"
 #include "string_def.h"
 #include "scope/scope.hpp"
+
+#define pop(t)  (eml(L"pop  " << t))
+#define push(t) (eml(L"push " << t))
+#define em(s) emCODE(s)
+#define eml(s) emlCODE(s)
+#define emCODE(s) (*ss_code << s)
+#define emlCODE(s) (*ss_code << s << std::endl)
+#define emBSS(s) (*ss_bss << s)
+#define emlBSS(s) (*ss_bss << s << std::endl)
+#define emDATA(s) (*ss_data << s)
+#define emlDATA(s) (*ss_data << s << std::endl)
 
 class il
 {
@@ -19,8 +31,6 @@ private:
     ProgramNode* input;
     std::wostringstream* ss;
     std::wostringstream* ss_code,* ss_data,* ss_bss;
-
-    void push(schar* t);
 
     void generate_ProgramNode_term(tast* code);
     void generate(tast* code);
@@ -36,6 +46,18 @@ private:
     void generate(PopNode* code);
     void generate(ASMNode* code);
     void generate(StringNode* code);
+    void generate_op_add();
+    void generate_op_sub();
+    void generate_op_mul();
+    void generate_op_div();
+    void generate_op_drf();
+    void generate_op_equ();
+    void generate_op_sml();
+    void generate_op_grt();
+    void generate_op_neq();
+    void generate_op_not();
+    void generate_op_pop();
+    void generate_op_cpy();
     void generate(OperatorNode* code);
     void generate(ReturnNode* code);
     void generate(BreakNode* code);

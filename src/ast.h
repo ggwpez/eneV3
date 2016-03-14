@@ -20,12 +20,14 @@ public:
     ast(ast* start, ast* end);
     ast(tok* start, tok* end);
 
-    set_pos(ast* code);
-    set_pos(tok* t);
-    set_pos_end(ast* end);
-    set_pos_end(tok* end);
-    set_pos_start(ast* start);
-    set_pos_start(tok* start);
+    void set_pos(ast* code);
+    void set_pos(tok* t);
+    void set_pos_end(ast* end);
+    void set_pos_end(tok* end);
+    void set_pos_start(ast* start);
+    void set_pos_start(tok* start);
+    void print_pos(std::wostream& out);
+
     virtual ~ast();
 
     int pos_st_line;

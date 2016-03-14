@@ -33,8 +33,7 @@ std::vector<tok*>* lexer::lex()
 {
     std::vector<tok*>* toks = new std::vector<tok*>();
     toks->reserve(length ? length /4 : 0);
-    int pos = 0, l = 0, line = 1, char_c = 1,
-            line_st = 1, char_c_st = 1;
+    int pos = 0, l = 0, line = 1, char_c = 1;
 
     while ((pos += l) < length)
     {
@@ -94,10 +93,9 @@ std::vector<tok*>* lexer::lex()
             ERR(err_t::LEX_WRONG, c);
         else
         {
-            push->set_pos_st(file_name, line_st, char_c_st);
+            push->set_pos_st(file_name, line, char_c-l);
             push->set_pos_en(file_name, line, char_c);
             toks->push_back(push);
-            line_st = line; char_c_st = char_c;
         }
     }
 

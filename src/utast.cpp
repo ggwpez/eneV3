@@ -32,19 +32,19 @@ ast::ast(tok* start, tok* end)
     this->pos_en_line_char = end->pos_en_line_char;
 }
 
-ast::set_pos(ast* code)
+void ast::set_pos(ast* code)
 {
     this->set_pos_end(code);
     this->set_pos_start(code);
 }
 
-ast::set_pos(tok* code)
+void ast::set_pos(tok* code)
 {
     this->set_pos_end(code);
     this->set_pos_start(code);
 }
 
-ast::set_pos_end(ast* end)
+void ast::set_pos_end(ast* end)
 {
     if (!end)
         return;
@@ -52,7 +52,7 @@ ast::set_pos_end(ast* end)
     this->pos_en_line_char = end->pos_en_line_char;
 }
 
-ast::set_pos_end(tok* end)
+void ast::set_pos_end(tok* end)
 {
     if (!end)
         return;
@@ -60,7 +60,7 @@ ast::set_pos_end(tok* end)
     this->pos_en_line_char = end->pos_en_line_char;
 }
 
-ast::set_pos_start(ast* start)
+void ast::set_pos_start(ast* start)
 {
     if (!start)
         return;
@@ -68,12 +68,20 @@ ast::set_pos_start(ast* start)
     this->pos_st_line_char = start->pos_st_line_char;
 }
 
-ast::set_pos_start(tok* start)
+void ast::set_pos_start(tok* start)
 {
     if (!start)
         return;
     this->pos_st_line = start->pos_st_line;
     this->pos_st_line_char = start->pos_st_line_char;
+}
+
+void ast::print_pos(std::wostream& out)
+{
+    out << L" from line " << this->pos_st_line
+        << L" pos " << this->pos_st_line_char
+        << L" to line " << this->pos_en_line
+        << L" pos " << this->pos_en_line_char;
 }
 
 ast::~ast()
@@ -121,7 +129,7 @@ IdentNode::IdentNode(tok* code) : ast(code)
     this->str = code->string;
 }
 
-IdentNode::IdentNode(IdentNode* Node)
+IdentNode::IdentNode(IdentNode* Node) : ast(Node)
 {
     this->str = Node->str;
 }
@@ -183,7 +191,7 @@ StringNode::~StringNode()
 
 void StringNode::print(std::wostream& out) const
 {
-
+    out << L"<StringNode <str \"" << this->str << L"\">>";
 }
 
 OperatorNode::OperatorNode(op oper)

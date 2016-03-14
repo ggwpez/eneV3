@@ -1,7 +1,6 @@
-void main()
-{
-    5;
-}
+void printf(u32 format, u32 str);
 
 void main()
-{}
+{
+    printf("%s", "hi");
+}

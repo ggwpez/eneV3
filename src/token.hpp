@@ -69,6 +69,7 @@ public:
     ~tok();
 
     schar* to_str();
+    void print_pos(std::wostream& out);
     void set_pos_st(char* pos_file, int pos_line, int pos_line_char);
     void set_pos_en(char* pos_file, int pos_line, int pos_line_char);
     tok_type type;

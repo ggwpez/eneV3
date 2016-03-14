@@ -38,10 +38,22 @@ sc_fun::~sc_fun()
     delete this->name;
 }
 
+sc_head::sc_head(IdentNode* name, FunctionHeaderNode* head)
+{
+    this->name = name;
+    this->head = head;
+}
+
+sc_head::~sc_head()
+{
+    delete this->name;
+}
+
 scope::scope()
 {
     this->scopes = new std::vector<sc_local_alloc*>();
     this->gl_types = new std::vector<sc_type*>();
+    this->gl_heads = new std::vector<sc_head*>();
     this->gl_funs = new std::vector<sc_fun*>();
 
     this->enter();
@@ -63,10 +75,13 @@ scope::~scope()
 
     for (sc_type* gt : *this->gl_types)
         delete gt;
+    for (sc_head* gh : *this->gl_heads)
+        delete gh;
     for (sc_fun* gf : *this->gl_funs)
         delete gf;
 
     delete this->gl_types;
+    delete this->gl_heads;
     delete this->gl_funs;
 }
 
@@ -98,10 +113,34 @@ void scope::add_var(VariableNode* var)
     this->scopes->back()->vars->push_back(new sc_var(new IdentNode(var->var_name), var));
 }
 
+void scope::add_fun_head(FunctionHeaderNode* head)
+{
+    if (this->is_fun_head_reg(head->name))
+        ERR(err_t::SC_FUN_HEAD_EXISTS_ALREADY, head);
+
+    this->gl_heads->push_back(new sc_head(new IdentNode(head->name), head));
+}
+
+void scope::rm_head(FunctionHeaderNode* head)
+{
+    if (!this->is_fun_head_reg(head->name))
+        ERR(err_t::SC_FUN_NAME_UNKOWN, head->name);     //same as above
+
+    for (size_t i = 0; i < gl_heads->size(); i++)
+        if (*gl_heads->at(i)->name == *head->name)
+        {
+            this->gl_heads->erase(gl_heads->begin() +i);
+            break;
+        }
+}
+
 void scope::add_fun(FunctionNode* fun)
 {
     if (this->is_fun_reg(fun->head->name))
         ERR(err_t::SC_FUN_EXISTS_ALREADY, fun);
+
+    if (this->is_fun_head_reg(fun->head->name))
+
 
     this->gl_funs->push_back(new sc_fun(new IdentNode(fun->head->name), fun));
 }
@@ -140,6 +179,15 @@ bool scope::is_var_reg(IdentNode* name)
         for (sc_var* var : *sc->vars)
             if (*var->name == *name)
                 return true;
+
+    return false;
+}
+
+bool scope::is_fun_head_reg(IdentNode* name)
+{
+    for (sc_head* t : *this->gl_heads)
+        if (*t->name == *name)
+            return true;
 
     return false;
 }

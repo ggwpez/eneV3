@@ -4,42 +4,24 @@
 #include "ast.h"
 
 #include <iostream>
-
-void print_pos(tok* token)
-{
-    std::wcerr << L" in file "<< token->pos_st_file
-               << L" line " << token->pos_st_line
-               << L" pos " << token->pos_st_line_char
-               << L" to line " << token->pos_en_line
-               << L" pos " << token->pos_en_line_char;
-}
-
-void print_pos(ast* token)
-{
-    std::wcerr << L" from  line " << token->pos_st_line
-               << L" pos " << token->pos_st_line_char
-               << L" to line " << token->pos_en_line
-               << L" pos " << token->pos_en_line_char;
-}
-
 void post_processing_failed(va_list ap)
 {
-    std::wcerr << L"Assemling (nasm) or linking (GNU ld) failed." << std::endl;
+    e_out << L"Assemling (nasm) or linking (GNU ld) failed." << std::endl;
 }
 
 void io_file_not_found(va_list ap)
 {
     char* fn = va_arg(ap, char*);
 
-    std::wcerr << L"Could not find file " << fn;
+    e_out << L"Could not find file " << fn;
 }
 
 void par_wrong(va_list ap)
 {
     tok* token = va_arg(ap, tok*);
 
-    std::wcerr << L"Invalid token: " << token->to_str();
-    print_pos(token);
+    e_out << L"Invalid token: " << token->to_str();
+    token->print_pos(e_out);
 }
 
 void par_wrong_but(va_list ap)
@@ -47,89 +29,95 @@ void par_wrong_but(va_list ap)
     tok* token = va_arg(ap, tok*);
     tok_type wanted = va_arg(ap, tok_type);
 
-    std::wcerr << L"Invalid token: " << token->to_str()
+    e_out << L"Invalid token: " << token->to_str()
                << L" awaited " << tok_strings[(int)wanted];
-    print_pos(token);
+    token->print_pos(e_out);
 }
 
 void lex_wrong(va_list ap)
 {
     schar c = ((schar)va_arg(ap, int));
 
-    std::wcerr << L"Invalid char " << c;
+    e_out << L"Invalid char " << c;
 }
 
 void il_type_unknown(va_list ap)
 {
     TypeNode* t = va_arg(ap, TypeNode*);
 
-    std::wcerr << L"Type ";
-    t->print(std::wcerr);
-    std::wcerr << L" unknown";
-    print_pos(t);
+    e_out << L"Type ";
+    t->print(e_out);
+    e_out << L" unknown";
+    t->print_pos(e_out);
 }
 
 void sc_type_name_unkown(va_list ap)
 {
     IdentNode* i = va_arg(ap, IdentNode*);
 
-    std::wcerr << L"Type name ";
-    i->print(std::wcerr);
-    std::wcerr << L" unknown";
-    print_pos(i);
+    e_out << L"Type name ";
+    i->print(e_out);
+    e_out << L" unknown";
+    i->print_pos(e_out);
 }
 
 void sc_fun_name_unkown(va_list ap)
 {
     IdentNode* i = va_arg(ap, IdentNode*);
 
-    std::wcerr << L"Function name ";
-    i->print(std::wcerr);
-    std::wcerr << L" unknown";
-    print_pos(i);
+    e_out << L"Function name ";
+    i->print(e_out);
+    e_out << L" unknown";
+    i->print_pos(e_out);
 }
 
 void sc_var_name_unkown(va_list ap)
 {
     IdentNode* i = va_arg(ap, IdentNode*);
 
-    std::wcerr << L"Variable ";
-    i->print(std::wcerr);
-    std::wcerr << L" unknown";
-    print_pos(i);
+    e_out << L"Variable ";
+    i->print(e_out);
+    e_out << L" unknown";
+    i->print_pos(e_out);
 }
 
 void sc_type_exists_already(va_list ap)
 {
     itype* t = va_arg(ap, itype*);
 
-    std::wcerr << L"Type ";
-    t->print(std::wcerr);
-    std::wcerr << L" exists already";
+    e_out << L"Type ";
+    t->print(e_out);
+    e_out << L" exists already";
+}
+
+void sc_fun_head_exists_already(va_list ap)
+{
+    FunctionHeaderNode* i = va_arg(ap, FunctionHeaderNode*);
+
+    e_out << L"Header for function " << i->name->str << L" exists already";
+    i->print_pos(e_out);
 }
 
 void sc_fun_exists_already(va_list ap)
 {
     FunctionNode* i = va_arg(ap, FunctionNode*);
 
-    std::wcerr << L"Function ";
-    i->head->print(std::wcerr);
-    std::wcerr << L" exists already";
-    print_pos(i->head);
+    e_out << L"Function " << i->head->name->str << L" exists already";
+    i->head->name->print_pos(e_out);
 }
 
 void sc_var_exists_already(va_list ap)
 {
     VariableNode* i = va_arg(ap, VariableNode*);
 
-    std::wcerr << L"Variable ";
-    i->var_name->print(std::wcerr);
-    std::wcerr << L" exists already";
+    e_out << L"Variable ";
+    i->var_name->print(e_out);
+    e_out << L" exists already";
 }
 
 int ERR(err_t type, ...)
 {
-    std::wcerr << L"Error, ";
+    e_out << L"Error, ";
 
     va_list ap;
     va_start(ap, type);
@@ -137,25 +125,25 @@ int ERR(err_t type, ...)
     switch (type)
     {
         case err_t::GEN:
-            std::wcerr << L"Generic error";
+            e_out << L"Generic error";
             break;
         case err_t::GEN_IL:
-            std::wcerr << L"Generic code generator error";
+            e_out << L"Generic code generator error";
             break;
         case err_t::GEN_SC:
-            std::wcerr << L"Generic scope error";
+            e_out << L"Generic scope error";
             break;
         case err_t::GEN_SCR:
-            std::wcerr << L"Generic scoper error";
+            e_out << L"Generic scoper error";
             break;
         case err_t::GEN_PAR:
-            std::wcerr << L"Generic parsing error";
+            e_out << L"Generic parsing error";
             break;
         case err_t::GEN_LEX:
-            std::wcerr << L"Generic lexing error";
+            e_out << L"Generic lexing error";
             break;
         case err_t::GEN_WAR:
-            std::wcerr << L"Last warning treated as error.";
+            e_out << L"Last warning treated as error.";
             break;
         case err_t::POST_PROCESSING_FAILED:
             post_processing_failed(ap);
@@ -187,6 +175,9 @@ int ERR(err_t type, ...)
         case err_t::SC_TYPE_EXISTS_ALREADY:
             sc_type_exists_already(ap);
             break;
+        case err_t::SC_FUN_HEAD_EXISTS_ALREADY:
+            sc_fun_exists_already(ap);
+            break;
         case err_t::SC_FUN_EXISTS_ALREADY:
             sc_fun_exists_already(ap);
             break;
@@ -194,10 +185,10 @@ int ERR(err_t type, ...)
             sc_var_exists_already(ap);
             break;
         default:
-            std::wcerr << L"Unhandled error.";
+            e_out << L"Unhandled error.";
     }
 
-    std::wcerr << std::endl;
+    e_out << std::endl;
     va_end(ap);
 
     exit(-1);

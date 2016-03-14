@@ -1,5 +1,6 @@
 #include "compiler.h"
 #include "io.h"
+#include "warnings.h"
 
 #include <fstream>
 #include <iostream>
@@ -12,6 +13,8 @@ compiler::compiler()
 
 void compiler::compile(char* file_name)
 {
+    war_init();
+
     std::wcout << "Lexing...";
     lexer lex = lexer(file_name);
     std::vector<tok*>* toks = lex.lex();
@@ -29,6 +32,7 @@ void compiler::compile(char* file_name)
     this->load_template();
     il* gen = new il(ast, this->output);
     gen->generate();
+    war_dump(std::wcout);
 
     std::wcout << "Done." << std::endl << "Cleanup...";
     delete gen;

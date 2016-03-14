@@ -1,5 +1,6 @@
 #include "scoper.h"
 #include "errors.hpp"
+#include "warnings.h"
 
 #include "ptr_t.h"
 
@@ -16,7 +17,12 @@ tast* scoper::convert(ProgramUNode* code)
     for (size_t i = 0; i < code->code->size(); i++)
         ncode->push_back(convert(code->code->at(i)));
 
-    return new ProgramNode(ncode);
+    //for (sc_head* h : *mng->gl_heads)
+      //  ncode->push_back(h->fun);
+
+    ProgramNode* ret = new ProgramNode(ncode);
+    ret->set_pos(code);
+    return ret;
 };
 
 tast* scoper::convert(BlockUNode* code)
@@ -40,14 +46,16 @@ tast* scoper::convert(BlockUNode* code)
     }
 
     mng->leave();
-    return new BlockNode(ncode, frame_s);
+    BlockNode* ret = new BlockNode(ncode, frame_s);
+    ret->set_pos(code);
+    return ret;
 };
 
 tast* scoper::convert(ExpressionUNode* code)
 {
     tast* exp = convert(code->exp);
 
-    return new ExpressionNode(exp);
+     return new ExpressionNode(exp);
 };
 
 tast* scoper::convert(ExpressionTermUNode* code)
@@ -144,14 +152,15 @@ tast* scoper::convert(FunctionHeaderUNode* code)
 {
     ListArgNode* args = convert(code->args);
     TypeNode* t = convert(code->type);
-    t->set_pos(code->type);
     IdentNode* i = new IdentNode(code->name);
 
     int args_s = 0;
     for (ArgNode* a : *args->items)
         args_s += a->type->t->size;
 
-    return new FunctionHeaderNode(t, i, args, args_s);
+    FunctionHeaderNode* h = new FunctionHeaderNode(t, i, args, args_s);
+    mng->add_fun_head(h);
+    return h;
 };
 
 tast* scoper::convert(FunctionUNode* code)
@@ -159,7 +168,9 @@ tast* scoper::convert(FunctionUNode* code)
     FunctionHeaderNode* h = convert(code->head);
     BlockNode* b = convert(code->code);
 
+    mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
     FunctionNode* f =  new FunctionNode(h, b);
+    //f->set_pos(code);
     mng->add_fun(f);
     return f;
 };
@@ -170,7 +181,12 @@ tast* scoper::convert(FunctionCallUNode* code)
     IdentNode* t = new IdentNode(code->target);
 
     if (!mng->is_fun_reg(t))
-        ERR(err_t::SC_FUN_NAME_UNKOWN, t);
+    {
+        if (!mng->is_fun_head_reg(t))
+            ERR(err_t::SC_FUN_NAME_UNKOWN, t);
+        else
+            WAR(war_t::CALLING_UMIMPL_FUNC, code);
+    }
 
     return new FunctionCallNode(t, args);
 };
