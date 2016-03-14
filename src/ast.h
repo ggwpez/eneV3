@@ -11,7 +11,30 @@
 
 class IdentNode;
 
-class uast
+class ast
+{
+public:
+    ast();
+    ast(ast* code);
+    ast(tok* code);
+    ast(ast* start, ast* end);
+    ast(tok* start, tok* end);
+
+    set_pos(ast* code);
+    set_pos(tok* t);
+    set_pos_end(ast* end);
+    set_pos_end(tok* end);
+    set_pos_start(ast* start);
+    set_pos_start(tok* start);
+    virtual ~ast();
+
+    int pos_st_line;
+    int pos_st_line_char;
+    int pos_en_line;
+    int pos_en_line_char;
+};
+
+class uast : public virtual ast
 {
 public:
     uast();
@@ -19,7 +42,7 @@ public:
     virtual void print(std::wostream& out) const;
 };
 
-class tast
+class tast : public virtual ast
 {
 public:
     tast();

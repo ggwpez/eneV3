@@ -1,6 +1,6 @@
 #include "uast.h"
 
-ProgramUNode::ProgramUNode(uast_arr* code)
+ProgramUNode::ProgramUNode(uast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
     this->code = code;
 }
@@ -19,7 +19,7 @@ void ProgramUNode::print(std::wostream& out) const
         s->print(out);
 }
 
-BlockUNode::BlockUNode(uast_arr* code)
+BlockUNode::BlockUNode(uast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
     this->code = code;
 }
@@ -38,7 +38,7 @@ void BlockUNode::print(std::wostream& out) const
         s->print(out), out << std::endl;
 }
 
-ExpressionUNode::ExpressionUNode(uast *exp)
+ExpressionUNode::ExpressionUNode(uast *exp) : ast(exp)
 {
     this->exp = exp;
 }
@@ -50,7 +50,7 @@ void ExpressionUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-ExpressionTermUNode::ExpressionTermUNode(uast_arr* exps)
+ExpressionTermUNode::ExpressionTermUNode(uast_arr* exps) : ast(exps->empty() ? nullptr : exps->front(), exps->empty() ? nullptr : exps->back())
 {
     this->exps = exps;
 }
@@ -71,7 +71,7 @@ ExpressionTermUNode::~ExpressionTermUNode()
     delete this->exps;
 }
 
-PushUNode::PushUNode(uast* v)
+PushUNode::PushUNode(uast* v) : ast(v, v)
 {
     this->v = v;
 }
@@ -83,7 +83,7 @@ void PushUNode::print(std::wostream& out) const
     out << L'>';
 }
 
-ArgUNode::ArgUNode(IdentNode* name, TypeUNode* type)
+ArgUNode::ArgUNode(IdentNode* name, TypeUNode* type) : ast(type, name)
 {
     this->name = name;
     this->type = type;
@@ -100,7 +100,7 @@ void ArgUNode::print(std::wostream& out) const
 
 }
 
-TypeUNode::TypeUNode(std::vector<IdentNode*>* parts)
+TypeUNode::TypeUNode(std::vector<IdentNode*>* parts) : ast(parts->empty() ? nullptr : parts->front(), parts->empty() ? nullptr : parts->back())
 {
     this->parts = parts;
 }
@@ -116,7 +116,7 @@ void TypeUNode::print(std::wostream& out) const
         out << str->str;
 }
 
-VariableUNode::VariableUNode(TypeUNode* type_name, IdentNode *var_name)
+VariableUNode::VariableUNode(TypeUNode* type_name, IdentNode* var_name) : ast(type_name, var_name)
 {
     this->type_name = type_name;
     this->var_name = var_name;
@@ -135,7 +135,7 @@ void VariableUNode::print(std::wostream& out) const
     out << L"><var_name " << this->var_name->str << L">>>";
 }
 
-ListUNode::ListUNode(uast_arr *items)
+ListUNode::ListUNode(uast_arr* items) : ast(items->front(), items->back())
 {
     this->items = items;
 }
@@ -157,7 +157,7 @@ void ListUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-AssignUNode::AssignUNode(ExpressionTermUNode* term)
+AssignUNode::AssignUNode(ExpressionTermUNode* term) : ast(term)
 {
     this->term = term;
 }
@@ -169,7 +169,7 @@ void AssignUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionHeaderUNode::FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode *args)
+FunctionHeaderUNode::FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args) : ast(type, args->items->empty() ? dynamic_cast<ast*>(name) : dynamic_cast<ast*>(args))
 {
     this->type = type;
     this->name = name;
@@ -194,7 +194,7 @@ void FunctionHeaderUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionUNode::FunctionUNode(FunctionHeaderUNode* head, BlockUNode* code)
+FunctionUNode::FunctionUNode(FunctionHeaderUNode* head, BlockUNode* code) : ast(head, code->code->empty() ? dynamic_cast<ast*>(head) : dynamic_cast<ast*>(code))
 {
     this->head = head;
     this->code = code;
@@ -215,7 +215,7 @@ void FunctionUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-ListArgUNode::ListArgUNode(std::vector<ArgUNode *> *items)
+ListArgUNode::ListArgUNode(std::vector<ArgUNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
 {
     this->items = items;
 }
@@ -236,7 +236,7 @@ void ListArgUNode::print(std::wostream &out) const
     out << L">>";
 }
 
-FunctionCallUNode::FunctionCallUNode(IdentNode* target, ListUNode* args)
+FunctionCallUNode::FunctionCallUNode(IdentNode* target, ListUNode* args) : ast(target, args)
 {
     this->target = target;
     this->args = args;
@@ -257,7 +257,7 @@ FunctionCallUNode::~FunctionCallUNode()
     delete this->args;
 }
 
-ReturnUNode::ReturnUNode(ExpressionTermUNode* val)
+ReturnUNode::ReturnUNode(ExpressionTermUNode* val) : ast(val)
 {
     this->val = val;
 }
@@ -269,7 +269,7 @@ void ReturnUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-IfUNode::IfUNode(ExpressionTermUNode* cond, BlockUNode* true_block, BlockUNode* false_block)
+IfUNode::IfUNode(ExpressionTermUNode* cond, BlockUNode* true_block, BlockUNode* false_block) : ast(cond, false_block ? false_block : true_block)
 {
     this->cond = cond;
     this->true_block = true_block;
@@ -288,7 +288,7 @@ void IfUNode::print(std::wostream& out) const
 
 }
 
-WhileUNode::WhileUNode(ExpressionTermUNode* cond, BlockUNode* block)
+WhileUNode::WhileUNode(ExpressionTermUNode* cond, BlockUNode* block) : ast(cond, block)
 {
     this->cond = cond;
     this->block = block;

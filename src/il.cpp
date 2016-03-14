@@ -107,17 +107,18 @@ void il::generate(PopNode* code)
 
 void il::generate(ASMNode* code)
 {
-
+    eml(L"; begin inline ASM from line " << code->pos_st_line << L" pos " << code->pos_st_line_char);
+    eml(code->str->str);
+    eml(L"; end   inline ASM from line " << code->pos_en_line << L" pos " << code->pos_en_line_char);
 };
 
+int str_c = -1;
 void il::generate(StringNode* code)
 {
-    size_t l = wcslen(code->str);
-    schar c[] = {L'\'', 0, L'\'', 0};
+    std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
 
-    push(L"0");
-    for (size_t i = l; i --> 0;)
-        c[1] = code->str[i], push(c);
+    emlDATA(name << L": db \"" << code->str << L"\", 0");
+    push(name.c_str());
 };
 
 void il::generate(OperatorNode* code)
@@ -147,6 +148,8 @@ void il::generate(TypeNode* code)
 
 void il::generate_global(VariableNode* code)
 {
+    int t = (int)code->type->t;
+
     if (! code->type->t->size)
         WAR(war_t::INSTANCE_OF_VOID, code);
 

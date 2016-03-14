@@ -5,7 +5,7 @@
 #define dc(t, v)  dynamic_cast<t*>(v)
 
 #define null nullptr
-#define tassert(t, v) { if (v->type != t) ERR(err_t::PAR_WRONG_BUT, v, t); }
+#define tassert(t, v) { if (v > input.data() +(length -1)) ERR(err_t::PAR_WRONG_BUT, tok_type::EOS, input[length -1]); else if (v->type != t) ERR(err_t::PAR_WRONG_BUT, v, t); }
 
 parser::parser(std::vector<tok*> input)
 {
@@ -54,7 +54,7 @@ uast* parser::parse_program_statement(int s, int& l)
     else if (input[s]->type == tok_type::SEMI)
     { l = 1; return new ExpressionTermUNode(new uast_arr()); }
 
-    l = 0; return NULL;
+    ERR(err_t::PAR_WRONG, input[s]);
 }
 
 uast* parser::parse_single_ident_program(int s, int& l)
@@ -122,7 +122,17 @@ uast* parser::parse_namespace_block(int s, int& l)
 
 uast* parser::parse_asm(int s, int& l)
 {
+    l = 0;
+    tassert(tok_type::ASM,      input[s]);      l++;
+    tassert(tok_type::LBRK,     input[s +l]);   l++;
 
+    int str_l = 0;
+    StringNode* str = parse_string(s +l, str_l);
+    l += str_l;
+
+    tassert(tok_type::RBRK,     input[s +l]);   l++;
+
+    return new ASMNode(str);
 }
 
 uast* parser::parse_struct(int s, int& l)
@@ -194,7 +204,7 @@ IdentNode* parser::parse_ident(int s, int& l)
     tassert(tok_type::IDENT, input[s]);
 
     l = 1;
-    return new IdentNode(input[s]->string);
+    return new IdentNode(input[s]);
 }
 
 NumNode* parser::parse_number(int s, int& l)
@@ -202,7 +212,7 @@ NumNode* parser::parse_number(int s, int& l)
     tassert(tok_type::NUM, input[s]);
 
     l = 1;
-    return new NumNode(input[s]->number);
+    return new NumNode(input[s]);
 }
 
 StringNode* parser::parse_string(int s, int& l)
@@ -210,7 +220,7 @@ StringNode* parser::parse_string(int s, int& l)
     tassert(tok_type::STRING, input[s]);
 
     l = 1;
-    return new StringNode(input[s]->string);
+    return new StringNode(input[s]);
 }
 
 uast* parser::parse_single_ident_expression(int s, int& l)
@@ -238,13 +248,13 @@ uast* parser::parse_expression(int s, int& l)
     }
     else if (input[s]->type == tok_type::NUM)
     {
-        l = 1;
-        return new PushUNode(new NumNode(input[s]->number));
+        NumNode* n = parse_number(s, l);
+        return new PushUNode(n);
     }
     else if (input[s]->type == tok_type::OP)
     {
         l = 1;
-        return new OperatorNode(input[s]->oper);
+        return new OperatorNode(input[s]);
     }
     else
         ERR(err_t::PAR_WRONG, input[s]);
@@ -293,7 +303,10 @@ ExpressionTermUNode* parser::parse_expression_term(int s, int& l)
         //   l--;
     }
 
-    return new ExpressionTermUNode(term);
+    ExpressionTermUNode* ret = new ExpressionTermUNode(term);
+    if (ret->exps->empty())
+        ret->set_pos(input[s]);
+    return ret;
 }
 
 ListArgUNode* parser::parse_arg_list(int s, int& l)

@@ -7,9 +7,31 @@
 
 void print_pos(tok* token)
 {
-    std::wcerr << L" in file "<< token->pos_file
-               << L" line " << token->pos_line
-               << L" pos " << token->pos_line_char;
+    std::wcerr << L" in file "<< token->pos_st_file
+               << L" line " << token->pos_st_line
+               << L" pos " << token->pos_st_line_char
+               << L" to line " << token->pos_en_line
+               << L" pos " << token->pos_en_line_char;
+}
+
+void print_pos(ast* token)
+{
+    std::wcerr << L" from  line " << token->pos_st_line
+               << L" pos " << token->pos_st_line_char
+               << L" to line " << token->pos_en_line
+               << L" pos " << token->pos_en_line_char;
+}
+
+void post_processing_failed(va_list ap)
+{
+    std::wcerr << L"Assemling (nasm) or linking (GNU ld) failed." << std::endl;
+}
+
+void io_file_not_found(va_list ap)
+{
+    char* fn = va_arg(ap, char*);
+
+    std::wcerr << L"Could not find file " << fn;
 }
 
 void par_wrong(va_list ap)
@@ -39,11 +61,12 @@ void lex_wrong(va_list ap)
 
 void il_type_unknown(va_list ap)
 {
-    itype* t = va_arg(ap, itype*);
+    TypeNode* t = va_arg(ap, TypeNode*);
 
     std::wcerr << L"Type ";
     t->print(std::wcerr);
     std::wcerr << L" unknown";
+    print_pos(t);
 }
 
 void sc_type_name_unkown(va_list ap)
@@ -53,6 +76,17 @@ void sc_type_name_unkown(va_list ap)
     std::wcerr << L"Type name ";
     i->print(std::wcerr);
     std::wcerr << L" unknown";
+    print_pos(i);
+}
+
+void sc_fun_name_unkown(va_list ap)
+{
+    IdentNode* i = va_arg(ap, IdentNode*);
+
+    std::wcerr << L"Function name ";
+    i->print(std::wcerr);
+    std::wcerr << L" unknown";
+    print_pos(i);
 }
 
 void sc_var_name_unkown(va_list ap)
@@ -62,6 +96,7 @@ void sc_var_name_unkown(va_list ap)
     std::wcerr << L"Variable ";
     i->print(std::wcerr);
     std::wcerr << L" unknown";
+    print_pos(i);
 }
 
 void sc_type_exists_already(va_list ap)
@@ -80,6 +115,7 @@ void sc_fun_exists_already(va_list ap)
     std::wcerr << L"Function ";
     i->head->print(std::wcerr);
     std::wcerr << L" exists already";
+    print_pos(i->head);
 }
 
 void sc_var_exists_already(va_list ap)
@@ -121,6 +157,12 @@ int ERR(err_t type, ...)
         case err_t::GEN_WAR:
             std::wcerr << L"Last warning treated as error.";
             break;
+        case err_t::POST_PROCESSING_FAILED:
+            post_processing_failed(ap);
+            break;
+        case err_t::IO_FILE_NOT_FOUND:
+            io_file_not_found(ap);
+            break;
         case err_t::PAR_WRONG:
             par_wrong(ap);
             break;
@@ -135,6 +177,9 @@ int ERR(err_t type, ...)
             break;
         case err_t::SC_TYPE_NAME_UNKOWN:
             sc_type_name_unkown(ap);
+            break;
+        case err_t::SC_FUN_NAME_UNKOWN:
+            sc_fun_name_unkown(ap);
             break;
         case err_t::SC_VAR_NAME_UNKOWN:
             sc_var_name_unkown(ap);

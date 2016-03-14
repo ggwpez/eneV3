@@ -84,16 +84,19 @@ tast* scoper::convert(ReturnUNode* code)
 tast* scoper::convert(TypeUNode* code)
 {
     itype* ret = mng->get_type(code->parts->at(0));   //base type
+    TypeNode* rret = new TypeNode(ret);
+    rret->set_pos(code);
 
     for (size_t i = 1; i < code->parts->size(); i++)
     {
         if (!wcscmp(L"°", code->parts->at(i)->str))
             ret = new ptr_t(ret);
         else
-            ERR(err_t::IL_TYPE_UNKNOWN, ret);
+            ERR(err_t::IL_TYPE_UNKNOWN, rret);
     }
 
-    return new TypeNode(ret);
+    rret->t = ret;
+    return rret;
 };
 
 tast* scoper::convert(VariableUNode* code)
@@ -120,7 +123,9 @@ tast* scoper::convert(ListUNode* code)
     for (uast* it : *code->items)
         nel->push_back(convert(it));
 
-    return new ListNode(nel);
+    ListNode* ret = new ListNode(nel);
+    ret->set_pos(code);
+    return ret;
 };
 
 tast* scoper::convert(ListArgUNode* code)
@@ -130,13 +135,16 @@ tast* scoper::convert(ListArgUNode* code)
     for (ArgUNode* arg : *code->items)
         nan->push_back(convert(arg));
 
-    return new ListArgNode(nan);
+    ListArgNode* ret = new ListArgNode(nan);
+    ret->set_pos(code);
+    return ret;
 };
 
 tast* scoper::convert(FunctionHeaderUNode* code)
 {
     ListArgNode* args = convert(code->args);
     TypeNode* t = convert(code->type);
+    t->set_pos(code->type);
     IdentNode* i = new IdentNode(code->name);
 
     int args_s = 0;
@@ -151,13 +159,18 @@ tast* scoper::convert(FunctionUNode* code)
     FunctionHeaderNode* h = convert(code->head);
     BlockNode* b = convert(code->code);
 
-    return new FunctionNode(h, b);
+    FunctionNode* f =  new FunctionNode(h, b);
+    mng->add_fun(f);
+    return f;
 };
 
 tast* scoper::convert(FunctionCallUNode* code)
 {
     ListNode* args = convert(code->args);
     IdentNode* t = new IdentNode(code->target);
+
+    if (!mng->is_fun_reg(t))
+        ERR(err_t::SC_FUN_NAME_UNKOWN, t);
 
     return new FunctionCallNode(t, args);
 };

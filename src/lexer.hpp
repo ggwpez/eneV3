@@ -19,9 +19,6 @@ private:
     schar* input;
     size_t length;
 
-    schar* read_file(char* path);
-    const schar* get_wc(const char* c);
-
     op   oper(schar c);
     tok_type tok_typ(schar c);
     tok* number(int s, int& l);

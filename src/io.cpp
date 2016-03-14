@@ -1,4 +1,5 @@
 #include "io.h"
+#include "errors.hpp"
 
 io::io()
 {
@@ -29,7 +30,7 @@ schar* io::read_file(char* path)
 
     FILE* f = fopen(path, "r");
     if (!f)
-        return NULL;
+        ERR(err_t::IO_FILE_NOT_FOUND, path);
 
     size_t l;
     char* buf;

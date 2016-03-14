@@ -1,10 +1,7 @@
-u32°: l;
-
 void main()
 {
-    "hi";
-    while ()
-    {
-   		
-   	}
-};
+    5;
+}
+
+void main()
+{}

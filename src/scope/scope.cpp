@@ -93,7 +93,7 @@ void scope::add_type(IdentNode* name, TypeNode* t)
 void scope::add_var(VariableNode* var)
 {
     if (this->is_var_reg(var->var_name))
-        return ERR(err_t::SC_VAR_EXISTS_ALREADY, var);
+        ERR(err_t::SC_VAR_EXISTS_ALREADY, var);
 
     this->scopes->back()->vars->push_back(new sc_var(new IdentNode(var->var_name), var));
 }
@@ -101,7 +101,7 @@ void scope::add_var(VariableNode* var)
 void scope::add_fun(FunctionNode* fun)
 {
     if (this->is_fun_reg(fun->head->name))
-        return ERR(err_t::SC_FUN_EXISTS_ALREADY, fun);
+        ERR(err_t::SC_FUN_EXISTS_ALREADY, fun);
 
     this->gl_funs->push_back(new sc_fun(new IdentNode(fun->head->name), fun));
 }
@@ -113,7 +113,7 @@ itype* scope::get_var_type(IdentNode* name)
             if (*var->name == *name)
                 return var->var->type->t;
 
-    return ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
 }
 
 itype* scope::get_type(IdentNode* name)
@@ -122,7 +122,7 @@ itype* scope::get_type(IdentNode* name)
         if (*t->name == *name)
             return t->type;
 
-    return ERR(err_t::SC_TYPE_NAME_UNKOWN, name);
+    ERR(err_t::SC_TYPE_NAME_UNKOWN, name);
 }
 
 bool scope::is_type_reg(TypeNode* searched)

@@ -14,6 +14,7 @@ class GoOnNode : public uast, public tast
 {
 public:
     GoOnNode(GoOnNode* n);
+    GoOnNode(tok* n);
     void print(std::wostream& out) const;
 };
 
@@ -21,6 +22,7 @@ class StringNode : public uast, public tast
 {
 public:
     StringNode(schar* str);
+    StringNode(tok* str);
     StringNode(StringNode* n);
     ~StringNode();
     void print(std::wostream& out) const;
@@ -32,6 +34,7 @@ class OperatorNode : public uast, public tast
 {
 public:
     OperatorNode(op oper);
+    OperatorNode(tok* code);
     OperatorNode(OperatorNode* n);
     void print(std::wostream& out) const;
 
@@ -41,8 +44,11 @@ public:
 class ASMNode : public uast, public tast
 {
 public:
+    ASMNode(StringNode* str);
     ASMNode(ASMNode* n);
     void print(std::wostream& out) const;
+
+    StringNode* str;
 };
 
 class NumNode : public uast, public tast
@@ -50,6 +56,7 @@ class NumNode : public uast, public tast
 public:
     NumNode(int num);
     NumNode(NumNode* n);
+    NumNode(tok* t);
     void print(std::wostream& out) const;
 
     int num;
@@ -59,6 +66,7 @@ class IdentNode : public uast, public tast
 {
 public:
     IdentNode(schar* str);
+    IdentNode(tok* code);
     IdentNode(IdentNode* UNode);
     void print(std::wostream& out) const;
     bool operator==(const IdentNode& other) const;

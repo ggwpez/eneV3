@@ -1,7 +1,7 @@
 #include "uast.h"
 
 
-ProgramNode::ProgramNode(tast_arr* code)
+ProgramNode::ProgramNode(tast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
     this->code = code;
 }
@@ -20,7 +20,7 @@ void ProgramNode::print(std::wostream& out) const
         s->print(out);
 }
 
-BlockNode::BlockNode(tast_arr* code, int stack_s)
+BlockNode::BlockNode(tast_arr* code, int stack_s) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
     this->code = code;
     this->stack_s = stack_s;
@@ -40,7 +40,7 @@ void BlockNode::print(std::wostream& out) const
         s->print(out), out << std::endl;
 }
 
-ExpressionNode::ExpressionNode(tast *exp)
+ExpressionNode::ExpressionNode(tast* exp) : ast(exp)
 {
     this->exp = exp;
 }
@@ -57,7 +57,7 @@ void ExpressionNode::print(std::wostream& out) const
     out << L">>";
 }
 
-ExpressionTermNode::ExpressionTermNode(tast_arr* exps)
+ExpressionTermNode::ExpressionTermNode(tast_arr* exps) : ast(exps->empty() ? nullptr : exps->front(), exps->empty() ? nullptr : exps->back())
 {
     this->exps = exps;
 }
@@ -78,7 +78,7 @@ ExpressionTermNode::~ExpressionTermNode()
     delete this->exps;
 }
 
-PushNode::PushNode(tast* v)
+PushNode::PushNode(tast* v) : ast(v)
 {
     this->v = v;
 }
@@ -95,7 +95,7 @@ void PushNode::print(std::wostream& out) const
     out << L'>';
 }
 
-ArgNode::ArgNode(IdentNode* name, TypeNode* type)
+ArgNode::ArgNode(IdentNode* name, TypeNode* type) : ast(type, name)
 {
     this->name = name;
     this->type = type;
@@ -127,7 +127,7 @@ void TypeNode::print(std::wostream& out) const
     this->t->print(out);
 }
 
-VariableNode::VariableNode(TypeNode* type, IdentNode* var_name)
+VariableNode::VariableNode(TypeNode* type, IdentNode* var_name) : ast(type, var_name)
 {
     this->type = type;
     this->var_name = var_name;
@@ -148,7 +148,7 @@ void VariableNode::print(std::wostream& out) const
     out << L"><var_name " << this->var_name->str << L">>>";
 }
 
-ListNode::ListNode(tast_arr *items)
+ListNode::ListNode(tast_arr* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
 {
     this->items = items;
 }
@@ -170,7 +170,7 @@ void ListNode::print(std::wostream& out) const
     out << L">>";
 }
 
-AssignNode::AssignNode(ExpressionTermNode* term)
+AssignNode::AssignNode(ExpressionTermNode* term) : ast(term)
 {
     this->term = term;
 }
@@ -187,7 +187,7 @@ void AssignNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode *args, int args_size)
+FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size) : ast(type, args)
 {
     this->type = type;
     this->name = name;

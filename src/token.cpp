@@ -17,14 +17,24 @@ tok::tok()
 {
     this->type = tok_type::size;
     this->string = NULL;
+
+    this->pos_en_file = this->pos_en_line = this->pos_en_line_char = this->pos_st_file = this->pos_st_line = this->pos_st_line_char = NULL;
 }
 
-void tok::set_pos(char* pos_file, int pos_line, int pos_line_char)
+void tok::set_pos_st(char* pos_file, int pos_line, int pos_line_char)
 {
-    this->pos_file = pos_file;
-    this->pos_line = pos_line;
-    this->pos_line_char = pos_line_char;
+    this->pos_st_file = pos_file;
+    this->pos_st_line = pos_line;
+    this->pos_st_line_char = pos_line_char;
 }
+
+void tok::set_pos_en(char* pos_file, int pos_line, int pos_line_char)
+{
+    this->pos_en_file = pos_file;
+    this->pos_en_line = pos_line;
+    this->pos_en_line_char = pos_line_char;
+}
+
 
 tok::tok(tok_type t)
 {

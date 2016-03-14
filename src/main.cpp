@@ -1,6 +1,9 @@
 #include <stdio.h>
 
 #include "compiler.h"
+#include "errors.hpp"
+
+#define SKIP_COMPILATION 1
 
 int main(void)
 {
@@ -9,11 +12,15 @@ int main(void)
     const char* exe = ".exec";
 
     compiler cmp;
-    cmp.compile("../ene/input.ene");
+    cmp.compile("../src/input.ene");
 
     std::wcout << "Writing output to file...";
     cmp.write_wstr(output);
     std::wcout << "Done." << std::endl;
+
+#if (SKIP_COMPILATION == 1)
+    return 0;
+#endif
 
     std::stringstream cmd;
     cmd << "nasm -felf32 " << output << " -o " << output << obj << " && " <<
@@ -21,7 +28,8 @@ int main(void)
 
     std::wcout << "Assemling and linking IL...";
 
-    system(cmd.str().c_str());
+    if (system(cmd.str().c_str()))
+        ERR(err_t::POST_PROCESSING_FAILED);
 
     std::wcout << L"Done." << std::endl <<
                   output << exe << " ready." << std::endl;

@@ -12,7 +12,7 @@ compiler::compiler()
 
 void compiler::compile(char* file_name)
 {
-    std::wcout << "Lesing...";
+    std::wcout << "Lexing...";
     lexer lex = lexer(file_name);
     std::vector<tok*>* toks = lex.lex();
 
@@ -68,7 +68,7 @@ std::string compiler::get_str()
     return std::string(this->output->str().begin(), this->output->str().end());
 }
 
-#define TEMPLATE_PATH "../ene/template.nasm"
+#define TEMPLATE_PATH "../src/template.nasm"
 void compiler::load_template()
 {
     io helper;
