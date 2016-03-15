@@ -13,11 +13,13 @@ class scoper
 {
 public:
     scoper(uast* input, scope* mng);
+    ~scoper();
     ProgramNode *convert();
 
 private:
     uast* input;
     scope* mng;
+    itype* last_type,* int_type;
 
     tast* scoper::convert(ProgramUNode* code);
     tast* scoper::convert(BlockUNode* code);

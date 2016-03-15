@@ -2,10 +2,11 @@
 #define TARGET_H
 
 #define __BITS__ 32
-#define __BYTES__ (__BITS__ >> 3)
+#define __BYTES__ 4
 
 #if (__BITS__ == 32)
     #define __ALL_HIGH L"0xffffffff"
+    #define __INT L"i32"
     #define eax L"eax"
     #define ebx L"ebx"
     #define ecx L"ecx"

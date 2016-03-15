@@ -12,14 +12,16 @@ il::il(ProgramNode* code, std::wostringstream* ss)
     input = code;
     this->ss = ss;
 
-    ss_code = new std::wostringstream();
-    ss_data = new std::wostringstream();
-    ss_bss  = new std::wostringstream();
+    ss_code  = new std::wostringstream();
+    ss_codeh = new std::wostringstream();
+    ss_data  = new std::wostringstream();
+    ss_bss   = new std::wostringstream();
 }
 
 il::~il()
 {
     delete ss_code;
+    delete ss_codeh;
     delete ss_data;
     delete ss_bss;
 }
@@ -283,7 +285,12 @@ void il::generate(ListArgNode* code)
 
 void il::generate(FunctionHeaderNode* code)
 {
-    int a;
+
+};
+
+void il::generate(FunctionExternNode* code)
+{
+    emlCODEH(L"extern " << code->fname->str);
 };
 
 void il::generate(FunctionNode* code)
@@ -351,8 +358,8 @@ void il::generate()
 {
     generate(input);
 
-    *ss << L"section .bss"  << endl << ss_bss ->str() <<
-           L"section .text" << endl << ss_code->str() <<
+    *ss << L"section .bss"  << endl << ss_bss ->str()  <<
+           L"section .text" << endl << ss_codeh->str() << ss_code->str() <<
            L"section .data" << endl << ss_data->str();
 }
 
@@ -410,6 +417,8 @@ void il::generate(tast* code)
         generate(dynamic_cast<ListArgNode*>(code));
     else if (dynamic_cast<FunctionHeaderNode*>(code))
         generate(dynamic_cast<FunctionHeaderNode*>(code));
+    else if (dynamic_cast<FunctionExternNode*>(code))
+        generate(dynamic_cast<FunctionExternNode*>(code));
     else if (dynamic_cast<FunctionNode*>(code))
         generate(dynamic_cast<FunctionNode*>(code));
     else if (dynamic_cast<FunctionCallNode*>(code))

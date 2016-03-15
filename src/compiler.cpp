@@ -39,8 +39,10 @@ void compiler::compile(char* file_name)
     delete ast;
     delete scr;
     delete sc;
+    for (tok* t : *toks)
+        delete t;
     delete toks;
-    std::wcout << "Done." << std::endl;
+    //std::wcout << "Done." << std::endl;
 }
 
 void compiler::write_wstr(char* file_name)
@@ -72,7 +74,7 @@ std::string compiler::get_str()
     return std::string(this->output->str().begin(), this->output->str().end());
 }
 
-#define TEMPLATE_PATH "../src/template.nasm"
+#define TEMPLATE_PATH "../src/template_32.nasm"
 void compiler::load_template()
 {
     io helper;

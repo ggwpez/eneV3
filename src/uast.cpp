@@ -107,7 +107,10 @@ TypeUNode::TypeUNode(std::vector<IdentNode*>* parts) : ast(parts->empty() ? null
 
 TypeUNode::~TypeUNode()
 {
+    for (IdentNode* i : *this->parts)
+        delete i;
 
+    delete this->parts;
 }
 
 void TypeUNode::print(std::wostream& out) const

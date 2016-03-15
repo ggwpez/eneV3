@@ -133,6 +133,7 @@ class FunctionHeaderNode : public tast
 {
 public:
     FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size);
+    FunctionHeaderNode(FunctionHeaderNode* code);
     ~FunctionHeaderNode();
     void print(std::wostream& out) const;
 
@@ -140,6 +141,15 @@ public:
     IdentNode* name;
     ListArgNode* args;
     int args_size;
+};
+
+class FunctionExternNode : public tast
+{
+public:
+    FunctionExternNode(IdentNode* fname);
+    ~FunctionExternNode();
+
+    IdentNode* fname;
 };
 
 class FunctionNode : public tast

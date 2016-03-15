@@ -195,6 +195,14 @@ FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgN
     this->args_size = args_size;
 }
 
+FunctionHeaderNode::FunctionHeaderNode(FunctionHeaderNode* code)
+{
+    this->type = code->type;
+    this->name = code->name;
+    this->args = code->args;
+    this->args_size = code->args_size;
+}
+
 FunctionHeaderNode::~FunctionHeaderNode()
 {
     delete this->type;
@@ -211,6 +219,16 @@ void FunctionHeaderNode::print(std::wostream& out) const
     out << L"><args ";
     this->args->print(out);
     out << L">>";
+}
+
+FunctionExternNode::FunctionExternNode(IdentNode* fname)
+{
+    this->fname = fname;
+}
+
+FunctionExternNode::~FunctionExternNode()
+{
+    delete this->fname;
 }
 
 FunctionNode::FunctionNode(FunctionHeaderNode* head, BlockNode* code) : ast(head, code)

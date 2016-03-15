@@ -7,20 +7,21 @@
 
 int main(void)
 {
+    const char* input = "../src/input.ene";
     const char* output = "output.asm";
     const char* obj = ".o";
     const char* exe = ".exec";
 
     compiler cmp;
-    cmp.compile("../src/input.ene");
+    cmp.compile(input);
 
     std::wcout << "Writing output to file...";
     cmp.write_wstr(output);
     std::wcout << "Done." << std::endl;
 
     std::stringstream cmd;
-    cmd << "nasm -f elf " << __BITS__ << L' ' << output << " -o " << output << obj << " && " <<
-           "gcc -m" << __BITS__ << L' ' << output << obj << " -o " << output << exe;
+    cmd << "nasm -f elf" << __BITS__ << " " << output << " -o " << output << obj << " && " <<
+           "gcc -m" << __BITS__ << " " << output << obj << " -o " << output << exe;
 
     std::wcout << "Assemling and linking IL...";
 

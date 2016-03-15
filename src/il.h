@@ -14,6 +14,8 @@
 #define eml(s) emlCODE(s)
 #define emCODE(s) (*ss_code << s)
 #define emlCODE(s) (*ss_code << s << std::endl)
+#define emCODEH(s) (*ss_codeh << s)
+#define emlCODEH(s) (*ss_codeh << s << std::endl)
 #define emBSS(s) (*ss_bss << s)
 #define emlBSS(s) (*ss_bss << s << std::endl)
 #define emDATA(s) (*ss_data << s)
@@ -29,8 +31,8 @@ public:
 
 private:
     ProgramNode* input;
-    std::wostringstream* ss;
-    std::wostringstream* ss_code,* ss_data,* ss_bss;
+    std::wostringstream* ss;       //code header, all what should stand at the beginning of code
+    std::wostringstream* ss_code,* ss_codeh,* ss_data,* ss_bss;
 
     void generate_ProgramNode_term(tast* code);
     void generate(tast* code);
@@ -69,6 +71,7 @@ private:
     void generate(ListNode* code);
     void generate(ListArgNode* code);
     void generate(FunctionHeaderNode* code);
+    void generate(FunctionExternNode* code);
     void generate(FunctionNode* code);
     void generate(FunctionCallNode* code);
     void generate(IfNode* code);

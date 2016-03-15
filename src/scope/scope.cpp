@@ -75,7 +75,7 @@ scope::~scope()
 
     for (sc_type* gt : *this->gl_types)
         delete gt;
-    for (sc_head* gh : *this->gl_heads)
+    for (sc_head* gh : *this->gl_heads)   //gets freed in ~ProgramNode
         delete gh;
     for (sc_fun* gf : *this->gl_funs)
         delete gf;

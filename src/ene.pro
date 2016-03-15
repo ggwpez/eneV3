@@ -52,5 +52,8 @@ HEADERS += \
 QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w
 
 OTHER_FILES += \
-    input.ene \
-    template.nasm
+    template.nasm \
+    template_16.nasm \
+    template_32.nasm \
+    template_64.nasm \
+    input.ene

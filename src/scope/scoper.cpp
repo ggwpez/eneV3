@@ -1,6 +1,7 @@
 #include "scoper.h"
 #include "errors.hpp"
 #include "warnings.h"
+#include "target.h"
 
 #include "ptr_t.h"
 
@@ -8,6 +9,13 @@ scoper::scoper(uast* input, scope* mng)
 {
     this->input = input;
     this->mng = mng;
+
+    this->int_type = mng->get_type(&IdentNode(__INT));
+}
+
+scoper::~scoper()
+{
+
 }
 
 tast* scoper::convert(ProgramUNode* code)
@@ -17,8 +25,10 @@ tast* scoper::convert(ProgramUNode* code)
     for (size_t i = 0; i < code->code->size(); i++)
         ncode->push_back(convert(code->code->at(i)));
 
-    //for (sc_head* h : *mng->gl_heads)
-      //  ncode->push_back(h->fun);
+    for (sc_head* h : *mng->gl_heads)
+    {
+        ncode->push_back(new FunctionExternNode(new IdentNode(h->head->name)));
+    }
 
     ProgramNode* ret = new ProgramNode(ncode);
     ret->set_pos(code);
@@ -215,6 +225,7 @@ tast* scoper::convert(IdentNode* code)
 
 tast* scoper::convert(NumNode* code)
 {
+    last_type = int_type;
     return new NumNode(code);
 }
 

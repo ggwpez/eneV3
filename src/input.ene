@@ -1,6 +1,6 @@
-void printf(u32 format, u32 str);
+void printf(u32 format, u8 str);
 
 void main()
 {
-    printf("%s", "hi");
+    printf("%s", "hi from ene!");
 }

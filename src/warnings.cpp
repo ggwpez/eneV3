@@ -27,6 +27,7 @@ void calling_unimpl_func(va_list ap)
 
 int WAR(war_t type, ...)
 {
+    war_next();
     if (!w_out)
         return -1;
 
@@ -51,13 +52,12 @@ int WAR(war_t type, ...)
 
     if (war_as_error)
         ERR(err_t::GEN_WAR);
-
 }
 
 void war_init()
 {
     wc = new __warning_collection();
-    war_next();
+
 }
 
 void war_next()
@@ -68,10 +68,13 @@ void war_next()
 
 void war_dump(std::wostream& out)
 {
-    out << L"Warnings (" << wc->warnings->size() << L"):" << std::endl;
+    out << L"Warnings (" << wc->warnings->size() << L")" << (wc->warnings->size() ? L":" : L"") << std::endl;
 
-    for (std::wostringstream* w : *wc->warnings)
-        out << w->str().c_str();
+    for (std::wostringstream* s : *wc->warnings)
+        out << s->str().c_str();
+
+    delete wc;
+    w_out = nullptr;
 }
 
 __warning_collection::__warning_collection()
