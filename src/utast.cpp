@@ -194,26 +194,6 @@ void StringNode::print(std::wostream& out) const
     out << L"<StringNode <str \"" << this->str << L"\">>";
 }
 
-OperatorNode::OperatorNode(op oper)
-{
-    this->oper = oper;
-}
-
-OperatorNode::OperatorNode(tok* code) : ast(code)
-{
-    this->oper = code->oper;
-}
-
-OperatorNode::OperatorNode(OperatorNode* n) : ast(n)
-{
-    this->oper = n->oper;
-}
-
-void OperatorNode::print(std::wostream& out) const
-{
-    out << op_strings[(int)this->oper];
-}
-
 BoolNode::BoolNode(BoolNode* n) : ast(n)
 {
 

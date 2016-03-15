@@ -49,11 +49,12 @@ public:
 class AssignNode : public tast
 {
 public:
-    AssignNode(ExpressionTermNode* term);
+    AssignNode(ExpressionTermNode* term, itype* to_write);
     ~AssignNode();
     void print(std::wostream& out) const;
 
     ExpressionTermNode* term;
+    itype* to_write;
 };
 
 class PushNode : public tast
@@ -166,11 +167,12 @@ public:
 class FunctionCallNode : public tast
 {
 public:
-    FunctionCallNode(IdentNode* target, ListNode* args);
+    FunctionCallNode(IdentNode* target, TypeNode* return_type, ListNode* args);
     ~FunctionCallNode();
     void print(std::wostream& out) const;
 
     IdentNode* target;
+    TypeNode* return_type;
     ListNode* args;
 };
 
@@ -195,4 +197,16 @@ public:
 
     ExpressionTermNode* cond;
     BlockNode* block;
+};
+
+class OperatorNode : public uast, public tast
+{
+public:
+    OperatorNode(op oper);
+    OperatorNode(op oper, itype* operand_type);
+    OperatorNode(OperatorNode* n);
+    void print(std::wostream& out) const;
+
+    itype* operand_type;
+    op oper;
 };

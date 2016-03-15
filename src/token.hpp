@@ -6,7 +6,7 @@
 #include "string_def.h"
 
 extern const schar* tok_strings[];
-enum class tok_type : int
+enum class tok_type
 {
     IDENT,
     STRING,

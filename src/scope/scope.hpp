@@ -64,8 +64,12 @@ public:
     void rm_head(FunctionHeaderNode *head);
     tast* get_ast(IdentNode* name);
     itype* get_var_type(IdentNode *name);
+    itype* get_header_type(IdentNode* name);
+    itype* get_fun_type(IdentNode *name);
+    FunctionNode* get_fun(IdentNode* name);
+    FunctionHeaderNode* get_head(IdentNode* name);
     itype* get_type(IdentNode* name);
-    bool is_type_reg(TypeNode* searched);
+    bool is_type_reg(IdentNode *searched);
     bool is_var_reg(IdentNode* name);
     bool is_fun_head_reg(IdentNode* name);
     bool is_fun_reg(IdentNode* name);

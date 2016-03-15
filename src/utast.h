@@ -30,17 +30,6 @@ public:
     schar* str;
 };
 
-class OperatorNode : public uast, public tast
-{
-public:
-    OperatorNode(op oper);
-    OperatorNode(tok* code);
-    OperatorNode(OperatorNode* n);
-    void print(std::wostream& out) const;
-
-    op oper;
-};
-
 class ASMNode : public uast, public tast
 {
 public:

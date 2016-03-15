@@ -2,34 +2,51 @@
 #include "errors.hpp"
 
 bool war_as_error = false;
-std::wostringstream* w_out;
 __warning_collection* wc;
+#define w_out std::wcout
 
 void instance_of_void(va_list ap)
 {
     VariableNode* v = va_arg(ap, VariableNode*);
 
-    *w_out << L"Variable ";
-    v->print(*w_out);
-    *w_out << L" is instaiating void.";
-    v->print_pos(*w_out);
+    w_out << L"Variable ";
+    v->print(w_out);
+    w_out << L" is instaiating void.";
+    v->print_pos(w_out);
 }
 
 void calling_unimpl_func(va_list ap)
 {
     FunctionCallUNode* c = va_arg(ap, FunctionCallUNode*);
 
-    *w_out << L"Function call ";
-    c->print(*w_out);
-    *w_out << L" is calling an unimplemented function";
-    c->print_pos(*w_out);
+    w_out << L"Function call ";
+    c->print(w_out);
+    w_out << L" is calling an unimplemented function";
+    c->print_pos(w_out);
 }
 
-int WAR(war_t type, ...)
+void reading_uninit_mem(va_list ap)
 {
-    war_next();
-    if (!w_out)
-        return -1;
+    tast* a = va_arg(ap, tast*);
+
+    w_out << L"Term ";
+    a->print(w_out);
+    w_out << L" is using uninitialized memory.";
+    a->print_pos(w_out);
+}
+
+void arg_count_wrong(va_list ap)
+{
+    FunctionCallNode* c = va_arg(ap, FunctionCallNode*);
+
+    w_out << L"Call arguments dont match in ";
+    c->print(w_out);
+    c->print_pos(w_out);
+}
+
+void WAR(war_t type, ...)
+{
+    //war_next();
 
     va_list ap;
     va_start(ap, type);
@@ -42,39 +59,47 @@ int WAR(war_t type, ...)
         case war_t::CALLING_UMIMPL_FUNC:
             calling_unimpl_func(ap);
             break;
+        case war_t::READING_UNINIT_MEM:
+            reading_uninit_mem(ap);
+            break;
+        case war_t::ARG_COUNT_WRONG:
+            arg_count_wrong(ap);
+            break;
         default:
             ERR(err_t::GEN_WAR);
             break;
     }
 
-    *w_out << std::endl;
+    w_out << std::endl;
     va_end(ap);
 
     if (war_as_error)
         ERR(err_t::GEN_WAR);
 }
 
-void war_init()
+/*void war_init()
 {
     wc = new __warning_collection();
-
+    war_next();
 }
 
 void war_next()
 {
     wc->warnings->push_back(new std::wostringstream());
-    w_out = wc->warnings->back();
+    wc->out = wc->warnings->back();
 }
 
 void war_dump(std::wostream& out)
 {
-    out << L"Warnings (" << wc->warnings->size() << L")" << (wc->warnings->size() ? L":" : L"") << std::endl;
+    if (wc->warnings->size())
+    {
+        out << L"Warnings (" << wc->warnings->size() << L")" << (wc->warnings->size() ? L":" : L"") << std::endl;
 
-    for (std::wostringstream* s : *wc->warnings)
-        out << s->str().c_str();
+        for (std::wostringstream* s : *wc->warnings)
+            out << s->str().c_str();
+    }
 
     delete wc;
-    w_out = nullptr;
 }
 
 __warning_collection::__warning_collection()
@@ -88,4 +113,4 @@ __warning_collection::~__warning_collection()
         delete w;
 
     delete this->warnings;
-}
+}*/

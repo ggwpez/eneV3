@@ -81,8 +81,11 @@ tast* scoper::convert(ExpressionTermUNode* code)
 tast* scoper::convert(AssignUNode* code)
 {
     ExpressionTermNode* nterm = convert(code->term);
+    AssignNode* ret = new AssignNode(nterm, last_type);
 
-    return new AssignNode(nterm);
+    if (!last_type)
+        WAR(war_t::READING_UNINIT_MEM, ret);
+    return ret;
 };
 
 tast* scoper::convert(PushUNode* code)
@@ -189,16 +192,33 @@ tast* scoper::convert(FunctionCallUNode* code)
 {
     ListNode* args = convert(code->args);
     IdentNode* t = new IdentNode(code->target);
+    int arg_c = -1;
+    itype* ret_type = nullptr;
 
-    if (!mng->is_fun_reg(t))
+    if (mng->is_fun_reg(t))
     {
-        if (!mng->is_fun_head_reg(t))
-            ERR(err_t::SC_FUN_NAME_UNKOWN, t);
-        else
-            WAR(war_t::CALLING_UMIMPL_FUNC, code);
+        FunctionNode* f = mng->get_fun(t);
+        ret_type = f->head->type->t;
+        arg_c = f->head->args->items->size();
+    }
+    else if (mng->is_fun_head_reg(t))
+    {
+        FunctionHeaderNode* n = mng->get_head(t);
+        ret_type = n->type->t;
+        arg_c = n->args->items->size();
+        WAR(war_t::CALLING_UMIMPL_FUNC, code);
+    }
+    else if (!mng->is_fun_reg(t) && !mng->is_fun_head_reg(t))       //remove this and it wont work, i swear to god
+    {
+        ERR(err_t::SC_FUN_NAME_UNKOWN, t);
     }
 
-    return new FunctionCallNode(t, args);
+    FunctionCallNode* ret = new FunctionCallNode(t, new TypeNode(ret_type), args);
+
+    if (arg_c !=  args->items->size())
+        WAR(war_t::ARG_COUNT_WRONG, ret);
+
+    return ret;
 };
 
 tast* scoper::convert(IfUNode* code)
@@ -220,7 +240,13 @@ tast* scoper::convert(WhileUNode* code)
 
 tast* scoper::convert(IdentNode* code)
 {
-    return new IdentNode(code);
+    if (mng->is_type_reg(code))
+    {
+        last_type = mng->get_type(code);
+        return new TypeNode(last_type);     //its a cast
+    }
+
+    return new PushNode(new IdentNode(code));
 };
 
 tast* scoper::convert(NumNode* code)
@@ -244,9 +270,14 @@ tast* scoper::convert(BoolNode* code)
     return new BoolNode(code);
 };
 
-tast* scoper::convert(OperatorNode* code)
+tast* scoper::convert(OperatorUNode* code)
 {
-    return new OperatorNode(code);
+    if (!last_type)
+        WAR(war_t::READING_UNINIT_MEM, code);
+
+    OperatorNode* ret = new OperatorNode(code->oper, last_type);
+    ret->set_pos(code);
+    return ret;
 };
 
 tast* scoper::convert(BreakNode* code)
@@ -269,6 +300,7 @@ ProgramNode* scoper::convert()
     tast* ret = convert(input);
 
     delete input;
+    last_type = int_type;
     return ret;
 }
 
@@ -316,8 +348,8 @@ tast* scoper::convert(uast* code)
         convert(dynamic_cast<BoolNode*>(code));
     else if(dynamic_cast<ASMNode*>(code))
         convert(dynamic_cast<ASMNode*>(code));
-    else if(dynamic_cast<OperatorNode*>(code))
-        convert(dynamic_cast<OperatorNode*>(code));
+    else if(dynamic_cast<OperatorUNode*>(code))
+        convert(dynamic_cast<OperatorUNode*>(code));
     else if(dynamic_cast<NumNode*>(code))
         convert(dynamic_cast<NumNode*>(code));
     else if(dynamic_cast<PopNode*>(code))

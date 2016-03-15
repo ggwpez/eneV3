@@ -45,7 +45,7 @@ private:
     tast* scoper::convert(StringNode* code);
     tast* scoper::convert(ASMNode* code);
     tast* scoper::convert(BoolNode* code);
-    tast* scoper::convert(OperatorNode* code);
+    tast* scoper::convert(OperatorUNode* code);
     tast* scoper::convert(BreakNode* code);
     tast* scoper::convert(GoOnNode* code);
     tast* scoper::convert(PopNode* code);

@@ -5,7 +5,9 @@
 #define dc(t, v)  dynamic_cast<t*>(v)
 
 #define null nullptr
-#define tassert(t, v) { if (v > input.data() +(length -1)) ERR(err_t::PAR_WRONG_BUT, tok_type::EOS, input[length -1]); else if (v->type != t) ERR(err_t::PAR_WRONG_BUT, v, t); }
+/*{ if (v > input.data() +(length -1)) ERR(err_t::PAR_WRONG_BUT, tok_type::EOS, input[length -1]); else */
+//#define tassert(t, v) {if (v->type != t) ERR(err_t::PAR_WRONG_BUT, t, v); }
+#define tassert(tt, to) {if (to->type != tt) ERR(err_t::PAR_WRONG_BUT, (int)tt, to); }
 
 parser::parser(std::vector<tok*> input)
 {
@@ -254,7 +256,7 @@ uast* parser::parse_expression(int s, int& l)
     else if (input[s]->type == tok_type::OP)
     {
         l = 1;
-        return new OperatorNode(input[s]);
+        return new OperatorUNode(input[s]);
     }
     else
         ERR(err_t::PAR_WRONG, input[s]);

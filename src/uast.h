@@ -198,4 +198,15 @@ public:
     BlockUNode* block;
 };
 
+class OperatorUNode : public uast, public tast
+{
+public:
+    OperatorUNode(op oper);
+    OperatorUNode(tok* code);
+    OperatorUNode(OperatorUNode* n);
+    void print(std::wostream& out) const;
+
+    op oper;
+};
+
 //#endif // AST_H

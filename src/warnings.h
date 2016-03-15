@@ -16,6 +16,7 @@ public:
     __warning_collection();
     ~__warning_collection();
 
+    std::wostringstream* out;
     std::vector<std::wostringstream*>* warnings;
 };
 
@@ -23,10 +24,12 @@ enum class war_t
 {
     INSTANCE_OF_VOID,               //why would you do "void: tmp;"
     CALLING_UMIMPL_FUNC,
+    READING_UNINIT_MEM,
+    ARG_COUNT_WRONG,
     size
 };
 
 void war_init();
 void war_next();
 void war_dump(std::wostream& out);
-int WAR(war_t type, ...) __attribute__ ((noreturn));
+void WAR(war_t type, ...) __attribute__ ((noreturn));

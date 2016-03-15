@@ -49,7 +49,7 @@ HEADERS += \
     io.h \
     warnings.h
 
-QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w
+QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0
 
 OTHER_FILES += \
     template.nasm \

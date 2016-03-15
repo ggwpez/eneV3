@@ -26,8 +26,8 @@ void par_wrong(va_list ap)
 
 void par_wrong_but(va_list ap)
 {
+    tok_type wanted = (tok_type)va_arg(ap, int);
     tok* token = va_arg(ap, tok*);
-    tok_type wanted = va_arg(ap, tok_type);
 
     e_out << L"Invalid token: " << token->to_str()
                << L" awaited " << tok_strings[(int)wanted];
@@ -48,6 +48,17 @@ void il_type_unknown(va_list ap)
     e_out << L"Type ";
     t->print(e_out);
     e_out << L" unknown";
+    t->print_pos(e_out);
+}
+
+void il_cant_assign_to_type(va_list ap)
+{
+    AssignNode* t = va_arg(ap, AssignNode*);
+
+    e_out << L"Cant write to type ";
+    t->to_write->print(e_out);
+    e_out << L" in ";
+    t->print(e_out);
     t->print_pos(e_out);
 }
 
@@ -162,6 +173,9 @@ int ERR(err_t type, ...)
             break;
         case err_t::IL_TYPE_UNKNOWN:
             il_type_unknown(ap);
+            break;
+        case err_t::IL_CANT_ASSIGN_TO_TYPE:
+            il_cant_assign_to_type(ap);
             break;
         case err_t::SC_TYPE_NAME_UNKOWN:
             sc_type_name_unkown(ap);

@@ -138,7 +138,7 @@ void VariableUNode::print(std::wostream& out) const
     out << L"><var_name " << this->var_name->str << L">>>";
 }
 
-ListUNode::ListUNode(uast_arr* items) : ast(items->front(), items->back())
+ListUNode::ListUNode(uast_arr* items) : ast(items->size() ? items->front() : nullptr, items->size() ? items->back() : nullptr)
 {
     this->items = items;
 }
@@ -316,4 +316,24 @@ void BinaryUNode::print(std::wostream& out) const
 void UnaryUNode::print(std::wostream& out) const
 {
 
+}
+
+OperatorUNode::OperatorUNode(op oper)
+{
+    this->oper = oper;
+}
+
+OperatorUNode::OperatorUNode(tok* code) : ast(code)
+{
+    this->oper = code->oper;
+}
+
+OperatorUNode::OperatorUNode(OperatorUNode *n) : ast(n)
+{
+    this->oper = n->oper;
+}
+
+void OperatorUNode::print(std::wostream& out) const
+{
+    out << op_strings[(int)this->oper];
 }

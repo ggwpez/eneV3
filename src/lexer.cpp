@@ -22,8 +22,8 @@ lexer::~lexer()
 
 tok* find_token(schar c)
 {
-    for (int i = (int)tok_type::DDOT; i < (int)tok_type::size; i++)
-        if (tok_strings[(int)i][0] == c)
+    for (int i = 0; i < (int)op::size; i++)
+        if (op_strings[(int)i][0] == c)
             return new tok((tok_type)i);
 
     return NULL;

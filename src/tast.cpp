@@ -1,5 +1,5 @@
 #include "uast.h"
-
+#include "warnings.h"
 
 ProgramNode::ProgramNode(tast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
@@ -170,9 +170,10 @@ void ListNode::print(std::wostream& out) const
     out << L">>";
 }
 
-AssignNode::AssignNode(ExpressionTermNode* term) : ast(term)
+AssignNode::AssignNode(ExpressionTermNode* term, itype* to_write) : ast(term)
 {
     this->term = term;
+    this->to_write = to_write;
 }
 
 AssignNode::~AssignNode()
@@ -183,7 +184,8 @@ AssignNode::~AssignNode()
 void AssignNode::print(std::wostream& out) const
 {
     out << L"<AssignNode <term ";
-    this->term->print(out);
+    //if (term)
+        this->term->print(out);
     out << L">>";
 }
 
@@ -273,9 +275,10 @@ void ListArgNode::print(std::wostream &out) const
     out << L">>";
 }
 
-FunctionCallNode::FunctionCallNode(IdentNode* target, ListNode* args) : ast(target, args)
+FunctionCallNode::FunctionCallNode(IdentNode* target, TypeNode *return_type, ListNode* args) : ast(target, args)
 {
     this->target = target;
+    this->return_type = return_type;
     this->args = args;
 }
 
@@ -345,4 +348,25 @@ WhileNode::~WhileNode()
 void WhileNode::print(std::wostream& out) const
 {
 
+}
+
+OperatorNode::OperatorNode(op oper)
+{
+    this->oper = oper;
+}
+
+OperatorNode::OperatorNode(op oper, itype* operand_type)
+{
+    this->oper = oper;
+    this->operand_type = operand_type;
+}
+
+OperatorNode::OperatorNode(OperatorNode* n) : ast(n)
+{
+    this->oper = n->oper;
+}
+
+void OperatorNode::print(std::wostream& out) const
+{
+    out << op_strings[(int)this->oper];
 }

@@ -99,7 +99,7 @@ void scope::leave()
 
 void scope::add_type(IdentNode* name, TypeNode* t)
 {
-    if (is_type_reg(t))
+    if (is_type_reg(name))
         ERR(err_t::SC_TYPE_EXISTS_ALREADY, t);
 
     this->gl_types->push_back(new sc_type(new IdentNode(name), t->t));
@@ -155,6 +155,42 @@ itype* scope::get_var_type(IdentNode* name)
     ERR(err_t::SC_VAR_NAME_UNKOWN, name);
 }
 
+itype* scope::get_header_type(IdentNode* name)
+{
+    for (sc_head* t : *this->gl_heads)
+        if (*t->name == *name)
+            return t->head->type->t;
+
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+}
+
+itype* scope::get_fun_type(IdentNode* name)
+{
+    for (sc_fun* t : *this->gl_funs)
+        if (*t->name == *name)
+            return t->fun->head->type->t;
+
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+}
+
+FunctionNode* scope::get_fun(IdentNode* name)
+{
+    for (sc_fun* t : *this->gl_funs)
+        if (*t->name == *name)
+            return t->fun;
+
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+}
+
+FunctionHeaderNode* scope::get_head(IdentNode* name)
+{
+    for (sc_head* t : *this->gl_heads)
+        if (*t->name == *name)
+            return t->head;
+
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+}
+
 itype* scope::get_type(IdentNode* name)
 {
     for (sc_type* t : *this->gl_types)
@@ -164,10 +200,10 @@ itype* scope::get_type(IdentNode* name)
     ERR(err_t::SC_TYPE_NAME_UNKOWN, name);
 }
 
-bool scope::is_type_reg(TypeNode* searched)
+bool scope::is_type_reg(IdentNode* searched)
 {
     for (sc_type* t : *this->gl_types)
-        if (t->type == searched->t)
+        if (*t->name == *searched)
             return true;
 
     return false;

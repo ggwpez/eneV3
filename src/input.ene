@@ -1,6 +1,14 @@
-void printf(u32 format, u8 str);
+
+i32: c;
+void printf(u32 f, u32 str);
 
 void main()
 {
-    printf("%s", "hi from ene!");
+	c = 20;
+
+	while (c~)
+	{
+		c = c~ 1-;
+		"A" "%s" printf()^^;
+	}
 }
