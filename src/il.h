@@ -77,6 +77,8 @@ private:
     void generate(IfNode* code);
     void generate(WhileNode* code);
 
+    void generate_ssp_init();
+    void generate_ssp_check();
 };
 
 #endif // IL_H

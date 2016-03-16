@@ -275,11 +275,12 @@ void ListArgNode::print(std::wostream &out) const
     out << L">>";
 }
 
-FunctionCallNode::FunctionCallNode(IdentNode* target, TypeNode *return_type, ListNode* args) : ast(target, args)
+FunctionCallNode::FunctionCallNode(IdentNode* target, TypeNode *return_type, ListNode* args, int args_size) : ast(target, args)
 {
     this->target = target;
     this->return_type = return_type;
     this->args = args;
+    this->args_size = args_size;
 }
 
 void FunctionCallNode::print(std::wostream& out) const

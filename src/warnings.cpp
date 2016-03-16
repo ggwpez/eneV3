@@ -2,8 +2,10 @@
 #include "errors.hpp"
 
 bool war_as_error = false;
-__warning_collection* wc;
-#define w_out std::wcout
+#define w_out (*w_ss)
+
+std::vector<std::wostringstream*>* warnings;
+std::wostringstream* w_ss;
 
 void instance_of_void(va_list ap)
 {
@@ -39,14 +41,15 @@ void arg_count_wrong(va_list ap)
 {
     FunctionCallNode* c = va_arg(ap, FunctionCallNode*);
 
-    w_out << L"Call arguments dont match in ";
+    w_out << L"You have to clear the stack yourself after call ";
     c->print(w_out);
     c->print_pos(w_out);
+    w_out << L" since your call arguments dont match the header.";
 }
 
 void WAR(war_t type, ...)
 {
-    //war_next();
+    war_next();
 
     va_list ap;
     va_start(ap, type);
@@ -77,40 +80,31 @@ void WAR(war_t type, ...)
         ERR(err_t::GEN_WAR);
 }
 
-/*void war_init()
+void war_init()
 {
-    wc = new __warning_collection();
-    war_next();
+    warnings = new std::vector<std::wostringstream*>();
 }
 
 void war_next()
 {
-    wc->warnings->push_back(new std::wostringstream());
-    wc->out = wc->warnings->back();
+    warnings->push_back(new std::wostringstream());
+    w_ss = warnings->back();
 }
 
 void war_dump(std::wostream& out)
 {
-    if (wc->warnings->size())
+    if (warnings->size())
     {
-        out << L"Warnings (" << wc->warnings->size() << L")" << (wc->warnings->size() ? L":" : L"") << std::endl;
+        std::wostringstream b;
 
-        for (std::wostringstream* s : *wc->warnings)
-            out << s->str().c_str();
+        out << L"Warnings (" << warnings->size() << L")" << std::endl;
+
+        for (size_t i = 0; i < warnings->size(); i++)
+        {
+            out << L'(' << i << L"): "  << warnings->at(i)->str().c_str() << std::endl;
+            delete warnings->at(i);
+        }
     }
 
-    delete wc;
+    delete warnings;
 }
-
-__warning_collection::__warning_collection()
-{
-    this->warnings = new std::vector<std::wostringstream*>();
-}
-
-__warning_collection::~__warning_collection()
-{
-    for (std::wostringstream* w : *this->warnings)
-        delete w;
-
-    delete this->warnings;
-}*/

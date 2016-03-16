@@ -23,7 +23,8 @@ SOURCES += \
     utast.cpp \
     compiler.cpp \
     io.cpp \
-    warnings.cpp
+    warnings.cpp \
+    target.cpp
 
 HEADERS += \
     token.hpp \

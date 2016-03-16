@@ -10,7 +10,7 @@ scoper::scoper(uast* input, scope* mng)
     this->input = input;
     this->mng = mng;
 
-    this->int_type = mng->get_type(&IdentNode(__INT));
+    this->int_type = mng->get_type(&IdentNode(target->int_t));
 }
 
 scoper::~scoper()
@@ -192,7 +192,7 @@ tast* scoper::convert(FunctionCallUNode* code)
 {
     ListNode* args = convert(code->args);
     IdentNode* t = new IdentNode(code->target);
-    int arg_c = -1;
+    int arg_c = -1, args_s = 0;
     itype* ret_type = nullptr;
 
     if (mng->is_fun_reg(t))
@@ -200,12 +200,16 @@ tast* scoper::convert(FunctionCallUNode* code)
         FunctionNode* f = mng->get_fun(t);
         ret_type = f->head->type->t;
         arg_c = f->head->args->items->size();
+        for (ArgNode* arg : *f->head->args->items)
+            args_s += arg->type->t->size;
     }
     else if (mng->is_fun_head_reg(t))
     {
         FunctionHeaderNode* n = mng->get_head(t);
         ret_type = n->type->t;
         arg_c = n->args->items->size();
+        for (ArgNode* arg : *n->args->items)
+            args_s += arg->type->t->size;
         WAR(war_t::CALLING_UMIMPL_FUNC, code);
     }
     else if (!mng->is_fun_reg(t) && !mng->is_fun_head_reg(t))       //remove this and it wont work, i swear to god
@@ -213,10 +217,14 @@ tast* scoper::convert(FunctionCallUNode* code)
         ERR(err_t::SC_FUN_NAME_UNKOWN, t);
     }
 
-    FunctionCallNode* ret = new FunctionCallNode(t, new TypeNode(ret_type), args);
-
+    FunctionCallNode* ret;
     if (arg_c !=  args->items->size())
+    {
+        ret = new FunctionCallNode(t, new TypeNode(ret_type), args, 0);
         WAR(war_t::ARG_COUNT_WRONG, ret);
+    }
+    else
+        ret = new FunctionCallNode(t, new TypeNode(ret_type), args, args_s);
 
     return ret;
 };

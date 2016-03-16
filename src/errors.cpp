@@ -41,6 +41,13 @@ void lex_wrong(va_list ap)
     e_out << L"Invalid char " << c;
 }
 
+void cmp_bits_unsupp(va_list ap)
+{
+    size_t b = va_arg(ap, size_t);
+
+    e_out << b << L" is not supported as bit count.";
+}
+
 void il_type_unknown(va_list ap)
 {
     TypeNode* t = va_arg(ap, TypeNode*);
@@ -170,6 +177,9 @@ int ERR(err_t type, ...)
             break;
         case err_t::LEX_WRONG:
             lex_wrong(ap);
+            break;
+        case err_t::CMP_BITS_UNSUPP:
+            cmp_bits_unsupp(ap);
             break;
         case err_t::IL_TYPE_UNKNOWN:
             il_type_unknown(ap);

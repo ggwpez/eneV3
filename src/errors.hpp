@@ -22,6 +22,7 @@ enum class err_t
     LEX_WRONG,
     PAR_WRONG,
     PAR_WRONG_BUT,
+    CMP_BITS_UNSUPP,
     IL_TYPE_UNKNOWN,
     IL_CANT_ASSIGN_TO_TYPE,
     SC_VAR_NAME_UNKOWN,

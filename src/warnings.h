@@ -10,16 +10,6 @@
 
 extern bool war_as_error;
 
-struct __warning_collection
-{
-public:
-    __warning_collection();
-    ~__warning_collection();
-
-    std::wostringstream* out;
-    std::vector<std::wostringstream*>* warnings;
-};
-
 enum class war_t
 {
     INSTANCE_OF_VOID,               //why would you do "void: tmp;"

@@ -190,14 +190,52 @@ void il::generate_op_equ(OperatorNode* code)
     generate_op_not(code);
 }
 
+int sml_c = -1;
 void il::generate_op_sml(OperatorNode* code)
 {
+    std::wstring name = std::wstring(L"__sml_") + std::to_wstring(++sml_c);
 
+    pop(eax);
+    pop(ecx);
+
+    eml(L"cmp ecx, eax");
+    eml(L"jl " << name << L".ok");
+    eml(L"jmp " << name << L".fail");
+
+    eml(name << L".ok:");
+    eml(L"mov eax, dword ~0");
+    eml(L"jmp " << name << L".end");
+
+    eml(name << L".fail:");
+    eml(L"mov eax, dword 0");
+    eml(L"jmp " << name << L".end");
+
+    eml(name << L".end:");
+    push(eax);
 }
 
+int grt_c = -1;
 void il::generate_op_grt(OperatorNode* code)
 {
+    std::wstring name = std::wstring(L"__grt_") + std::to_wstring(++grt_c);
 
+    pop(eax);
+    pop(ecx);
+
+    eml("cmp ecx, eax");
+    eml("jng " << name << L".fail");
+    eml("jmp " << name << L".ok");
+
+    eml(name << L".ok:");
+    eml("mov eax, dword ~0");
+    eml("jmp " << name << L".end");
+
+    eml(name << L".fail:");
+    eml("mov eax, dword 0");
+    eml("jmp " << name << L".end");
+
+    eml(name << L".end:");
+    push(eax);
 }
 
 void il::generate_op_neq(OperatorNode* code)
@@ -333,6 +371,16 @@ void il::generate(FunctionExternNode* code)
     emlCODEH(L"extern " << code->fname->str);
 };
 
+void il::generate_ssp_init()
+{
+
+}
+
+void il::generate_ssp_check()
+{
+
+}
+
 void il::generate(FunctionNode* code)
 {
     em(code->head->name->str << L':' << endl <<
@@ -357,6 +405,7 @@ void il::generate(FunctionCallNode* code)
     eml(L"call " << code->target->str);
     if (code->return_type->t->size)
         push(eax);
+    eml(L"add esp, " << code->args_size);
 };
 
 int if_c = -1;
@@ -368,7 +417,7 @@ void il::generate(IfNode* code)
     generate(code->cond);
     pop(L"eax");
 
-    eml(L"test eax, " << __ALL_HIGH);
+    eml(L"test eax, ~0");
     eml(L"jz " << name << L".else");
     generate(code->true_block);
     eml(L"jmp " << name << L".end");
@@ -389,7 +438,7 @@ void il::generate(WhileNode* code)
     eml(name << L".start:");
     generate(code->cond);
     pop(L"eax");
-    eml(L"test eax, " << __ALL_HIGH);
+    eml(L"test eax, ~0");
     eml(L"jnz " << name << L".code");
     eml(L"jmp " << name << L".end");
 

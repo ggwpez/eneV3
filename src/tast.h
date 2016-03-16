@@ -167,13 +167,14 @@ public:
 class FunctionCallNode : public tast
 {
 public:
-    FunctionCallNode(IdentNode* target, TypeNode* return_type, ListNode* args);
+    FunctionCallNode(IdentNode* target, TypeNode* return_type, ListNode* args, int args_size);
     ~FunctionCallNode();
     void print(std::wostream& out) const;
 
     IdentNode* target;
     TypeNode* return_type;
     ListNode* args;
+    int args_size;
 };
 
 class IfNode : public tast
