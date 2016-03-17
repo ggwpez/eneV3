@@ -9,12 +9,14 @@ extern schar* value_c_type_strings[];
 
 enum class value_type : int
 {
-    I8,
+    I8 = 0,
     U8,
     I16,
     U16,
     I32,
     U32,
+    I64,
+    U64,
     F32,
     F64,
     size

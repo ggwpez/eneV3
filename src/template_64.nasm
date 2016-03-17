@@ -1,19 +1,19 @@
-bits 32
+bits 64
 global main
 
-boolNot:        ;0 -> 0xffffffff.   1, 830, 555 -> 0. implicit normalization.
-test eax, eax
+boolNot:        ;0 -> 0xffffffffffffffff.   1, 830, 555 -> 0. implicit normalization.
+test rax, rax
 jnz .notzero
-mov eax, dword 0xffffffff
+mov rax, qword ~0
 ret
 .notzero:
-mov eax, dword 0
+mov rax, qword 0
 ret
-boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffff.
-test eax, eax
+boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffffffffffff.
+test rax, rax
 jnz .notzero
-mov eax, dword 0
+mov rax, qword 0
 ret
 .notzero:
-mov eax, dword 0xffffffff
+mov rax, qword ~0
 ret

@@ -3,6 +3,7 @@
 
 #include "value_t.h"
 #include "void_t.h"
+#include "target.h"
 
 sc_type::sc_type(IdentNode* name, itype *type)
 {
@@ -59,9 +60,11 @@ scope::scope()
     this->enter();
 
     //register inbuild types like i8 i16...
-    for (int i = (int)value_type::I8; i < (int)value_type::size; i++)
-        this->gl_types->push_back(new sc_type(new IdentNode(value_type_strings[i]),
-                                              new value_t((value_type)i)));
+    for (value_type t : target->types)
+        if (t != value_type::size)
+            this->gl_types->push_back(new sc_type(new IdentNode(value_type_strings[(int)t]),
+                                              new value_t(t)));
+
 
     this->gl_types->push_back(new sc_type(new IdentNode(L"void"), new void_t()));
 }

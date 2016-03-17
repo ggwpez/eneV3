@@ -14,7 +14,7 @@ public:
     io();
 
     const schar* get_wc(const char* c);
-    void read_file(char* path, std::wostringstream* str);
+    void read_file(char* path, std::wostringstream &str);
     schar* read_file(char* path);
 };
 

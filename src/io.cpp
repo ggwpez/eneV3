@@ -14,13 +14,13 @@ const schar* io::get_wc(const char* c)
     return wc;
 }
 
-void io::read_file(char* path, std::wostringstream* str)
+void io::read_file(char* path, std::wostringstream& str)
 {
     schar* tem = read_file(path);
     if (!tem)
         return;
 
-    *str << tem;
+    str << tem;
     free(tem);
 }
 

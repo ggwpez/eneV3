@@ -1,7 +1,7 @@
 #include "value_t.h"
 
 int    value_stack_sizes[]  = {    1,     1,      2,      2,      4,      4,      4,      8};
-schar* value_type_strings[] = { L"i8", L"u8", L"i16", L"u16", L"i32", L"u32", L"f32", L"f64" };
+schar* value_type_strings[] = { L"i8", L"u8", L"i16", L"u16", L"i32", L"u32", L"i64", L"u64", L"f32", L"f64" };
 
 value_t::value_t(value_type t) : itype(value_stack_sizes[(int)t])
 {

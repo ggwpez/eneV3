@@ -1,14 +1,18 @@
-
-i32: c;
 void printf(u32 f, u32 str);
+void putchar(u32 c);
+
+u32: c;
+
+
 
 void main()
 {
-	c = 20;
-
-	while (c~)
+	c = 0;
+	
+	while (c~ 20 <)
 	{
-		c = c~ 1-;
-		"A" "%s" printf()^^;
-	}
-}
+		c$ =~1+;
+		printf("Testing format: %u times of a inch is my %s %s!", 30, "penis", "thick");
+	};
+};
+

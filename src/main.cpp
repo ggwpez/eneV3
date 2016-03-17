@@ -1,19 +1,48 @@
 #include <stdio.h>
+#include <getopt.h>
+#include <vector>
 
 #include "compiler.h"
 #include "errors.hpp"
 
-#define SKIP_COMPILATION 0
-#define SKIP_LAUNCH 1
-
-int main(void)
+cmp_args parse_args(int argc, char** argv)
 {
-    char* input = "input.ene";
+    char arg = 0;
+    size_t bits = -1;
+    std::vector<std::string> inputs;
+    std::string output;
 
-    std::wcout << L"Compiling " << input;
+    while ((arg = getopt(argc, argv, "i:o:b:")) != -1)
+    {
+        switch (arg)
+        {
+            case 'b':
+                bits = atoi(optarg);
+                break;
+            case 'o':
+                output = std::string(optarg);
+                break;
+            case 'i':
+                optind--;
+                for (; optind < argc && argv[optind][0] != '-'; optind++)
+                    inputs.push_back(std::string(argv[optind]));
+                break;
+            default:
+                ERR(err_t::IO_CMD_ARG_UNKNOWN, optarg);
+                break;
+        }
+    }
 
-    compiler cmp = compiler(32);
-    cmp.compile(input, "output");
+    return cmp_args(bits, inputs, output);
+}
+
+int main(int argc, char** argv)
+{
+    std::wcout << L"Compiling... ";
+
+    cmp_args args = parse_args(argc, argv);
+    compiler cmp = compiler(args);
+    cmp.compile();
 
     std::wcout << L"Done.";
 

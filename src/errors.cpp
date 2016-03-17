@@ -4,9 +4,15 @@
 #include "ast.h"
 
 #include <iostream>
-void post_processing_failed(va_list ap)
+
+void post_processing_ld_failed(va_list ap)
 {
-    e_out << L"Assemling (nasm) or linking (GNU ld) failed." << std::endl;
+    e_out << L"Linking (GNU ld) failed." << std::endl;
+}
+
+void post_processing_as_failed(va_list ap)
+{
+    e_out << L"Assemling (nasm) failed." << std::endl;
 }
 
 void io_file_not_found(va_list ap)
@@ -14,6 +20,28 @@ void io_file_not_found(va_list ap)
     char* fn = va_arg(ap, char*);
 
     e_out << L"Could not find file " << fn;
+}
+
+void io_cmg_arg_unknown(va_list ap)
+{
+    char* arg = va_arg(ap, char*);
+
+    e_out << L"Argument " << arg << L" unknown.";
+}
+
+void io_cmd_arg_no_bits()
+{
+    e_out << L"Bit count not set (16/32/64).";
+}
+
+void io_cmd_arg_no_input()
+{
+    e_out << L"No input files set.";
+}
+
+void io_cmd_arg_no_output()
+{
+    e_out << L"No output file set.";
 }
 
 void par_wrong(va_list ap)
@@ -163,11 +191,26 @@ int ERR(err_t type, ...)
         case err_t::GEN_WAR:
             e_out << L"Last warning treated as error.";
             break;
-        case err_t::POST_PROCESSING_FAILED:
-            post_processing_failed(ap);
+        case err_t::POST_PROCESSING_LD_FAILED:
+            post_processing_ld_failed(ap);
+            break;
+        case err_t::POST_PROCESSING_AS_FAILED:
+            post_processing_ld_failed(ap);
             break;
         case err_t::IO_FILE_NOT_FOUND:
             io_file_not_found(ap);
+            break;
+        case err_t::IO_CMD_ARG_UNKNOWN:
+            io_cmg_arg_unknown(ap);
+            break;
+        case err_t::IO_CMD_ARG_NO_BITS:
+            io_cmd_arg_no_bits();
+            break;
+        case err_t::IO_CMD_ARG_NO_INPUT:
+            io_cmd_arg_no_input();
+            break;
+        case err_t::IO_CMD_ARG_NO_OUTPUT:
+            io_cmd_arg_no_output();
             break;
         case err_t::PAR_WRONG:
             par_wrong(ap);
