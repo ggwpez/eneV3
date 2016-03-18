@@ -54,19 +54,22 @@ void il::generate(AssignNode* code)
     generate(code->term);
 
     //write
-    pop(eax);
-    pop(ecx);
+    pop(rax);
+    pop(rcx);
 
     switch (code->to_write->size)
     {
         case 1:
-            eml(L"mov  byte [ecx],  al");
+            eml(L"mov byte  [" << rcx << "], " << al);
             break;
         case 2:
-            eml(L"mov  word [ecx],  ax");
+            eml(L"mov word  [" << rcx << "], " << ax);
             break;
         case 4:
-            eml(L"mov dword [ecx], eax");
+            eml(L"mov dword [" << rcx << "], " << eax);
+            break;
+        case 8:
+            eml(L"mov qword [" << rcx << "], " << rax);
             break;
         default:
             ERR(err_t::IL_CANT_ASSIGN_TO_TYPE, code);
@@ -128,60 +131,61 @@ void il::generate(StringNode* code)
 
 void il::generate_op_add(OperatorNode* code)
 {
-    pop(eax);
-    pop(ecx);
-    eml(L"add " << eax << L", " << ecx);
-    push(eax);
+    pop(rax);
+    pop(rcx);
+    eml(L"add " << rax << L", " << rcx);
+    push(rax);
 }
 
 void il::generate_op_sub(OperatorNode* code)
 {
-    pop(ecx);
-    pop(eax);
-    eml(L"sub " << eax << L", " << ecx);
-    push(eax);
+    pop(rcx);
+    pop(rax);
+    eml(L"sub " << rax << L", " << rcx);
+    push(rax);
 }
 
 void il::generate_op_mul(OperatorNode* code)
 {
     pop(eax);
     pop(ecx);
-    eml(L"mul " << ecx);
+    eml(L"mul " << rcx);
     push(eax);
 }
 
 void il::generate_op_div(OperatorNode* code)
 {
-    pop(eax);
-    pop(ecx);
-    eml(L"xor " << edx << L", " << edx);
-    eml(L"div " << ecx);
-    push(eax);
+    pop(rax);
+    pop(rcx);
+    eml(L"xor " << rdx << L", " << rdx);
+    eml(L"div " << rcx);
+    push(rax);
 }
 
 void il::generate_op_drf(OperatorNode* code)
 {
-    pop(eax);
+    pop(rax);
 
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov  al,  byte [eax]");
-            eml(L"and eax, 0xff");
+            eml(L"mov  " <<  al << "byte [" << rax << "]");
             break;
         case 2:
-            eml(L"mov  ax,  word [eax]");
-            eml(L"and eax, 0xffff");
+            eml(L"mov  " <<  ax << "word [" << rax << "]");
             break;
         case 4:
-            eml(L"mov eax, dword [eax]");
+            eml(L"mov  " << eax << "dword [" << rax << "]");
+            break;
+        case 8:
+            eml(L"mov  " << rax << "qword [" << rax << "]");
             break;
         default:
-            eml(L"mov eax, dword [eax]");
+            ERR(err_t::GEN_IL);
             break;
     }
 
-    push(eax);
+    push(rax);
 }
 
 void il::generate_op_equ(OperatorNode* code)
@@ -195,23 +199,23 @@ void il::generate_op_sml(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__sml_") + std::to_wstring(++sml_c);
 
-    pop(eax);
-    pop(ecx);
+    pop(rax);
+    pop(rcx);
 
-    eml(L"cmp ecx, eax");
+    eml(L"cmp " << rcx << ", " << rax);
     eml(L"jl " << name << L".ok");
     eml(L"jmp " << name << L".fail");
 
     eml(name << L".ok:");
-    eml(L"mov eax, dword ~0");
+    eml(L"mov " << rax << ", ~0");
     eml(L"jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml(L"mov eax, dword 0");
+    eml("xor " << rax << ", " << rax);
     eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
-    push(eax);
+    push(rax);
 }
 
 int grt_c = -1;
@@ -219,39 +223,39 @@ void il::generate_op_grt(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__grt_") + std::to_wstring(++grt_c);
 
-    pop(eax);
-    pop(ecx);
+    pop(rax);
+    pop(rcx);
 
-    eml("cmp ecx, eax");
+    eml(L"cmp " << rcx << ", " << rax);
     eml("jng " << name << L".fail");
     eml("jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    eml("mov eax, dword ~0");
+    eml("mov " << rax << ", ~0");
     eml("jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml("mov eax, dword 0");
+    eml("xor " << rax << ", " << rax);
     eml("jmp " << name << L".end");
 
     eml(name << L".end:");
-    push(eax);
+    push(rax);
 }
 
 void il::generate_op_neq(OperatorNode* code)
 {
-    pop(eax);
-    pop(ecx);
-    eml(L"xor " << eax << L", " << eax);
+    pop(rax);
+    pop(rcx);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"call boolNormalize");
-    push(eax);
+    push(rax);
 }
 
 void il::generate_op_not(OperatorNode* code)
 {
-    pop(eax);
+    pop(rax);
     eml(L"call boolNot");
-    push(eax);
+    push(rax);
 }
 
 void il::generate_op_pop(OperatorNode* code)
@@ -261,9 +265,9 @@ void il::generate_op_pop(OperatorNode* code)
 
 void il::generate_op_cpy(OperatorNode* code)
 {
-    pop(eax);
-    push(eax);
-    push(eax);
+    pop(rax);
+    push(rax);
+    push(rax);
 }
 
 void il::generate(OperatorNode* code)
@@ -404,7 +408,7 @@ void il::generate(FunctionCallNode* code)
 
     eml(L"call " << code->target->str);
     if (code->return_type->t->size)
-        push(eax);
+        push(rax);
     eml(L"add esp, " << code->args_size);
 };
 
@@ -415,9 +419,9 @@ void il::generate(IfNode* code)
 
     eml(name << ':' << endl);
     generate(code->cond);
-    pop(L"eax");
+    pop(rax);
 
-    eml(L"test eax, ~0");
+    eml(L"test " << rax << ", ~0");
     eml(L"jz " << name << L".else");
     generate(code->true_block);
     eml(L"jmp " << name << L".end");
@@ -438,7 +442,7 @@ void il::generate(WhileNode* code)
     eml(name << L".start:");
     generate(code->cond);
     pop(L"eax");
-    eml(L"test eax, ~0");
+    eml(L"test " << rax << ", ~0");
     eml(L"jnz " << name << L".code");
     eml(L"jmp " << name << L".end");
 

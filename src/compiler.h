@@ -5,16 +5,18 @@
 #include "parser.h"
 #include "il.h"
 #include "scope/scoper.h"
+#include "target.h"
 
 #include <string.h>
 
 struct cmp_args
 {
-    cmp_args(size_t bits, std::vector<std::string> inputs, std::string output);
+    cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, as assembler);
 
     std::vector<std::string> inputs;
     std::string output;
     size_t bits;
+    as assembler;
 };
 
 class compiler

@@ -12,7 +12,7 @@ void main()
 	while (c~ 20 <)
 	{
 		c$ =~1+;
-		printf("Testing format: %u times of a inch is my %s %s!", 30, "penis", "thick");
+		printf("Testint printf, hi from %s!", "oliver");
 	};
 };
 

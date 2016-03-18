@@ -29,6 +29,13 @@ void io_cmg_arg_unknown(va_list ap)
     e_out << L"Argument " << arg << L" unknown.";
 }
 
+void io_cmd_arg_as_unknown(va_list ap)
+{
+    char* i = va_arg(ap, char*);
+
+    e_out << i << L" is not a valid assembler.";
+}
+
 void io_cmd_arg_no_bits()
 {
     e_out << L"Bit count not set (16/32/64).";
@@ -42,6 +49,11 @@ void io_cmd_arg_no_input()
 void io_cmd_arg_no_output()
 {
     e_out << L"No output file set.";
+}
+
+void io_cmd_arg_no_as()
+{
+    e_out << L"No assembler set.";
 }
 
 void par_wrong(va_list ap)
@@ -203,6 +215,9 @@ int ERR(err_t type, ...)
         case err_t::IO_CMD_ARG_UNKNOWN:
             io_cmg_arg_unknown(ap);
             break;
+        case err_t::IO_CMD_ARG_AS_UNKNOWN:
+            io_cmd_arg_as_unknown(ap);
+            break;
         case err_t::IO_CMD_ARG_NO_BITS:
             io_cmd_arg_no_bits();
             break;
@@ -211,6 +226,9 @@ int ERR(err_t type, ...)
             break;
         case err_t::IO_CMD_ARG_NO_OUTPUT:
             io_cmd_arg_no_output();
+            break;
+        case err_t::IO_CMD_ARG_NO_AS:
+            io_cmd_arg_no_as();
             break;
         case err_t::PAR_WRONG:
             par_wrong(ap);

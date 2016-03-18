@@ -24,6 +24,8 @@ enum class err_t
     IO_CMD_ARG_NO_INPUT,
     IO_CMD_ARG_NO_OUTPUT,
     IO_CMD_ARG_NO_BITS,
+    IO_CMD_ARG_NO_AS,
+    IO_CMD_ARG_AS_UNKNOWN,
     LEX_WRONG,
     PAR_WRONG,
     PAR_WRONG_BUT,

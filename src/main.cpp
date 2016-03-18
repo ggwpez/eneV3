@@ -11,11 +11,20 @@ cmp_args parse_args(int argc, char** argv)
     size_t bits = -1;
     std::vector<std::string> inputs;
     std::string output;
+    as assembler = as::size;
 
-    while ((arg = getopt(argc, argv, "i:o:b:")) != -1)
+    while ((arg = getopt(argc, argv, "i:o:b:a:")) != -1)
     {
         switch (arg)
         {
+            case 'a':
+                if (!strcmp("nasm", optarg))
+                    assembler = as::NASM;
+                else if (!strcmp("gas", optarg))
+                    assembler = as::GAS;
+                else
+                    ERR(err_t::IO_CMD_ARG_AS_UNKNOWN, optarg);
+                break;
             case 'b':
                 bits = atoi(optarg);
                 break;
@@ -33,7 +42,7 @@ cmp_args parse_args(int argc, char** argv)
         }
     }
 
-    return cmp_args(bits, inputs, output);
+    return cmp_args(bits, inputs, output, assembler);
 }
 
 int main(int argc, char** argv)
