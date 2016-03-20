@@ -36,12 +36,14 @@ enum class as
     size
 };
 
+#define AS_L 2
 struct target_t
 {
     target_t(size_t bits,  schar* int_t,
              std::array<std::array<const schar*, 4>, 4> const& regs,
              std::array<const schar*, 4> const& s_strs,
-             const std::array<const value_type, (int)value_type::size> &types, as assembler);
+             const std::array<const value_type, (int)value_type::size> &types,
+             as assembler);
 
     const size_t bits, bytes;
     const schar* const int_t;

@@ -134,6 +134,13 @@ VariableNode::VariableNode(TypeNode* type, IdentNode* var_name) : ast(type, var_
     this->ebp_off = -1;
 }
 
+VariableNode::VariableNode(TypeNode* type, IdentNode* var_name, int ebp_off) : ast(type, var_name)
+{
+    this->type = type;
+    this->var_name = var_name;
+    this->ebp_off = ebp_off;
+}
+
 VariableNode::~VariableNode()
 {
     delete this->type;

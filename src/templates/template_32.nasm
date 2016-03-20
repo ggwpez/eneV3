@@ -3,17 +3,20 @@ global main
 
 boolNot:        ;0 -> 0xffffffff.   1, 830, 555 -> 0. implicit normalization.
 test eax, eax
-jnz .notzero
-mov eax, dword ~0
+jnz zero
+xor eax, eax
+not eax
 ret
-.notzero:
-mov eax, dword 0
+zero:
+xor eax, eax
 ret
+
 boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffff.
 test eax, eax
-jnz .notzero
-mov eax, dword 0
+jnz notzero
+xor eax, eax
 ret
-.notzero:
-mov eax, dword ~0
+notzero:
+xor eax, eax
+not eax
 ret

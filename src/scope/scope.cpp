@@ -50,6 +50,19 @@ sc_head::~sc_head()
     delete this->name;
 }
 
+sc_local_alloc::sc_local_alloc()
+{
+    this->vars = new std::vector<sc_var*>();
+}
+
+sc_local_alloc::~sc_local_alloc()
+{
+    for (sc_var* v : *this->vars)
+        delete v;
+
+    delete this->vars;
+}
+
 scope::scope()
 {
     this->scopes = new std::vector<sc_local_alloc*>();
@@ -143,7 +156,7 @@ void scope::add_fun(FunctionNode* fun)
         ERR(err_t::SC_FUN_EXISTS_ALREADY, fun);
 
     if (this->is_fun_head_reg(fun->head->name))
-
+        ERR(err_t::GEN_SCR);
 
     this->gl_funs->push_back(new sc_fun(new IdentNode(fun->head->name), fun));
 }
@@ -181,6 +194,16 @@ FunctionNode* scope::get_fun(IdentNode* name)
     for (sc_fun* t : *this->gl_funs)
         if (*t->name == *name)
             return t->fun;
+
+    ERR(err_t::SC_VAR_NAME_UNKOWN, name);
+}
+
+VariableNode* scope::get_var(IdentNode* name)
+{
+    for (sc_local_alloc* sc : *this->scopes)
+        for (sc_var* var : *sc->vars)
+            if (*var->name == *name)
+                return new VariableNode(new TypeNode(var->var->type->t), new IdentNode(var->var->var_name), var->var->ebp_off);
 
     ERR(err_t::SC_VAR_NAME_UNKOWN, name);
 }

@@ -11,6 +11,7 @@ scoper::scoper(uast* input, scope* mng)
     this->mng = mng;
 
     this->int_type = mng->get_type(&IdentNode(target->int_t));
+    this->last_type = nullptr;
 }
 
 scoper::~scoper()
@@ -39,7 +40,7 @@ tast* scoper::convert(BlockUNode* code)
 {
     mng->enter();
     tast_arr* ncode = new tast_arr();
-    int frame_s = 0;
+    int frame_s = -__BYTES__;
 
     for (size_t i = 0; i < code->code->size(); i++)
     {
@@ -48,15 +49,16 @@ tast* scoper::convert(BlockUNode* code)
 
         if (v)
         {
-            v->ebp_off = frame_s +4;
-            frame_s += v->type->t->size;
+            v->ebp_off = frame_s;
+            mng->add_var(new VariableNode(new TypeNode(v->type->t), new IdentNode(v->var_name), v->ebp_off));    //### TODO try not to realloc v
+            frame_s -= v->type->t->size;
         }
-
-        ncode->push_back(ne);
+        else
+            ncode->push_back(ne);
     }
 
     mng->leave();
-    BlockNode* ret = new BlockNode(ncode, frame_s);
+    BlockNode* ret = new BlockNode(ncode, frame_s < 0 ? -frame_s : frame_s);
     ret->set_pos(code);
     return ret;
 };
@@ -133,7 +135,7 @@ tast* scoper::convert(VariableUNode* code)
 tast* scoper::convert(ArgUNode* code)
 {
     TypeNode* t = convert(code->type);
-
+    //std::wcout << std::endl << L"### " << code->name->str << L" ###" << std::endl;
     return new ArgNode(new IdentNode(code->name), t);
 }
 
@@ -179,7 +181,19 @@ tast* scoper::convert(FunctionHeaderUNode* code)
 tast* scoper::convert(FunctionUNode* code)
 {
     FunctionHeaderNode* h = convert(code->head);
+
+    mng->enter();
+    int ebp_off = __BYTES__;
+    for (ArgNode* arg : *h->args->items)
+    {
+        ebp_off += __BYTES__;                   //only can push multiple of sizeof(void*)
+
+        VariableNode* tmp = new VariableNode(new TypeNode(arg->type->t), new IdentNode(arg->name), ebp_off);
+        mng->add_var(tmp);
+    }
+
     BlockNode* b = convert(code->code);
+    mng->leave();
 
     mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
     FunctionNode* f =  new FunctionNode(h, b);
@@ -225,6 +239,7 @@ tast* scoper::convert(FunctionCallUNode* code)
     }
     else
         ret = new FunctionCallNode(t, new TypeNode(ret_type), args, args_s);
+    this->last_type = ret_type;
 
     return ret;
 };
@@ -248,13 +263,21 @@ tast* scoper::convert(WhileUNode* code)
 
 tast* scoper::convert(IdentNode* code)
 {
+    tast* to_add = NULL;
+
     if (mng->is_type_reg(code))
     {
         last_type = mng->get_type(code);
         return new TypeNode(last_type);     //its a cast
     }
+    else if (mng->is_var_reg(code))
+    {   //its a variable, lets check if in stackframe or not
+        to_add = mng->get_var(code);
+    }
+    else
+        to_add = new IdentNode(code);
 
-    return new PushNode(new IdentNode(code));
+    return new PushNode(to_add);
 };
 
 tast* scoper::convert(NumNode* code)

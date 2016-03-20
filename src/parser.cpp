@@ -337,13 +337,16 @@ ListArgUNode* parser::parse_arg_list(int s, int& l)
 
 ArgUNode* parser::parse_arg(int s, int& l)
 {
+    int type_l, name_l = 0;
     tassert(tok_type::IDENT, input[s]); l = 0;
-    TypeUNode* type = parse_type(s, l);
+
+    TypeUNode* type = parse_type(s, type_l);
+    l += type_l;
 
     tassert(tok_type::IDENT, input[s +l]);
-    IdentNode* name = parse_ident(s, l);
+    IdentNode* name = parse_ident(s +l, name_l);
+    l += name_l;
 
-    l = 2;
     return new ArgUNode(name, type);
 }
 

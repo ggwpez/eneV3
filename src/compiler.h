@@ -3,7 +3,8 @@
 
 #include "lexer.hpp"
 #include "parser.h"
-#include "il.h"
+#include "il_nasm.h"
+#include "il_gas.h"
 #include "scope/scoper.h"
 #include "target.h"
 

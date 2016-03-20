@@ -44,6 +44,9 @@ struct sc_head
 
 struct sc_local_alloc
 {
+    sc_local_alloc();
+    ~sc_local_alloc();
+
     std::vector<sc_var*>* vars;
     int frame_size;
 };
@@ -67,6 +70,7 @@ public:
     itype* get_header_type(IdentNode* name);
     itype* get_fun_type(IdentNode *name);
     FunctionNode* get_fun(IdentNode* name);
+    VariableNode* get_var(IdentNode* name);
     FunctionHeaderNode* get_head(IdentNode* name);
     itype* get_type(IdentNode* name);
     bool is_type_reg(IdentNode *searched);

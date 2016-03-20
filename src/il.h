@@ -25,60 +25,64 @@ class il
 {
 public:
     il(ProgramNode* code, std::wostringstream *ss);
-    ~il();
+    virtual ~il();
 
-    void generate();
+    virtual void generate() = 0;
 
-private:
+protected:
     ProgramNode* input;
     std::wostringstream* ss;       //code header, all what should stand at the beginning of code
     std::wostringstream* ss_code,* ss_codeh,* ss_data,* ss_bss;
 
-    void generate_ProgramNode_term(tast* code);
-    void generate(tast* code);
-    void generate(ProgramNode* code);
-    void generate(BlockNode* code);
-    void generate(ExpressionNode* code);
-    void generate(ExpressionTermNode* code);
-    void generate(AssignNode* code);
-    void generate(NumNode* code);
-    void generate(IdentNode* code);
-    void generate(BoolNode* code);
-    void generate(PushNode* code);
-    void generate(PopNode* code);
-    void generate(ASMNode* code);
-    void generate(StringNode* code);
-    void generate_op_add(OperatorNode* code);
-    void generate_op_sub(OperatorNode* code);
-    void generate_op_mul(OperatorNode* code);
-    void generate_op_div(OperatorNode* code);
-    void generate_op_drf(OperatorNode* code);
-    void generate_op_equ(OperatorNode* code);
-    void generate_op_sml(OperatorNode* code);
-    void generate_op_grt(OperatorNode* code);
-    void generate_op_neq(OperatorNode* code);
-    void generate_op_not(OperatorNode* code);
-    void generate_op_pop(OperatorNode* code);
-    void generate_op_cpy(OperatorNode* code);
-    void generate(OperatorNode* code);
-    void generate(ReturnNode* code);
-    void generate(BreakNode* code);
-    void generate(GoOnNode* code);
-    void generate(TypeNode* code);
+    virtual void generate_ProgramNode_term(tast* code) = 0;
+    virtual void generate(tast* code) = 0;
+    virtual void generate(ProgramNode* code) = 0;
+    virtual void generate(BlockNode* code) = 0;
+    virtual void generate(ExpressionNode* code) = 0;
+    virtual void generate(ExpressionTermNode* code) = 0;
+    virtual void generate(AssignNode* code) = 0;
+    virtual void generate(NumNode* code) = 0;
+    virtual void generate(IdentNode* code) = 0;
+    virtual void generate(BoolNode* code) = 0;
+    virtual void generate(PushNode* code) = 0;
+    virtual void generate(PopNode* code) = 0;
+    virtual void generate(ASMNode* code) = 0;
+    virtual void generate(StringNode* code) = 0;
+    virtual void generate_op_add(OperatorNode* code) = 0;
+    virtual void generate_op_sub(OperatorNode* code) = 0;
+    virtual void generate_op_mul(OperatorNode* code) = 0;
+    virtual void generate_op_div(OperatorNode* code) = 0;
+    virtual void generate_op_drf(OperatorNode* code) = 0;
+    virtual void generate_op_equ(OperatorNode* code) = 0;
+    virtual void generate_op_sml(OperatorNode* code) = 0;
+    virtual void generate_op_grt(OperatorNode* code) = 0;
+    virtual void generate_op_neq(OperatorNode* code) = 0;
+    virtual void generate_op_not(OperatorNode* code) = 0;
+    virtual void generate_op_pop(OperatorNode* code) = 0;
+    virtual void generate_op_cpy(OperatorNode* code) = 0;
+    virtual void generate(OperatorNode* code) = 0;
+    virtual void generate(ReturnNode* code) = 0;
+    virtual void generate(BreakNode* code) = 0;
+    virtual void generate(GoOnNode* code) = 0;
+    virtual void generate(TypeNode* code) = 0;
     void generate_global(VariableNode* code);
-    void generate_local(VariableNode* code);
-    void generate(ArgNode* code);
-    void generate(ListNode* code);
-    void generate(ListArgNode* code);
-    void generate(FunctionHeaderNode* code);
-    void generate(FunctionExternNode* code);
-    void generate(FunctionNode* code);
-    void generate(FunctionCallNode* code);
-    void generate(IfNode* code);
-    void generate(WhileNode* code);
+    virtual void generate_local(VariableNode* code) = 0;
+    virtual void generate(ArgNode* code) = 0;
+    virtual void generate(ListNode* code) = 0;
+    virtual void generate(ListArgNode* code) = 0;
+    virtual void generate(FunctionHeaderNode* code) = 0;
+    virtual void generate(FunctionExternNode* code) = 0;
+    virtual void generate(FunctionNode* code) = 0;
+    virtual void generate(FunctionCallNode* code) = 0;
+    virtual void generate(IfNode* code) = 0;
+    virtual void generate(WhileNode* code) = 0;
 
-    void generate_ssp_init();
-    void generate_ssp_check();
+    void generate_sf_enter(int size);
+    void generate_sf_leave(int size);
+    virtual void generate_ssp_init() = 0;
+    virtual void generate_ssp_check() = 0;
+
+    int str_c, sml_c, grt_c, if_c, while_c;
 };
 
 #endif // IL_H

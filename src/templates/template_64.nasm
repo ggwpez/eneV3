@@ -1,19 +1,22 @@
 bits 64
 global main
 
-boolNot:        ;0 -> 0xffffffffffffffff.   1, 830, 555 -> 0. implicit normalization.
+boolNot:        ;0 -> 0xffffffff.   1, 830, 555 -> 0. implicit normalization.
 test rax, rax
-jnz .notzero
-mov rax, qword ~0
+jnz zero
+xor rax, rax
+not rax
 ret
-.notzero:
-mov rax, qword 0
+zero:
+xor rax, rax
 ret
-boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffffffffffff.
+
+boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffff.
 test rax, rax
-jnz .notzero
-mov rax, qword 0
+jnz notzero
+xor rax, rax
 ret
-.notzero:
-mov rax, qword ~0
+notzero:
+xor rax, rax
+not rax
 ret

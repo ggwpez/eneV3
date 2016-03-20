@@ -1,19 +1,22 @@
 bits 16
 global main
 
-boolNot:        ;0 -> 0xffff.   1, 830, 555 -> 0. implicit normalization.
-test ax, ax
-jnz .notzero
-mov ax, word ~0
+boolNot:        ;0 -> 0xffffffff.   1, 830, 555 -> 0. implicit normalization.
+test  ax,  ax
+jnz zero
+xor  ax,  ax
+not  ax
 ret
-.notzero:
-mov ax, word 0
+zero:
+xor  ax,  ax
 ret
-boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffff.
-test ax, ax
-jnz .notzero
-mov ax, word 0
+
+boolNormalize:  ;0 -> 0.            1, 830, 555 -> 0xffffffff.
+test  ax,  ax
+jnz notzero
+xor  ax,  ax
 ret
-.notzero:
-mov ax, word ~0
+notzero:
+xor  ax,  ax
+not  ax
 ret

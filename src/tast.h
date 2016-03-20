@@ -91,6 +91,7 @@ class VariableNode : public tast
 {
 public:
     VariableNode(TypeNode* type, IdentNode* var_name);
+    VariableNode(TypeNode* type, IdentNode* var_name, int ebp_off);
     ~VariableNode();
     void print(std::wostream& out) const;
 

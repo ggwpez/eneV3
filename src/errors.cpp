@@ -207,7 +207,7 @@ int ERR(err_t type, ...)
             post_processing_ld_failed(ap);
             break;
         case err_t::POST_PROCESSING_AS_FAILED:
-            post_processing_ld_failed(ap);
+            post_processing_as_failed(ap);
             break;
         case err_t::IO_FILE_NOT_FOUND:
             io_file_not_found(ap);

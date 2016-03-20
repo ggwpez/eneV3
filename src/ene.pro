@@ -16,7 +16,6 @@ SOURCES += \
     scope/ptr_t.cpp \
     scope/void_t.cpp \
     errors.cpp \
-    il.cpp \
     scope/scoper.cpp \
     uast.cpp \
     tast.cpp \
@@ -24,7 +23,10 @@ SOURCES += \
     compiler.cpp \
     io.cpp \
     warnings.cpp \
-    target.cpp
+    target.cpp \
+    il_gas.cpp \
+    il_nasm.cpp \
+    il.cpp
 
 HEADERS += \
     token.hpp \
@@ -48,7 +50,10 @@ HEADERS += \
     target.h \
     compiler.h \
     io.h \
-    warnings.h
+    warnings.h \
+    il_gas.h \
+    il_nasm.h \
+    il.h
 
 QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0
 
@@ -56,5 +61,4 @@ OTHER_FILES += \
     template.nasm \
     template_16.nasm \
     template_32.nasm \
-    template_64.nasm \
-    input.ene
+    template_64.nasm
