@@ -6,7 +6,9 @@
 #include <ctype.h>
 #include <wchar.h>
 
-lexer::lexer(char *file_name)
+#define TAB_WIDTH 4
+
+lexer::lexer(char* file_name)
 {
     io helper;
     this->input = helper.read_file(file_name);
@@ -84,6 +86,9 @@ std::vector<tok*>* lexer::lex()
                 line++;
                 char_c = 0;
             }
+            else if (c == L'\t')
+                char_c += TAB_WIDTH;
+
             l = 1; char_c++;
             continue;
         }

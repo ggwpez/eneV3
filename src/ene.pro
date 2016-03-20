@@ -55,7 +55,7 @@ HEADERS += \
     il_nasm.h \
     il.h
 
-QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0
+QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O1
 
 OTHER_FILES += \
     template.nasm \

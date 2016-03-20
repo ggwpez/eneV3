@@ -5,7 +5,7 @@ target_t::target_t(size_t bits,  schar* int_t,
          std::array<const schar*, 4> const& s_strs,
          std::array<const value_type, (int)value_type::size> const& types,
          as assembler)
-    : bits(bits), int_t(int_t), regs(regs), s_strs(s_strs), types(types), assembler(assembler)
+    : bits(bits), bytes(bits >> 3), int_t(int_t), regs(regs), s_strs(s_strs), types(types), assembler(assembler)
 {
 
 }

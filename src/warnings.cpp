@@ -29,12 +29,32 @@ void calling_unimpl_func(va_list ap)
 
 void reading_uninit_mem(va_list ap)
 {
-    tast* a = va_arg(ap, tast*);
+    OperatorNode* a = va_arg(ap, OperatorNode*);
 
     w_out << L"Term ";
     a->print(w_out);
     w_out << L" is using uninitialized memory.";
     a->print_pos(w_out);
+}
+
+void reading_non_ptr_type(va_list ap)
+{
+    OperatorNode* r = va_arg(ap, OperatorNode*);
+
+    w_out << L"Term ";
+    r->print(w_out);
+    w_out << L" is dereferencing non pointer type";
+    r->print_pos(w_out);
+}
+
+void op_insuff_ops(va_list ap)
+{
+    OperatorNode* o = va_arg(ap, OperatorNode*);
+
+    w_out << L"Operator ";
+    o->print(w_out);
+    w_out << L" maybe has insufficient argument count";
+    o->print_pos(w_out);
 }
 
 void arg_count_wrong(va_list ap)
@@ -47,7 +67,7 @@ void arg_count_wrong(va_list ap)
     w_out << L" since your call arguments dont match the header.";
 }
 
-void WAR(war_t type, ...)
+int WAR(war_t type, ...)
 {
     war_next();
 
@@ -65,6 +85,12 @@ void WAR(war_t type, ...)
         case war_t::READING_UNINIT_MEM:
             reading_uninit_mem(ap);
             break;
+        case war_t::READING_NON_PTR_TYPE:
+            reading_non_ptr_type(ap);
+            break;
+        case war_t::OP_INSUFF_OPS:
+            op_insuff_ops(ap);
+            break;
         case war_t::ARG_COUNT_WRONG:
             arg_count_wrong(ap);
             break;
@@ -78,6 +104,7 @@ void WAR(war_t type, ...)
 
     if (war_as_error)
         ERR(err_t::GEN_WAR);
+    return 0;
 }
 
 void war_init()
@@ -101,7 +128,7 @@ void war_dump(std::wostream& out)
 
         for (size_t i = 0; i < warnings->size(); i++)
         {
-            out << L'(' << i << L"): "  << warnings->at(i)->str().c_str() << std::endl;
+            out << L'(' << i << L"): "  << warnings->at(i)->str().c_str();
             delete warnings->at(i);
         }
     }

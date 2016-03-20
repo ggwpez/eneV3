@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "string_def.h"
 
+#include <stack>
 #include <vector>
 
 struct sc_type

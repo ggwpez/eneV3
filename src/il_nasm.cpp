@@ -400,7 +400,7 @@ void il_nasm::generate(FunctionNode* code)
 
     generate(code->code);
 
-    eml(code->head->name->str << L".end: ;hi");
+    eml(code->head->name->str << L".end:");
     generate_sf_leave(0);
 };
 
@@ -411,9 +411,10 @@ void il_nasm::generate(FunctionCallNode* code)
         generate(t->at(i));
 
     eml(L"call " << code->target->str);
+    eml(L"add esp, " << code->args_size);   //### TODO allign to stack size
+
     if (code->return_type->t->size)
         push(rax);
-    eml(L"add esp, " << code->args_size);
 };
 
 void il_nasm::generate(IfNode* code)

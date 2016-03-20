@@ -30,7 +30,7 @@ void compiler::compile()
         compile_file(file, output);
     }
 
-    //Assemble nasm
+    /*//Assemble nasm
     for (std::string const& file : *i_files)
     {
         std::string input  = file +ex_asm;
@@ -41,7 +41,7 @@ void compiler::compile()
     }
 
     //Link objects
-    post_ld(obj_files, this->args->output);
+    post_ld(obj_files, this->args->output);*/
 }
 
 void compiler::compile_file(std::string const& file_name, std::string& output_file_name)

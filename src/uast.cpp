@@ -59,7 +59,7 @@ void ExpressionTermUNode::print(std::wostream& out) const
 {
     out << L"<ExpressionTermUNode <exps ";
     for (uast* it : *this->exps)
-        it->print(out), out << L' ';
+        it->print(out), out << (it == this->exps->back() ? L"" : L" ");     //formation ftw
     out << L">>";
 }
 

@@ -75,8 +75,7 @@ scope::scope()
     //register inbuild types like i8 i16...
     for (value_type t : target->types)
         if (t != value_type::size)
-            this->gl_types->push_back(new sc_type(new IdentNode(value_type_strings[(int)t]),
-                                              new value_t(t)));
+            this->gl_types->push_back(new sc_type(new IdentNode(value_type_strings[(int)t]), new value_t(t)));
 
 
     this->gl_types->push_back(new sc_type(new IdentNode(L"void"), new void_t()));

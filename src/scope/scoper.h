@@ -19,7 +19,8 @@ public:
 private:
     uast* input;
     scope* mng;
-    itype* last_type,* int_type;
+    itype* int_type;
+    std::stack<itype*>* last_types;
 
     tast* scoper::convert(ProgramUNode* code);
     tast* scoper::convert(BlockUNode* code);
@@ -32,7 +33,7 @@ private:
     tast* scoper::convert(ReturnUNode* code);
     tast* scoper::convert(TypeUNode* code);
     tast* scoper::convert(VariableUNode* code);
-    tast* scoper::convert(ArgUNode *code);
+    ArgNode *scoper::convert(ArgUNode *code);
     tast* scoper::convert(ListUNode* code);
     tast* scoper::convert(ListArgUNode* code);
     tast* scoper::convert(FunctionHeaderUNode* code);

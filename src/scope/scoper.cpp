@@ -5,18 +5,22 @@
 
 #include "ptr_t.h"
 
+#define last_type (!last_types->size() ? nullptr : last_types->top())
+#define clear_types while(last_types->size()) {last_types->pop();}
+
 scoper::scoper(uast* input, scope* mng)
 {
     this->input = input;
     this->mng = mng;
 
     this->int_type = mng->get_type(&IdentNode(target->int_t));
-    this->last_type = nullptr;
+
+    this->last_types = new std::stack<itype*>();
 }
 
 scoper::~scoper()
 {
-
+    delete this->last_types;
 }
 
 tast* scoper::convert(ProgramUNode* code)
@@ -40,7 +44,7 @@ tast* scoper::convert(BlockUNode* code)
 {
     mng->enter();
     tast_arr* ncode = new tast_arr();
-    int frame_s = -__BYTES__;
+    int frame_s = 0;
 
     for (size_t i = 0; i < code->code->size(); i++)
     {
@@ -49,9 +53,9 @@ tast* scoper::convert(BlockUNode* code)
 
         if (v)
         {
+            frame_s -= __BYTES__;
             v->ebp_off = frame_s;
             mng->add_var(new VariableNode(new TypeNode(v->type->t), new IdentNode(v->var_name), v->ebp_off));    //### TODO try not to realloc v
-            frame_s -= v->type->t->size;
         }
         else
             ncode->push_back(ne);
@@ -132,7 +136,7 @@ tast* scoper::convert(VariableUNode* code)
     return new VariableNode(t, new IdentNode(code->var_name));
 };
 
-tast* scoper::convert(ArgUNode* code)
+ArgNode* scoper::convert(ArgUNode* code)
 {
     TypeNode* t = convert(code->type);
     //std::wcout << std::endl << L"### " << code->name->str << L" ###" << std::endl;
@@ -239,7 +243,7 @@ tast* scoper::convert(FunctionCallUNode* code)
     }
     else
         ret = new FunctionCallNode(t, new TypeNode(ret_type), args, args_s);
-    this->last_type = ret_type;
+    this->last_types->push(ret_type);
 
     return ret;
 };
@@ -267,12 +271,14 @@ tast* scoper::convert(IdentNode* code)
 
     if (mng->is_type_reg(code))
     {
-        last_type = mng->get_type(code);
+        this->last_types->push(mng->get_type(code));
         return new TypeNode(last_type);     //its a cast
     }
     else if (mng->is_var_reg(code))
     {   //its a variable, lets check if in stackframe or not
-        to_add = mng->get_var(code);
+        VariableNode* v = mng->get_var(code);
+        this->last_types->push(v->type->t);
+        to_add = v;
     }
     else
         to_add = new IdentNode(code);
@@ -280,9 +286,12 @@ tast* scoper::convert(IdentNode* code)
     return new PushNode(to_add);
 };
 
+#include <assert.h>
 tast* scoper::convert(NumNode* code)
 {
-    last_type = int_type;
+    last_types->push(int_type);
+    //last_types->push(nullptr);
+    assert(this->last_types->size());
     return new NumNode(code);
 }
 
@@ -303,11 +312,44 @@ tast* scoper::convert(BoolNode* code)
 
 tast* scoper::convert(OperatorUNode* code)
 {
-    if (!last_type)
-        WAR(war_t::READING_UNINIT_MEM, code);
-
     OperatorNode* ret = new OperatorNode(code->oper, last_type);
     ret->set_pos(code);
+
+    switch (ret->oper)      //ROAD CLOSED, spaghetti code ahead
+    {
+        case op::ADD: case op::SUB: case op::MUL: case op::DIV: case op::EQU: case op::NEQ: case op::SML: case op::GRT:
+            if (last_types->size() < 2)
+            {
+                WAR(war_t::OP_INSUFF_OPS);
+                int a;
+                while (last_types->size())
+                    last_types->pop();
+            }
+            else
+                last_types->pop(), last_types->pop();
+        case op::DRF:
+            if (!last_types->size())
+                WAR(war_t::READING_UNINIT_MEM, ret);
+            else if (!dynamic_cast<ptr_t*>(last_type))
+                WAR(war_t::READING_NON_PTR_TYPE, ret);
+            break;
+        case op::POP:
+            if (!last_types->size())
+                WAR(war_t::OP_INSUFF_OPS, ret);
+            else
+                last_types->pop();
+            break;
+        case op::CPY:
+            if (!last_types->size())
+                WAR(war_t::OP_INSUFF_OPS, ret);
+            else
+                last_types->push(last_type);
+            break;
+        default:
+            ERR(err_t::GEN_SCR);
+            break;
+    }
+
     return ret;
 };
 
@@ -331,7 +373,6 @@ ProgramNode* scoper::convert()
     tast* ret = convert(input);
 
     delete input;
-    last_type = int_type;
     return ret;
 }
 

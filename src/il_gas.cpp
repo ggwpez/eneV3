@@ -130,7 +130,6 @@ void il_gas::generate(ASMNode* code)
     eml(L"# end   inline ASM from line " << code->pos_en_line << L" pos " << code->pos_en_line_char);
 };
 
-int str_c = -1;
 void il_gas::generate(StringNode* code)
 {
     std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
@@ -204,7 +203,6 @@ void il_gas::generate_op_equ(OperatorNode* code)
     generate_op_not(code);
 }
 
-int sml_c = -1;
 void il_gas::generate_op_sml(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__sml_") + std::to_wstring(++sml_c);
@@ -230,7 +228,6 @@ void il_gas::generate_op_sml(OperatorNode* code)
     push(rax);
 }
 
-int grt_c = -1;
 void il_gas::generate_op_grt(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__grt_") + std::to_wstring(++grt_c);
@@ -417,12 +414,12 @@ void il_gas::generate(FunctionCallNode* code)
         generate(t->at(i));
 
     eml(L"call " << code->target->str);
+    eml(L"add esp, " << code->args_size);
+
     if (code->return_type->t->size)
         push(rax);
-    eml(L"add esp, " << code->args_size);
 };
 
-int if_c = -1;
 void il_gas::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++if_c);
@@ -444,7 +441,6 @@ void il_gas::generate(IfNode* code)
     eml(name << L".end");
 };
 
-int while_c = -1;
 void il_gas::generate(WhileNode* code)
 {
     std::wstring name = std::wstring(L"__while_") + std::to_wstring(++while_c);
