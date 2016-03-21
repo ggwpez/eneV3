@@ -2,9 +2,9 @@
 #include <iostream>
 #include <string>
 
-#define SKIP_AS 1
-#define SKIP_LD 1
-#define SKIP_IO 1
+#define SKIP_AS 0
+#define SKIP_LD 0
+#define SKIP_IO 0
 
 #include "compiler.h"
 #include "io.h"

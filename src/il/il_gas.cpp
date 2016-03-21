@@ -324,12 +324,13 @@ void il_gas::generate(OperatorNode* code)
     }
 };
 
+int ret_c = 0;
 void il_gas::generate(ReturnNode* code)
 {
     generate(code->val);
     pop(rax);
 
-    eml("jmp .end");
+    eml("jmp .end_" << ret_c--);
 };
 
 void il_gas::generate(BreakNode* code)
@@ -344,7 +345,7 @@ void il_gas::generate(GoOnNode* code)
 
 void il_gas::generate(TypeNode* code)
 {
-    em(L"; casting to ");
+    em(L"# casting to ");
     code->print(*ss_code);
     eml(L"");
 };
@@ -399,12 +400,12 @@ void il_gas::generate_ssp_check()
 void il_gas::generate(FunctionNode* code)
 {
     eml(code->head->name->str << L':');
-    generate_sf_enter(code->code->stack_s +code->head->args_size);
+    generate_sf_enter(code->code->stack_s);
 
     generate(code->code);
 
-    eml(code->head->name->str << ".end:");
-    generate_sf_leave(code->head->args_size);
+    eml(".end_" << ++ret_c << ":");
+    generate_sf_leave(code->code->stack_s);
 };
 
 void il_gas::generate(FunctionCallNode* code)
@@ -470,8 +471,8 @@ void il_gas::generate()
 
 void il_gas::generate_ProgramNode_term(tast* code)
 {
-    if (dynamic_cast<VariableNode*>(code))
-        generate_global(dynamic_cast<VariableNode*>(code));
+    if (VariableNode* v = dynamic_cast<VariableNode*>(code))
+        generate_global(v);
     else
         generate(code);
 }

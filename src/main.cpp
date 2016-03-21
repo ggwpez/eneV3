@@ -8,10 +8,10 @@
 cmp_args parse_args(int argc, char** argv)
 {
     char arg = 0;
-    size_t bits = -1;
+    size_t bits = 32;
     std::vector<std::string> inputs;
     std::string output;
-    as assembler = as::size;
+    as assembler = as::NASM;
     bool no_warn = false, only_compile = false;
 
     while ((arg = getopt(argc, argv, "i:o:b:a:wc")) != -1)

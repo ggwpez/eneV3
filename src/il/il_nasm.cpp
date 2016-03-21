@@ -397,7 +397,7 @@ void il_nasm::generate(FunctionNode* code)
     generate(code->code);
 
     eml(code->head->name->str << L".end:");
-    generate_sf_leave(0);
+    generate_sf_leave(code->code->stack_s);
 };
 
 void il_nasm::generate(FunctionCallNode* code)
@@ -463,8 +463,8 @@ void il_nasm::generate()
 
 void il_nasm::generate_ProgramNode_term(tast* code)
 {
-    if (dynamic_cast<VariableNode*>(code))
-        generate_global(dynamic_cast<VariableNode*>(code));
+    if (VariableNode* v = dynamic_cast<VariableNode*>(code))
+        generate_global(v);
     else
         generate(code);
 }

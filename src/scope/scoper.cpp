@@ -281,7 +281,7 @@ tast* scoper::convert(IdentNode* code)
         to_add = v;
     }
     else
-        to_add = new IdentNode(code);
+        ERR(err_t::SC_VAR_NAME_UNKOWN, code);
 
     return new PushNode(to_add);
 };
@@ -326,6 +326,7 @@ tast* scoper::convert(OperatorUNode* code)
             }
             else
                 last_types->pop(), last_types->pop();
+            break;
         case op::DRF:
             if (!last_types->size())
                 WAR(war_t::READING_UNINIT_MEM, ret);
