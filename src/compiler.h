@@ -12,12 +12,14 @@
 
 struct cmp_args
 {
-    cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, as assembler);
+    cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, as assembler, bool no_warn, bool only_compile);
 
     std::vector<std::string> inputs;
     std::string output;
     size_t bits;
     as assembler;
+    bool no_warn;
+    bool only_compile;
 };
 
 class compiler

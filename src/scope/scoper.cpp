@@ -230,7 +230,7 @@ tast* scoper::convert(FunctionCallUNode* code)
             args_s += arg->type->t->size;
         WAR(war_t::CALLING_UMIMPL_FUNC, code);
     }
-    else if (!mng->is_fun_reg(t) && !mng->is_fun_head_reg(t))       //remove this and it wont work, i swear to god
+    else
     {
         ERR(err_t::SC_FUN_NAME_UNKOWN, t);
     }
@@ -320,8 +320,7 @@ tast* scoper::convert(OperatorUNode* code)
         case op::ADD: case op::SUB: case op::MUL: case op::DIV: case op::EQU: case op::NEQ: case op::SML: case op::GRT:
             if (last_types->size() < 2)
             {
-                WAR(war_t::OP_INSUFF_OPS);
-                int a;
+                WAR(war_t::OP_INSUFF_OPS, ret);
                 while (last_types->size())
                     last_types->pop();
             }

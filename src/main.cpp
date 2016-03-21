@@ -12,11 +12,18 @@ cmp_args parse_args(int argc, char** argv)
     std::vector<std::string> inputs;
     std::string output;
     as assembler = as::size;
+    bool no_warn = false, only_compile = false;
 
-    while ((arg = getopt(argc, argv, "i:o:b:a:")) != -1)
+    while ((arg = getopt(argc, argv, "i:o:b:a:wc")) != -1)
     {
         switch (arg)
         {
+            case 'c':
+                only_compile |= 1;
+                break;
+            case 'w':
+                no_warn |= 1;
+                break;
             case 'a':
                 if (!strcmp("nasm", optarg))
                     assembler = as::NASM;
@@ -42,7 +49,7 @@ cmp_args parse_args(int argc, char** argv)
         }
     }
 
-    return cmp_args(bits, inputs, output, assembler);
+    return cmp_args(bits, inputs, output, assembler, no_warn, only_compile);
 }
 
 int main(int argc, char** argv)

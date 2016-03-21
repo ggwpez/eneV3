@@ -49,7 +49,6 @@ struct sc_local_alloc
     ~sc_local_alloc();
 
     std::vector<sc_var*>* vars;
-    int frame_size;
 };
 
 class scope

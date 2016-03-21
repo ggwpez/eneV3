@@ -2,6 +2,7 @@
 #include "errors.hpp"
 
 bool war_as_error = false;
+bool inited = false;
 #define w_out (*w_ss)
 
 std::vector<std::wostringstream*>* warnings;
@@ -69,6 +70,7 @@ void arg_count_wrong(va_list ap)
 
 int WAR(war_t type, ...)
 {
+    if (!inited) return;
     war_next();
 
     va_list ap;
@@ -104,12 +106,14 @@ int WAR(war_t type, ...)
 
     if (war_as_error)
         ERR(err_t::GEN_WAR);
+
     return 0;
 }
 
 void war_init()
 {
     warnings = new std::vector<std::wostringstream*>();
+    inited = true;
 }
 
 void war_next()
@@ -122,8 +126,6 @@ void war_dump(std::wostream& out)
 {
     if (warnings->size())
     {
-        std::wostringstream b;
-
         out << L"Warnings (" << warnings->size() << L")" << std::endl;
 
         for (size_t i = 0; i < warnings->size(); i++)

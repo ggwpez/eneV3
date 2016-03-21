@@ -445,7 +445,7 @@ IfUNode* parser::parse_if(int s, int& l)
     l += block_l; block_l = 0;
 
     if (input[s +l]->type == tok_type::ELSE)
-        false_block = ++l, parse_block(s +l, block_l);
+        false_block = parse_block(s + (++l), block_l);
     l += block_l;
 
     return new IfUNode(cond, true_block, false_block);

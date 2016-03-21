@@ -94,15 +94,11 @@ void il_nasm::generate(BoolNode* code)
 
 void il_nasm::generate(PushNode* code)
 {
-    IdentNode* i = dynamic_cast<IdentNode*>(code->v);
-    NumNode*   n = dynamic_cast<NumNode*  >(code->v);
-    VariableNode* v = dynamic_cast<VariableNode*>(code->v);
-
-    if (i)
+    if (IdentNode* i = dynamic_cast<IdentNode*>(code->v))
         push(i->str);
-    else if (n)
+    else if (NumNode*   n = dynamic_cast<NumNode*>(code->v))
         push(n->num);
-    else if (v)     //its a variable in the stack frame
+    else if (VariableNode* v = dynamic_cast<VariableNode*>(code->v))     //its a variable in the stack frame
     {
         std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
         eml(L"lea " << rdx << L", [ebp " << adder << L']');

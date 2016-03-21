@@ -11,7 +11,7 @@
 extern bool war_as_error;
 
 
-enum class war_t
+enum class war_t : int
 {
     INSTANCE_OF_VOID,               //why would you do "void: tmp;"
     CALLING_UMIMPL_FUNC,
@@ -25,4 +25,4 @@ enum class war_t
 void war_init();
 void war_next();
 void war_dump(std::wostream& out);
-int WAR(war_t type, ...) __attribute__ ((noreturn));
+int WAR(war_t type, ...);

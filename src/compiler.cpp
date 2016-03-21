@@ -2,6 +2,10 @@
 #include <iostream>
 #include <string>
 
+#define SKIP_AS 1
+#define SKIP_LD 1
+#define SKIP_IO 1
+
 #include "compiler.h"
 #include "io.h"
 #include "warnings.h"
@@ -18,9 +22,8 @@ void compiler::compile()
 {
     std::vector<std::string>* i_files = &this->args->inputs;
     std::vector<std::string>  obj_files;
-    const std::string ex_asm(target->assembler == as::NASM ? ".nasm" : ".s");
-    const std::string ex_obj(".obj");
-    const std::string ex_exe(".out");
+    std::string const ex_asm(target->assembler == as::NASM ? ".nasm" : ".s");
+    std::string const ex_obj(".obj");
 
     //Compile ene
     for (std::string const& file : *i_files)
@@ -30,7 +33,7 @@ void compiler::compile()
         compile_file(file, output);
     }
 
-    /*//Assemble nasm
+    //Assemble nasm
     for (std::string const& file : *i_files)
     {
         std::string input  = file +ex_asm;
@@ -41,13 +44,14 @@ void compiler::compile()
     }
 
     //Link objects
-    post_ld(obj_files, this->args->output);*/
+    post_ld(obj_files, this->args->output);
 }
 
 void compiler::compile_file(std::string const& file_name, std::string& output_file_name)
 {
     std::wostringstream out;
-    war_init();
+    if (!args->no_warn)
+        war_init();
 
     lexer lex = lexer(file_name.c_str());
     std::vector<tok*>* toks = lex.lex();
@@ -66,7 +70,9 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
     else
         gen = new il_gas(ast, &out);
     gen->generate();
-    war_dump(std::wcout);
+
+    if (!args->no_warn)
+        war_dump(std::wcout);
 
     delete gen;
     delete ast;
@@ -81,6 +87,7 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
 
 void compiler::post_as(std::string& i_file, std::string& o_file)
 {
+    if (SKIP_AS) return;
     std::stringstream assembler;
     if (target->assembler == as::NASM)
         assembler << "nasm -f elf";
@@ -95,6 +102,7 @@ void compiler::post_as(std::string& i_file, std::string& o_file)
 
 void compiler::post_ld(std::vector<std::string>& i_files, std::string& o_file)
 {
+    if (SKIP_LD) return;
     std::stringstream gcc;
     gcc  << "gcc -m" << __BITS__ << " ";
 
@@ -109,6 +117,7 @@ void compiler::post_ld(std::vector<std::string>& i_files, std::string& o_file)
 
 void compiler::write_wstr(std::wostringstream& ss, std::string& file_name)
 {
+    if (SKIP_IO) return;
     std::wofstream f;
     f.open(file_name);
     f << ss.str();
@@ -118,6 +127,7 @@ void compiler::write_wstr(std::wostringstream& ss, std::string& file_name)
 
 void compiler::write_str(std::wostringstream& ss, std::string& file_name)
 {
+    if (SKIP_IO) return;
     std::string str = std::string(ss.str().begin(), ss.str().end());
     std::ofstream f;
     f.open(file_name);
@@ -128,6 +138,8 @@ void compiler::write_str(std::wostringstream& ss, std::string& file_name)
 
 void compiler::load_template(std::wostringstream& ss)
 {
+    if (SKIP_IO) return;
+
     io helper;
     std::string ex = std::string(target->assembler == as::NASM ? ".nasm" : ".s");
     std::string tem_path = std::string("../src/templates/template_") + std::to_string(target->bits) +ex;
@@ -140,8 +152,8 @@ void compiler::load_template(std::wostringstream& ss)
     //ss << L"# ### TEMPLATE   END ###" << std::endl << std::endl << std::endl;
 }
 
-cmp_args::cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, as assembler)
-    : bits(bits), inputs(inputs), output(output), assembler(assembler)
+cmp_args::cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, as assembler, bool no_warn, bool only_compile)
+    : bits(bits), inputs(inputs), output(output), assembler(assembler), no_warn(no_warn), only_compile(only_compile)
 {
     if (bits == -1)
         ERR(err_t::IO_CMD_ARG_NO_BITS);
