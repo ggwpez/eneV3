@@ -1,5 +1,5 @@
 #include "scope.hpp"
-#include "errors.hpp"
+#include "errors/errors.hpp"
 
 #include "value_t.h"
 #include "void_t.h"

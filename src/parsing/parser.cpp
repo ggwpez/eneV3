@@ -1,5 +1,5 @@
 #include "parser.h"
-#include "errors.hpp"
+#include "errors/errors.hpp"
 
 #define is(v, t) (dynamic_cast<t*>(v) != nullptr)
 #define dc(t, v)  dynamic_cast<t*>(v)

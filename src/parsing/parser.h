@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "token.hpp"
-#include "uast.h"
+#include "lexing/token.hpp"
+#include "parsing/ast/uast.h"
 
 class parser
 {

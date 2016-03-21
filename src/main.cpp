@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "compiler.h"
-#include "errors.hpp"
+#include "errors/errors.hpp"
 
 cmp_args parse_args(int argc, char** argv)
 {

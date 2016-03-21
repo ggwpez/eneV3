@@ -32,7 +32,7 @@ void reading_uninit_mem(va_list ap)
 {
     OperatorNode* a = va_arg(ap, OperatorNode*);
 
-    w_out << L"Term ";
+    w_out << L"Operator ";
     a->print(w_out);
     w_out << L" is using uninitialized memory.";
     a->print_pos(w_out);
@@ -42,7 +42,7 @@ void reading_non_ptr_type(va_list ap)
 {
     OperatorNode* r = va_arg(ap, OperatorNode*);
 
-    w_out << L"Term ";
+    w_out << L"Operator ";
     r->print(w_out);
     w_out << L" is dereferencing non pointer type";
     r->print_pos(w_out);

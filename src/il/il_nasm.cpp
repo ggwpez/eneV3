@@ -1,6 +1,6 @@
 #include "il_nasm.h"
-#include "errors.hpp"
-#include "warnings.h"
+#include "errors/errors.hpp"
+#include "errors/warnings.h"
 #include "target.h"
 
 using namespace std;

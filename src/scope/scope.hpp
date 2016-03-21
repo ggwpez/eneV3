@@ -1,7 +1,7 @@
 #ifndef SCOPE_HPP
 #define SCOPE_HPP
 
-#include "ast.h"
+#include "parsing/ast/ast.h"
 #include "string_def.h"
 
 #include <stack>

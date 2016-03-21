@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "target.h"
-#include "uast.h"
+#include "parsing/ast/uast.h"
 #include "string_def.h"
 #include "scope/scope.hpp"
 

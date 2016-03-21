@@ -1,5 +1,5 @@
 #include "lexer.hpp"
-#include "errors.hpp"
+#include "errors/errors.hpp"
 #include "io.h"
 
 #include <string.h>

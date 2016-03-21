@@ -3,62 +3,67 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += \
-    token.cpp \
-    main.cpp \
-    lexer.cpp \
-    parser.cpp \
-    scope/scope.cpp \
-    scope/itype.cpp \
-    scope/array_t.cpp \
-    scope/struct_t.cpp \
-    scope/value_t.cpp \
-    scope/ptr_t.cpp \
-    scope/void_t.cpp \
-    errors.cpp \
-    scope/scoper.cpp \
-    uast.cpp \
-    tast.cpp \
-    utast.cpp \
-    compiler.cpp \
-    io.cpp \
-    warnings.cpp \
-    target.cpp \
-    il_gas.cpp \
-    il_nasm.cpp \
-    il.cpp
-
-HEADERS += \
-    token.hpp \
-    lexer.hpp \
-    parser.h \
-    errors.hpp \
-    scope/scope.hpp \
-    scope/itype.h \
-    scope/array_t.h \
-    scope/struct_t.h \
-    scope/value_t.h \
-    scope/ptr_t.h \
-    string_def.h \
-    scope/void_t.h \
-    il.h \
-    scope/scoper.h \
-    tast.h \
-    uast.h \
-    utast.h \
-    ast.h \
-    target.h \
-    compiler.h \
-    io.h \
-    warnings.h \
-    il_gas.h \
-    il_nasm.h \
-    il.h
-
 QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0
 
 OTHER_FILES += \
     template.nasm \
     template_16.nasm \
     template_32.nasm \
-    template_64.nasm
+    template_64.nasm \
+    templates/template_16.nasm \
+    templates/template_16.s \
+    templates/template_32.nasm \
+    templates/template_32.s \
+    templates/template_64.nasm \
+    templates/template_64.s
+
+HEADERS += \
+    errors/errors.hpp \
+    errors/warnings.h \
+    il/il.h \
+    il/il_gas.h \
+    il/il_nasm.h \
+    lexing/lexer.hpp \
+    lexing/token.hpp \
+    parsing/ast/ast.h \
+    parsing/ast/tast.h \
+    parsing/ast/uast.h \
+    parsing/ast/utast.h \
+    parsing/parser.h \
+    scope/array_t.h \
+    scope/itype.h \
+    scope/ptr_t.h \
+    scope/scope.hpp \
+    scope/scoper.h \
+    scope/struct_t.h \
+    scope/value_t.h \
+    scope/void_t.h \
+    compiler.h \
+    io.h \
+    string_def.h \
+    target.h
+
+SOURCES += \
+    errors/errors.cpp \
+    errors/warnings.cpp \
+    il/il.cpp \
+    il/il_gas.cpp \
+    il/il_nasm.cpp \
+    lexing/lexer.cpp \
+    lexing/token.cpp \
+    parsing/ast/tast.cpp \
+    parsing/ast/uast.cpp \
+    parsing/ast/utast.cpp \
+    parsing/parser.cpp \
+    scope/array_t.cpp \
+    scope/itype.cpp \
+    scope/ptr_t.cpp \
+    scope/scope.cpp \
+    scope/scoper.cpp \
+    scope/struct_t.cpp \
+    scope/value_t.cpp \
+    scope/void_t.cpp \
+    compiler.cpp \
+    io.cpp \
+    main.cpp \
+    target.cpp

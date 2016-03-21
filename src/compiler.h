@@ -1,10 +1,10 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "lexer.hpp"
-#include "parser.h"
-#include "il_nasm.h"
-#include "il_gas.h"
+#include "lexing/lexer.hpp"
+#include "parsing/parser.h"
+#include "il/il_nasm.h"
+#include "il/il_gas.h"
 #include "scope/scoper.h"
 #include "target.h"
 

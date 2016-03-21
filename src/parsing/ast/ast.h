@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "string_def.h"
-#include "token.hpp"
+#include "lexing/token.hpp"
 #include "scope/itype.h"
 
 class IdentNode;

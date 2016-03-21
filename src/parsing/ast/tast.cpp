@@ -1,5 +1,5 @@
-#include "uast.h"
-#include "warnings.h"
+#include "parsing/ast/uast.h"
+#include "errors/warnings.h"
 
 ProgramNode::ProgramNode(tast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {

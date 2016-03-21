@@ -8,8 +8,8 @@
 
 #include "compiler.h"
 #include "io.h"
-#include "warnings.h"
-#include "errors.hpp"
+#include "errors/warnings.h"
+#include "errors/errors.hpp"
 #include "target.h"
 
 compiler::compiler(cmp_args& args)

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "scope/itype.h"
-#include "token.hpp"
+#include "lexing/token.hpp"
 #include "string_def.h"
 #include "ast.h"
 

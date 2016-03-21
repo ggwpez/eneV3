@@ -1,6 +1,6 @@
 #include "scoper.h"
-#include "errors.hpp"
-#include "warnings.h"
+#include "errors/errors.hpp"
+#include "errors/warnings.h"
 #include "target.h"
 
 #include "ptr_t.h"
