@@ -5,19 +5,42 @@
 #include "compiler.h"
 #include "errors/errors.hpp"
 
-cmp_args parse_args(int argc, char** argv)
+void print_help()
+{
+    std::wcout << L"Use this program to compile ene-source." << std::endl <<
+                  L"usage: ene [options] -i input_file..." << std::endl <<
+                  L"  options:  (first is default)" << std::endl <<
+                  L"    -a (nasm | gas)         Set the assembler" << std::endl <<
+                  L"    -b (32 | 64 | 16)       Set register width" << std::endl <<
+                  L"    -c                      Compile only, no assembling nor linking" << std::endl <<
+                  L"    -h                      fixpoint" << std::endl <<
+                  L"    -o output_file          Set the output name, default is first input file with .out" << std::endl <<
+                  L"    -p                      Handle warnings as errors" << std::endl <<
+                  L"    -t template_directory   Will then use other templates, def. is ../src/templates/" << std::endl <<
+                  L"    -w                      Turn off warnings" << std::endl;
+}
+
+int parse_args(int argc, char** argv, cmp_args& ret)
 {
     char arg = 0;
     size_t bits = 32;
     std::vector<std::string> inputs;
-    std::string output;
+    std::string output, template_path = std::string("../src/templates/");
     as assembler = as::NASM;
-    bool no_warn = false, only_compile = false;
+    bool no_warn = false, only_compile = false, pedantic_err = false;
 
-    while ((arg = getopt(argc, argv, "i:o:b:a:wc")) != -1)
+    while ((arg = getopt(argc, argv, "t:i:o:b:a:wcph")) != -1)
     {
         switch (arg)
         {
+            case 'h':
+                return -1;
+            case 'p':
+                pedantic_err = true;
+                break;
+            case 't':
+                template_path = std::string(optarg);
+                break;
             case 'c':
                 only_compile |= 1;
                 break;
@@ -44,24 +67,29 @@ cmp_args parse_args(int argc, char** argv)
                     inputs.push_back(std::string(argv[optind]));
                 break;
             default:
-                ERR(err_t::IO_CMD_ARG_UNKNOWN, optarg);
-                break;
+                return -1;
         }
     }
 
-    return cmp_args(bits, inputs, output, assembler, no_warn, only_compile);
+    if (!inputs.size())
+        return -1;
+
+    if (!output.size())
+        output = inputs.front();
+
+    ret = cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
 }
 
 int main(int argc, char** argv)
 {
-    std::wcout << L"Compiling... ";
+    cmp_args args;
+    if (parse_args(argc, argv, args))
+    {
+        print_help();
+        return -1;
+    }
 
-    cmp_args args = parse_args(argc, argv);
     compiler cmp = compiler(args);
-    cmp.compile();
-
-    std::wcout << L"Done.";
-
-    return 0;
+    return cmp.compile();
 }
 

@@ -60,16 +60,16 @@ void il_gas::generate(AssignNode* code)
     switch (code->to_write->size)
     {
         case 1:
-            eml(L"mov byte  [" << rcx << "], " << al);
+            eml(L"mov [" << rcx << "], " << al);
             break;
         case 2:
-            eml(L"mov word  [" << rcx << "], " << ax);
+            eml(L"mov [" << rcx << "], " << ax);
             break;
         case 4:
-            eml(L"mov dword [" << rcx << "], " << eax);
+            eml(L"mov [" << rcx << "], " << eax);
             break;
         case 8:
-            eml(L"mov qword [" << rcx << "], " << rax);
+            eml(L"mov [" << rcx << "], " << rax);
             break;
         default:
             ERR(err_t::IL_CANT_ASSIGN_TO_TYPE, code);
@@ -94,18 +94,14 @@ void il_gas::generate(BoolNode* code)
 
 void il_gas::generate(PushNode* code)
 {
-    IdentNode* i = dynamic_cast<IdentNode*>(code->v);
-    NumNode*   n = dynamic_cast<NumNode*  >(code->v);
-    VariableNode* v = dynamic_cast<VariableNode*>(code->v);
-
-    if (i)
+    if (IdentNode* i = dynamic_cast<IdentNode*>(code->v))
     {
         eml(L"lea " << rdx << L", " << i->str);
         push(rdx);
     }
-    else if (n)
+    else if (NumNode*   n = dynamic_cast<NumNode*  >(code->v))
         push(n->num);
-    else if (v)     //its a variable in the stack frame
+    else if (VariableNode* v = dynamic_cast<VariableNode*>(code->v))     //its a variable in the stack frame
     {
         std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
         eml(L"lea " << rdx << L", [ebp " << adder << L']');
@@ -164,8 +160,8 @@ void il_gas::generate_op_mul(OperatorNode* code)
 
 void il_gas::generate_op_div(OperatorNode* code)
 {
-    pop(rax);
     pop(rcx);
+    pop(rax);
     eml(L"xor " << rdx << L", " << rdx);
     eml(L"div " << rcx);
     push(rax);
@@ -178,16 +174,16 @@ void il_gas::generate_op_drf(OperatorNode* code)
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov  " <<  al << ", byte [" << rax << "]");
+            eml(L"mov " <<  al << ", [" << rax << "]");
             break;
         case 2:
-            eml(L"mov  " <<  ax << ", word [" << rax << "]");
+            eml(L"mov " <<  ax << ", [" << rax << "]");
             break;
         case 4:
-            eml(L"mov  " << eax << ", dword [" << rax << "]");
+            eml(L"mov " << eax << ", [" << rax << "]");
             break;
         case 8:
-            eml(L"mov  " << rax << ", qword [" << rax << "]");
+            eml(L"mov " << rax << ", [" << rax << "]");
             break;
         default:
             ERR(err_t::GEN_IL);
@@ -283,45 +279,7 @@ void il_gas::generate_op_cpy(OperatorNode* code)
 
 void il_gas::generate(OperatorNode* code)
 {
-    switch (code->oper)
-    {
-        case op::ADD:
-            generate_op_add(code);
-            break;
-        case op::SUB:
-            generate_op_sub(code);
-            break;
-        case op::MUL:
-            generate_op_mul(code);
-            break;
-        case op::DIV:
-            generate_op_div(code);
-            break;
-        case op::DRF:
-            generate_op_drf(code);
-            break;
-        case op::EQU:
-            generate_op_equ(code);
-            break;
-        case op::SML:
-            generate_op_sml(code);
-            break;
-        case op::GRT:
-            generate_op_grt(code);
-            break;
-        case op::NEQ:
-            generate_op_neq(code);
-            break;
-        case op::POP:
-            generate_op_pop(code);
-            break;
-        case op::CPY:
-            generate_op_cpy(code);
-            break;
-        default:
-            ERR(err_t::GEN_IL);
-            break;
-    }
+    il::generate(code);
 };
 
 int ret_c = 0;

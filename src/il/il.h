@@ -60,7 +60,7 @@ protected:
     virtual void generate_op_not(OperatorNode* code) = 0;
     virtual void generate_op_pop(OperatorNode* code) = 0;
     virtual void generate_op_cpy(OperatorNode* code) = 0;
-    virtual void generate(OperatorNode* code) = 0;
+    void generate(OperatorNode* code);
     virtual void generate(ReturnNode* code) = 0;
     virtual void generate(BreakNode* code) = 0;
     virtual void generate(GoOnNode* code) = 0;

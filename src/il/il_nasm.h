@@ -38,7 +38,7 @@ private:
     void generate_op_not(OperatorNode* code) override;
     void generate_op_pop(OperatorNode* code) override;
     void generate_op_cpy(OperatorNode* code) override;
-    void generate(OperatorNode* code) override;
+    void generate(OperatorNode* code);
     void generate(ReturnNode* code) override;
     void generate(BreakNode* code) override;
     void generate(GoOnNode* code) override;

@@ -1,0 +1,45 @@
+void printf(u8°° str, u32° a, u32° b, u32° ab);
+
+u32 bab_mult(u32° a, u32° b)
+{
+	u32°: sum;
+	i32°: diff;
+	u32°: sum_q;
+	u32°: diff_q;
+	u32°: res4;
+
+	sum  = a~b~+;
+	diff = a~b~-;
+
+	sum_q  = sum~$*;
+	diff_q = diff~$*;
+
+	res4 = sum_q~ diff_q~-;
+	
+	return res4~ 4/;
+}
+
+void main()
+{
+	u32°: a;
+	u32°: b;
+	a = 22;
+	b = 18;
+
+	printf("a = %d, b = %d, a*b = %d", a~, b~, bab_mult(a~,b~));
+}void printf(u8°° str, u32° a, u32° b, u32° ab);
+
+u32 bab_mult_short(u32° a, u32° b)
+{
+	return a~b~+$* a~b~-$*- 4/;
+}
+
+void main()
+{
+	u32°: a;
+	u32°: b;
+	a = 22;
+	b = 18;
+
+	printf("a = %d, b = %d, a*b = %d", a~, b~, bab_mult_short(a~,b~));
+}

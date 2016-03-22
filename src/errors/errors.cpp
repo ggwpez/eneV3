@@ -2,6 +2,7 @@
 #include "lexing/token.hpp"
 #include "scope/itype.h"
 #include "parsing/ast/ast.h"
+#include "warnings.h"
 
 #include <iostream>
 
@@ -201,7 +202,8 @@ int ERR(err_t type, ...)
             e_out << L"Generic lexing error";
             break;
         case err_t::GEN_WAR:
-            e_out << L"Last warning treated as error.";
+            war_dump(std::wcerr);
+            e_out << L"Last warning treated as error, due to -p (pedantic error)";
             break;
         case err_t::POST_PROCESSING_LD_FAILED:
             post_processing_ld_failed(ap);
@@ -276,5 +278,7 @@ int ERR(err_t type, ...)
     e_out << std::endl;
     va_end(ap);
 
+    std::wcout << std::flush;
+    std::cout << std::flush;
     exit(-1);
 }

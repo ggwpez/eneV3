@@ -157,8 +157,8 @@ void il_nasm::generate_op_mul(OperatorNode* code)
 
 void il_nasm::generate_op_div(OperatorNode* code)
 {
-    pop(rax);
     pop(rcx);
+    pop(rax);
     eml(L"xor " << rdx << L", " << rdx);
     eml(L"div " << rcx);
     push(rax);
@@ -276,45 +276,7 @@ void il_nasm::generate_op_cpy(OperatorNode* code)
 
 void il_nasm::generate(OperatorNode* code)
 {
-    switch (code->oper)
-    {
-        case op::ADD:
-            generate_op_add(code);
-            break;
-        case op::SUB:
-            generate_op_sub(code);
-            break;
-        case op::MUL:
-            generate_op_mul(code);
-            break;
-        case op::DIV:
-            generate_op_div(code);
-            break;
-        case op::DRF:
-            generate_op_drf(code);
-            break;
-        case op::EQU:
-            generate_op_equ(code);
-            break;
-        case op::SML:
-            generate_op_sml(code);
-            break;
-        case op::GRT:
-            generate_op_grt(code);
-            break;
-        case op::NEQ:
-            generate_op_neq(code);
-            break;
-        case op::POP:
-            generate_op_pop(code);
-            break;
-        case op::CPY:
-            generate_op_cpy(code);
-            break;
-        default:
-            ERR(err_t::GEN_IL);
-            break;
-    }
+    il::generate(code);         //call the switch in base class
 };
 
 void il_nasm::generate(ReturnNode* code)
