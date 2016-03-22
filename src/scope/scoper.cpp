@@ -28,7 +28,12 @@ tast* scoper::convert(ProgramUNode* code)
     tast_arr* ncode = new tast_arr();
 
     for (size_t i = 0; i < code->code->size(); i++)
+    {
         ncode->push_back(convert(code->code->at(i)));
+
+        if (VariableNode* v = dynamic_cast<VariableNode*>(ncode->back()))
+            mng->add_var(v);
+    }
 
     for (sc_head* h : *mng->gl_heads)
     {
@@ -317,7 +322,7 @@ tast* scoper::convert(OperatorUNode* code)
 
     switch (ret->oper)      //ROAD CLOSED, spaghetti code ahead
     {
-        case op::ADD: case op::SUB: case op::MUL: case op::DIV: case op::EQU: case op::NEQ: case op::SML: case op::GRT:
+        case op::ADD: case op::SUB: case op::MUL: case op::DIV: case op::EQU: case op::AND: case op::OR: case op::SML: case op::GRT:
             if (last_types->size() < 2)
             {
                 WAR(war_t::OP_INSUFF_OPS, ret);
@@ -325,7 +330,13 @@ tast* scoper::convert(OperatorUNode* code)
                     last_types->pop();
             }
             else
-                last_types->pop(), last_types->pop();
+                last_types->pop();
+            break;
+        case op::NOT:
+            if (!last_types->size())
+                WAR(war_t::OP_INSUFF_OPS, ret);
+            else
+                last_types->pop();
             break;
         case op::DRF:
             if (!last_types->size())

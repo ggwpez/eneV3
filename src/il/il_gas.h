@@ -32,12 +32,14 @@ private:
     void generate_op_div(OperatorNode* code) override;
     void generate_op_drf(OperatorNode* code) override;
     void generate_op_equ(OperatorNode* code) override;
+    void generate_op_neq(OperatorNode* code) override;
     void generate_op_sml(OperatorNode* code) override;
     void generate_op_grt(OperatorNode* code) override;
-    void generate_op_neq(OperatorNode* code) override;
     void generate_op_not(OperatorNode* code) override;
     void generate_op_pop(OperatorNode* code) override;
     void generate_op_cpy(OperatorNode* code) override;
+    void generate_op_and(OperatorNode* code) override;
+    void generate_op_or (OperatorNode* code) override;
     void generate(OperatorNode* code);
     void generate(ReturnNode* code) override;
     void generate(BreakNode* code) override;

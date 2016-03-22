@@ -60,6 +60,8 @@ protected:
     virtual void generate_op_not(OperatorNode* code) = 0;
     virtual void generate_op_pop(OperatorNode* code) = 0;
     virtual void generate_op_cpy(OperatorNode* code) = 0;
+    virtual void generate_op_and(OperatorNode* code) = 0;
+    virtual void generate_op_or (OperatorNode* code) = 0;
     void generate(OperatorNode* code);
     virtual void generate(ReturnNode* code) = 0;
     virtual void generate(BreakNode* code) = 0;
@@ -82,7 +84,7 @@ protected:
     virtual void generate_ssp_init() = 0;
     virtual void generate_ssp_check() = 0;
 
-    int str_c, sml_c, grt_c, if_c, while_c;
+    int str_c, sml_c, grt_c, if_c, while_c, ssp_c;
 };
 
 #endif // IL_H

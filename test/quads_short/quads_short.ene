@@ -1,0 +1,19 @@
+void printf(u32° fmt, u32° x, u32° y);
+void putchar(u8° c);
+
+u32 quads_short(i32° x)
+{
+    return x~$*;
+}
+
+void main()
+{
+    u32°: i;
+    i =	0 1-;
+
+    while  (i~ 10 < i$=~1+)
+    {
+	printf("x = %d  x^2 = %d", i~, quads_short(i~));
+	putchar(10);
+    }
+}

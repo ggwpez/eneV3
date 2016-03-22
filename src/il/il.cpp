@@ -11,7 +11,7 @@ il::il(ProgramNode *code, std::wostringstream *ss)
     ss_codeh = new std::wostringstream();
     ss_data  = new std::wostringstream();
     ss_bss   = new std::wostringstream();
-    str_c = if_c = while_c = sml_c = grt_c = 0;
+    str_c = if_c = while_c = sml_c = grt_c = ssp_c = 0;
 }
 
 il::~il()
@@ -71,14 +71,20 @@ void il::generate(OperatorNode* code)
         case op::GRT:
             generate_op_grt(code);
             break;
-        case op::NEQ:
-            generate_op_neq(code);
+        case op::NOT:
+            generate_op_not(code);
             break;
         case op::POP:
             generate_op_pop(code);
             break;
         case op::CPY:
             generate_op_cpy(code);
+            break;
+        case op::OR:
+            generate_op_or(code);
+            break;
+        case op::AND:
+            generate_op_and(code);
             break;
         default:
             ERR(err_t::GEN_IL);

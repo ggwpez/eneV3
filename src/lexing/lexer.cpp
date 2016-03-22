@@ -128,6 +128,7 @@ tok* lexer::number(int s, int& l)
 
     buf = malloc((l +1) * sizeof(schar));
     wcpncpy(buf, input +s, l);
+    buf[l] = L'\0';
     number = wcstol(buf, nullptr, 10);
 
     free(buf);

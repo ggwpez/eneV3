@@ -61,7 +61,8 @@ void par_wrong(va_list ap)
 {
     tok* token = va_arg(ap, tok*);
 
-    e_out << L"Invalid token: " << token->to_str();
+    e_out << L"Invalid token: ";
+    token->print(e_out);
     token->print_pos(e_out);
 }
 
@@ -70,8 +71,9 @@ void par_wrong_but(va_list ap)
     tok_type wanted = (tok_type)va_arg(ap, int);
     tok* token = va_arg(ap, tok*);
 
-    e_out << L"Invalid token: " << token->to_str()
-               << L" awaited " << tok_strings[(int)wanted];
+    e_out << L"Invalid token: ";
+    token->print(e_out);
+    e_out << L" awaited " << tok_strings[(int)wanted];
     token->print_pos(e_out);
 }
 

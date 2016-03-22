@@ -5,6 +5,11 @@
 #include "compiler.h"
 #include "errors/errors.hpp"
 
+void print_version()
+{
+    std::wcout << L"Version: " << L"3.1 build on " << __DATE__ << L" " << __TIME__ << std::endl;
+}
+
 void print_help()
 {
     std::wcout << L"Use this program to compile ene-source." << std::endl <<
@@ -17,6 +22,7 @@ void print_help()
                   L"    -o output_file          Set the output name, default is first input file with .out" << std::endl <<
                   L"    -p                      Handle warnings as errors" << std::endl <<
                   L"    -t template_directory   Will then use other templates, def. is ../src/templates/" << std::endl <<
+                  L"    -v                      Print version" << std::endl <<
                   L"    -w                      Turn off warnings" << std::endl;
 }
 
@@ -29,11 +35,12 @@ int parse_args(int argc, char** argv, cmp_args& ret)
     as assembler = as::NASM;
     bool no_warn = false, only_compile = false, pedantic_err = false;
 
-    while ((arg = getopt(argc, argv, "t:i:o:b:a:wcph")) != -1)
+    while ((arg = getopt(argc, argv, "t:i:o:b:a:wcphv")) != -1)
     {
         switch (arg)
         {
             case 'h':
+                print_help();
                 return -1;
             case 'p':
                 pedantic_err = true;
@@ -66,28 +73,33 @@ int parse_args(int argc, char** argv, cmp_args& ret)
                 for (; optind < argc && argv[optind][0] != '-'; optind++)
                     inputs.push_back(std::string(argv[optind]));
                 break;
+            case 'v':
+                print_version();
+                return -1;
             default:
+                print_help();
                 return -1;
         }
     }
 
     if (!inputs.size())
+    {
+        print_help();
         return -1;
+    }
 
     if (!output.size())
         output = inputs.front();
 
     ret = cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
+    return 0;
 }
 
 int main(int argc, char** argv)
 {
     cmp_args args;
     if (parse_args(argc, argv, args))
-    {
-        print_help();
         return -1;
-    }
 
     compiler cmp = compiler(args);
     return cmp.compile();

@@ -49,9 +49,11 @@ enum class op : int
     EQU = 5,    // ?
     SML = 6,    // <
     GRT = 7,    // >
-    NEQ = 8,    // !
+    NOT = 8,    // !
     POP = 9,    // ^
     CPY = 10,   // $
+    AND = 11,
+    OR = 12,
     size
 };
 
@@ -68,7 +70,7 @@ public:
 
     ~tok();
 
-    schar* to_str();
+    void print(std::wostream &out);
     void print_pos(std::wostream& out);
     void set_pos_st(char* pos_file, int pos_line, int pos_line_char);
     void set_pos_en(char* pos_file, int pos_line, int pos_line_char);

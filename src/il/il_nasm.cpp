@@ -96,13 +96,21 @@ void il_nasm::generate(PushNode* code)
 {
     if (IdentNode* i = dynamic_cast<IdentNode*>(code->v))
         push(i->str);
-    else if (NumNode*   n = dynamic_cast<NumNode*>(code->v))
+    else if (NumNode*  n = dynamic_cast<NumNode*>(code->v))
         push(n->num);
     else if (VariableNode* v = dynamic_cast<VariableNode*>(code->v))     //its a variable in the stack frame
     {
-        std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
-        eml(L"lea " << rdx << L", [ebp " << adder << L']');
-        push(rdx);
+        if (v->ebp_off)
+        {
+            std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
+            eml(L"lea " << rdx << L", [ebp " << adder << L']');
+            push(rdx);
+        }
+        else
+        {
+            eml(L"lea " << rdx << L", [" << v->var_name->str << L']');
+            push(rdx);
+        }
     }
     else
         ERR(err_t::GEN_IL);
@@ -192,6 +200,12 @@ void il_nasm::generate_op_drf(OperatorNode* code)
 
 void il_nasm::generate_op_equ(OperatorNode* code)
 {
+    /*pop(rax);
+    pop(rcx);
+    eml(L"xor " << rax << L", " << rcx);
+    eml(L"not " << rax);
+    push(rax);*/
+
     generate_op_neq(code);
     generate_op_not(code);
 }
@@ -203,12 +217,11 @@ void il_nasm::generate_op_sml(OperatorNode* code)
     pop(rax);
     pop(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
-    eml(L"jl " << name << L".ok");
-    eml(L"jmp " << name << L".fail");
+    eml(L"cmp " << rax << ", " << rcx);
+    eml(L"jl " << name << L".fail");
+    eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    //eml(L"mov " << rax << ", ~0");
     eml(L"xor " << rax << ", " << rax);
     eml(L"not " << rax);
     eml(L"jmp " << name << L".end");
@@ -228,12 +241,11 @@ void il_nasm::generate_op_grt(OperatorNode* code)
     pop(rax);
     pop(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
-    eml("jng " << name << L".fail");
+    eml(L"cmp " << rax << ", " << rcx);
+    eml("jg " << name << L".fail");
     eml("jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    //eml("mov " << rax << ", ~0");
     eml(L"xor " << rax << ", " << rax);
     eml(L"not " << rax);
     eml("jmp " << name << L".end");
@@ -250,7 +262,7 @@ void il_nasm::generate_op_neq(OperatorNode* code)
 {
     pop(rax);
     pop(rcx);
-    eml(L"xor " << rax << L", " << rax);
+    eml(L"xor " << rax << L", " << rcx);
     eml(L"call boolNormalize");
     push(rax);
 }
@@ -258,6 +270,7 @@ void il_nasm::generate_op_neq(OperatorNode* code)
 void il_nasm::generate_op_not(OperatorNode* code)
 {
     pop(rax);
+    eml(L"call boolNormalize");
     eml(L"call boolNot");
     push(rax);
 }
@@ -271,6 +284,26 @@ void il_nasm::generate_op_cpy(OperatorNode* code)
 {
     pop(rax);
     push(rax);
+    push(rax);
+}
+
+void il_nasm::generate_op_and(OperatorNode* code)
+{
+    eml(L"call boolNormalize");
+    pop(rax);
+    eml(L"call boolNormalize");
+    pop(rcx);
+    eml(L"and " << rax << L", " << rcx);
+    push(rax);
+}
+
+void il_nasm::generate_op_or (OperatorNode* code)
+{
+    eml(L"call boolNormalize");
+    pop(rax);
+    eml(L"call boolNormalize");
+    pop(rcx);
+    eml(L"or  " << rax << L", " << rcx);
     push(rax);
 }
 
@@ -341,14 +374,33 @@ void il_nasm::generate(FunctionExternNode* code)
     emlCODEH(L"extern " << code->fname->str);
 };
 
+
+int ssp_magic = 0;
 void il_nasm::generate_ssp_init()
 {
-
+    ssp_magic = rand();
+    eml(L"__ssp_init_" << ++ssp_c << L':');
+    push(ssp_magic);
 }
 
 void il_nasm::generate_ssp_check()
 {
+    eml(L"__ssp_check_" <<  ssp_c << L':');
+    pop(rax);
+    eml(L"cmp " << rax << L", " << ssp_magic);
+    eml(L"je .ok");
+    eml(L"jmp .fail");
 
+    eml(L".ok:");
+    eml(L"xor " << rax << L", " << rax);
+    eml(L"not " << rax);
+    eml(L"jmp .end");
+
+    eml(L".fail:");
+    eml(L"xor " << rax << L", " << rax);
+    eml(L"jmp .end");
+
+    eml(L".end");
 }
 
 void il_nasm::generate(FunctionNode* code)
@@ -388,12 +440,12 @@ void il_nasm::generate(IfNode* code)
     generate(code->true_block);
     eml(L"jmp " << name << L".end");
 
-    eml(name << L".else");
+    eml(name << L".else:");
 
     if (code->false_block)
         generate(code->false_block);
 
-    eml(name << L".end");
+    eml(name << L".end:");
 };
 
 void il_nasm::generate(WhileNode* code)

@@ -1,0 +1,74 @@
+void printf(u32° fmt, u32° v);
+void putchar(u8° c);
+
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
+
+i32 compare_sml(u32° a, u32° b)
+{
+    assert(a~ b~<);
+}
+
+i32 compare_grt(u32° a, u32° b)
+{
+    assert(a~ b~>);
+}
+
+i32 compare_equ(u32° a, u32° b)
+{
+    assert(a~ b~?);
+}
+
+i32 compare_neq(u32° a, u32° b)
+{
+    assert(a~ b~?!);
+}
+
+void main()
+{
+    test_c = 0;
+
+    compare_sml(0, 1);
+    compare_sml(10, 11);
+    compare_sml(0 5-, 0 3-);
+    compare_sml(0 10-, 0 9-);
+    compare_sml(9 9*, 90 8-);
+    compare_sml(28, 7 4* 1+);
+    putchar(10);
+
+    compare_grt(10, 0);
+    compare_grt(5, 3);
+    compare_grt(0 10-, 0 15-);
+    compare_grt(200, 99);
+    compare_grt(9 9* 20+, 10 10*);
+    compare_grt(2 2 3**, 2 2 2**);
+    putchar(10);
+
+    compare_equ(10, 10);
+    compare_equ(0 8-, 0 8-);
+    compare_equ(0, 0);
+    compare_equ(55, 55);
+    compare_equ(808 8/, 10 10* 1+);
+    compare_equ(77 23+, 2800 28/);
+    putchar(10);
+
+    compare_neq(0, 1);
+    compare_neq(10, 0);
+    compare_neq(0 90-, 0 9-);
+    compare_neq(8, 80);
+    compare_neq(22 33*, 44 55*);
+    compare_neq(100 6*, 3000 6/);
+    putchar(10);
+}

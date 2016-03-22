@@ -195,8 +195,14 @@ void il_gas::generate_op_drf(OperatorNode* code)
 
 void il_gas::generate_op_equ(OperatorNode* code)
 {
-    generate_op_neq(code);
-    generate_op_not(code);
+    pop(rax);
+    pop(rcx);
+    eml(L"xor " << rax << L", " << rcx);
+    eml(L"not " << rax);
+    push(rax);
+
+    //generate_op_neq(code);
+    //generate_op_not(code);
 }
 
 void il_gas::generate_op_sml(OperatorNode* code)
@@ -274,6 +280,26 @@ void il_gas::generate_op_cpy(OperatorNode* code)
 {
     pop(rax);
     push(rax);
+    push(rax);
+}
+
+void il_gas::generate_op_and(OperatorNode* code)
+{
+    eml(L"call boolNormalize");
+    pop(rax);
+    eml(L"call boolNormalize");
+    pop(rcx);
+    eml(L"and " << rax << L", " << rcx);
+    push(rax);
+}
+
+void il_gas::generate_op_or (OperatorNode* code)
+{
+    eml(L"call boolNormalize");
+    pop(rax);
+    eml(L"call boolNormalize");
+    pop(rcx);
+    eml(L"or  " << rax << L", " << rcx);
     push(rax);
 }
 
@@ -392,12 +418,12 @@ void il_gas::generate(IfNode* code)
     generate(code->true_block);
     eml(L"jmp " << name << L".end");
 
-    eml(name << L".else");
+    eml(name << L".else:");
 
     if (code->false_block)
         generate(code->false_block);
 
-    eml(name << L".end");
+    eml(name << L".end:");
 };
 
 void il_gas::generate(WhileNode* code)

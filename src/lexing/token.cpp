@@ -1,16 +1,18 @@
 #include "token.hpp"
 
 const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"return", L"struct", L"EOS" };
-const schar* op_strings[] = {L"+", L"-", L"*", L"/", L"~", L"?", L"<", L">", L"!", L"^", L"$"};
+const schar* op_strings[] = {L"+", L"-", L"*", L"/", L"~", L"?", L"<", L">", L"!", L"^", L"$", L"&", L"|"};
 
-schar* tok::to_str()
+void tok::print(std::wostream& out)
 {
     if (this->type == tok_type::IDENT || this->type == tok_type::STRING)
-        return this->string;
+        out << this->string;
     else if (this->type == tok_type::OP)
-        return op_strings[(int)this->oper];
+        out << op_strings[(int)this->oper];
+    else if (this->type == tok_type::NUM)
+        out << this->number;
     else
-        return tok_strings[(int)this->type];
+        out << tok_strings[(int)this->type];
 }
 
 tok::tok()

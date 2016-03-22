@@ -1,0 +1,51 @@
+void printf(u32° fmt, u32° str);
+void putchar(u8° c);
+
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
+
+void main()
+{
+	test_c = 0;
+
+	if (8 8/)
+	{
+		assert(1);
+	}
+	else
+	{
+		assert(0);
+	}
+
+	if (9 10* 1+ 50/ 2-)
+	{
+		assert(0);
+	}
+	else
+	{
+		assert(1);
+	}
+
+	while (22 11/ 10* 20/)
+	{
+		assert(1);
+	}
+
+	while (38 8- 15/ 2-)
+	{
+		assert(0);
+	}
+
+}
