@@ -175,6 +175,16 @@ public:
     ListUNode* args;
 };
 
+class AnomymousCallUNode : public uast
+{
+public:
+    AnomymousCallUNode(ListUNode* args);
+    ~AnomymousCallUNode();
+    void print(std::wostream& out) const;
+
+    ListUNode* args;
+};
+
 class IfUNode : public uast
 {
 public:

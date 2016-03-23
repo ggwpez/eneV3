@@ -305,6 +305,23 @@ FunctionCallNode::~FunctionCallNode()
     delete this->args;
 }
 
+AnomymousCallNode::AnomymousCallNode(ListNode* args)
+{
+    this->args = args;
+}
+
+void AnomymousCallNode::print(std::wostream &out) const
+{
+    out << L"<AnomymousCallNode <args ";
+    this->args->print(out);
+    out << L">";
+}
+
+AnomymousCallNode::~AnomymousCallNode()
+{
+    delete this->args;
+}
+
 ReturnNode::ReturnNode(ExpressionTermNode* val) : ast(val)
 {
     this->val = val;

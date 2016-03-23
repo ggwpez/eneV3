@@ -427,6 +427,16 @@ void il_nasm::generate(FunctionCallNode* code)
         push(rax);
 };
 
+void il_nasm::generate(AnomymousCallNode* code)
+{
+    pop(rcx);
+    eml(L"call get_eip");
+    eml(L"add " << rax << L", " << 2 *__BYTES__);
+    push(rax);
+    push(rcx);
+    eml(L"ret");                            //actualisy is a call
+}
+
 void il_nasm::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++if_c);
@@ -535,6 +545,8 @@ void il_nasm::generate(tast* code)
         generate(dynamic_cast<FunctionNode*>(code));
     else if (dynamic_cast<FunctionCallNode*>(code))
         generate(dynamic_cast<FunctionCallNode*>(code));
+    else if (dynamic_cast<AnomymousCallNode*>(code))
+        generate(dynamic_cast<AnomymousCallNode*>(code));
     else if (dynamic_cast<IfNode*>(code))
         generate(dynamic_cast<IfNode*>(code));
     else if (dynamic_cast<WhileNode*>(code))

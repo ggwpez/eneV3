@@ -103,9 +103,17 @@ void il_gas::generate(PushNode* code)
         push(n->num);
     else if (VariableNode* v = dynamic_cast<VariableNode*>(code->v))     //its a variable in the stack frame
     {
-        std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
-        eml(L"lea " << rdx << L", [ebp " << adder << L']');
-        push(rdx);
+        if (v->ebp_off)
+        {
+            std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
+            eml(L"lea " << rdx << L", [ebp " << adder << L']');
+            push(rdx);
+        }
+        else
+        {
+            eml(L"lea " << rdx << L", [" << v->var_name->str << L']');
+            push(rdx);
+        }
     }
     else
         ERR(err_t::GEN_IL);
@@ -314,7 +322,7 @@ void il_gas::generate(ReturnNode* code)
     generate(code->val);
     pop(rax);
 
-    eml("jmp .end_" << ret_c--);
+    eml("jmp .end_" << ret_c -1);
 };
 
 void il_gas::generate(BreakNode* code)
@@ -404,6 +412,16 @@ void il_gas::generate(FunctionCallNode* code)
     if (code->return_type->t->size)
         push(rax);
 };
+
+void il_gas::generate(AnomymousCallNode* code)
+{
+    pop(rcx);
+    eml(L"call get_eip");
+    eml(L"add " << rax << L", " << 2 *__BYTES__);
+    push(rax);
+    push(rcx);
+    eml(L"ret");
+}
 
 void il_gas::generate(IfNode* code)
 {
@@ -513,6 +531,8 @@ void il_gas::generate(tast* code)
         generate(dynamic_cast<FunctionNode*>(code));
     else if (dynamic_cast<FunctionCallNode*>(code))
         generate(dynamic_cast<FunctionCallNode*>(code));
+    else if (dynamic_cast<AnomymousCallNode*>(code))
+        generate(dynamic_cast<AnomymousCallNode*>(code));
     else if (dynamic_cast<IfNode*>(code))
         generate(dynamic_cast<IfNode*>(code));
     else if (dynamic_cast<WhileNode*>(code))

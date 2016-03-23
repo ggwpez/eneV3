@@ -21,3 +21,7 @@ ret
 xor  ax,  ax
 not  ax
 ret
+
+get_eip:
+    mov eax, [esp]
+    ret

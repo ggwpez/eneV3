@@ -1,0 +1,35 @@
+void printf(u32° fmt, u32° str);
+void putchar(u8° c);
+
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%02d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%02d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
+
+u32°: a;
+u32°: MAGIC;
+
+void test()
+{
+	a = MAGIC~;
+}
+
+void main()
+{
+	a = 0;
+	MAGIC = 654896731;
+
+	test;
+	();
+	assert(a~ MAGIC~?);
+}

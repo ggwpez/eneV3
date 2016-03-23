@@ -178,6 +178,16 @@ public:
     int args_size;
 };
 
+class AnomymousCallNode : public tast
+{
+public:
+    AnomymousCallNode(ListNode* args);
+    ~AnomymousCallNode();
+    void print(std::wostream& out) const;
+
+    ListNode* args;
+};
+
 class IfNode : public tast
 {
 public:

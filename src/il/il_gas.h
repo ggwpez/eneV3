@@ -54,6 +54,7 @@ private:
     void generate(FunctionExternNode* code) override;
     void generate(FunctionNode* code) override;
     void generate(FunctionCallNode* code) override;
+    void generate(AnomymousCallNode* code) override;
     void generate(IfNode* code) override;
     void generate(WhileNode* code) override;
 

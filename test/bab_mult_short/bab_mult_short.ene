@@ -1,4 +1,20 @@
 void printf(u8°° str, u32° a, u32° b, u32° ab);
+void putchar(u8° c);
+
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%02d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%02d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
 
 u32 bab_mult_short(u32° a, u32° b)
 {
@@ -7,10 +23,14 @@ u32 bab_mult_short(u32° a, u32° b)
 
 void main()
 {
-	u32°: a;
-	u32°: b;
-	a = 22;
-	b = 18;
+	test_c = 0;
 
-	printf("a = %d, b = %d, a*b = %d", a~, b~, bab_mult_short(a~,b~));
+	assert(bab_mult_short(20, 18)  360?);
+	assert(bab_mult_short(10, 10)  100?);
+	assert(bab_mult_short( 5, 15)   75?);
+	assert(bab_mult_short(89, 45) 4005?);
+	assert(bab_mult_short( 0, 20)    0?);
+	assert(bab_mult_short(87,  0)    0?);
+
+	putchar(10);
 }

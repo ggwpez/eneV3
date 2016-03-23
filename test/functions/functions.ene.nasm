@@ -26,6 +26,8 @@ get_eip:
     ret
 section .bss
 test_c: resb 4
+a: resb 4
+MAGIC: resb 4
 section .text
 extern printf
 extern putchar
@@ -47,7 +49,7 @@ mov  eax, dword [eax]
 push eax
 push __str_1
 call printf
-add esp, 0
+add esp, 8
 jmp __if_1.end
 __if_1.else:
 lea edx, [test_c]
@@ -57,7 +59,7 @@ mov  eax, dword [eax]
 push eax
 push __str_2
 call printf
-add esp, 0
+add esp, 8
 __if_1.end:
 lea edx, [test_c]
 push edx
@@ -80,25 +82,21 @@ add esp, 0
 mov esp, ebp
 pop ebp
 ret 
-quads_short:
+test:
 push ebp
 mov ebp, esp
 sub esp, 0
-lea edx, [ebp +8]
+lea edx, [a]
+push edx
+lea edx, [MAGIC]
 push edx
 pop  eax
 mov  eax, dword [eax]
 push eax
 pop  eax
-push eax
-push eax
-pop  eax
 pop  ecx
-mul ecx
-push eax
-pop  eax
-jmp .end
-quads_short.end:
+mov dword [ecx], eax
+test.end:
 add esp, 0
 mov esp, ebp
 pop ebp
@@ -107,17 +105,35 @@ main:
 push ebp
 mov ebp, esp
 sub esp, 0
-lea edx, [test_c]
+lea edx, [a]
 push edx
 push 0
 pop  eax
 pop  ecx
 mov dword [ecx], eax
-push 10
-call quads_short
-add esp, 4
+lea edx, [MAGIC]
+push edx
+push 654896731
+pop  eax
+pop  ecx
+mov dword [ecx], eax
+push test
+pop  ecx
+call get_eip
+add eax, 8
 push eax
-push 100
+push ecx
+ret
+lea edx, [a]
+push edx
+pop  eax
+mov  eax, dword [eax]
+push eax
+lea edx, [MAGIC]
+push edx
+pop  eax
+mov  eax, dword [eax]
+push eax
 pop  eax
 pop  ecx
 xor eax, ecx
@@ -128,57 +144,6 @@ call boolNormalize
 call boolNot
 push eax
 call assert
-add esp, 4
-push 20
-call quads_short
-add esp, 4
-push eax
-push 400
-pop  eax
-pop  ecx
-xor eax, ecx
-call boolNormalize
-push eax
-pop  eax
-call boolNormalize
-call boolNot
-push eax
-call assert
-add esp, 4
-push 72
-call quads_short
-add esp, 4
-push eax
-push 5184
-pop  eax
-pop  ecx
-xor eax, ecx
-call boolNormalize
-push eax
-pop  eax
-call boolNormalize
-call boolNot
-push eax
-call assert
-add esp, 4
-push 9836
-call quads_short
-add esp, 4
-push eax
-push 96746896
-pop  eax
-pop  ecx
-xor eax, ecx
-call boolNormalize
-push eax
-pop  eax
-call boolNormalize
-call boolNot
-push eax
-call assert
-add esp, 4
-push 10
-call putchar
 add esp, 4
 main.end:
 add esp, 0

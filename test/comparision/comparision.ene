@@ -6,11 +6,11 @@ void assert(i32° v)
 {
     if (v)
     {
-	   printf("%d: OK  ", test_c~);
+	   printf("%02d: OK  ", test_c~);
     }
     else
     {
-	   printf("%d: ###### ERR ######", test_c~);
+	   printf("%02d: ###### ERR ######", test_c~);
     }
 
     test_c$=~1+;

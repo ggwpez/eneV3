@@ -39,6 +39,7 @@ private:
     tast* scoper::convert(FunctionHeaderUNode* code);
     tast* scoper::convert(FunctionUNode* code);
     tast* scoper::convert(FunctionCallUNode* code);
+    AnomymousCallNode* scoper::convert(AnomymousCallUNode *code);
     tast* scoper::convert(IfUNode* code);
     tast* scoper::convert(WhileUNode* code);
     tast* scoper::convert(IdentNode* code);

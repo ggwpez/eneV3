@@ -76,6 +76,7 @@ protected:
     virtual void generate(FunctionExternNode* code) = 0;
     virtual void generate(FunctionNode* code) = 0;
     virtual void generate(FunctionCallNode* code) = 0;
+    virtual void generate(AnomymousCallNode* code) = 0;
     virtual void generate(IfNode* code) = 0;
     virtual void generate(WhileNode* code) = 0;
 

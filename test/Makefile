@@ -1,11 +1,14 @@
 SUBDIRS := $(wildcard */.)
 
 export ENE:=../../bin/ene
-export ENEFLAGS:=-b 32 -a nasm -t ../../src/templates
+export ENEFLAGS:=-b 32 -t ../../src/templates -a nasm
 
 all: $(SUBDIRS)
+	
+test: all
+	sh test.sh
 
-test: 
+retest: clean test
 
 clean:
 	@find . -name '*.o' -delete

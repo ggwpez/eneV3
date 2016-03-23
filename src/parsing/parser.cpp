@@ -184,6 +184,8 @@ uast* parser::parse_block_statement(int s, int& l)
         return parse_return(s, l);
     else if (input[s]->type == tok_type::ASM)
         return parse_asm(s, l);
+    else if (input[s]->type == tok_type::LBRK)
+        return parse_anonymous_call(s, l);
     else
         return parse_expression_term(s, l);
 }
@@ -387,6 +389,16 @@ FunctionCallUNode* parser::parse_function_call(int s, int& l)
     l += args_l;
 
     return new FunctionCallUNode(target, call_args);
+}
+
+AnomymousCallUNode* parser::parse_anonymous_call(int s, int& l)
+{
+    int args_l = 0;
+
+    ListUNode* call_args = parse_list(s, args_l);
+    l += args_l;
+
+    return new AnomymousCallUNode(call_args);
 }
 
 ListUNode* parser::parse_list(int s, int& l)

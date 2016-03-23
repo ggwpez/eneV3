@@ -260,6 +260,23 @@ FunctionCallUNode::~FunctionCallUNode()
     delete this->args;
 }
 
+AnomymousCallUNode::AnomymousCallUNode(ListUNode *args)
+{
+    this->args = args;
+}
+
+void AnomymousCallUNode::print(std::wostream& out) const
+{
+    out << L"<AnomymousCallUNode <args ";
+    this->args->print(out);
+    out << L">";
+}
+
+AnomymousCallUNode::~AnomymousCallUNode()
+{
+    delete this->args;
+}
+
 ReturnUNode::ReturnUNode(ExpressionTermUNode* val) : ast(val)
 {
     this->val = val;

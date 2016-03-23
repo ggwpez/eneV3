@@ -253,6 +253,13 @@ tast* scoper::convert(FunctionCallUNode* code)
     return ret;
 };
 
+AnomymousCallNode* scoper::convert(AnomymousCallUNode* code)
+{
+    ListNode* args = convert(code->args);
+
+    return new AnomymousCallNode(args);
+}
+
 tast* scoper::convert(IfUNode* code)
 {
     ExpressionTermNode* cond = convert(code->cond);
@@ -285,6 +292,12 @@ tast* scoper::convert(IdentNode* code)
         this->last_types->push(v->type->t);
         to_add = v;
     }
+    else if (mng->is_fun_reg(code))
+    {   //anonymous call
+        to_add = new IdentNode(code);
+        //TODO ### add return type for anonymous calls
+    }
+    //TODO ### add function heads, to allow extern anonymous calls
     else
         ERR(err_t::SC_VAR_NAME_UNKOWN, code);
 
@@ -419,6 +432,8 @@ tast* scoper::convert(uast* code)
         convert(dynamic_cast<FunctionUNode*>(code));
     else if(dynamic_cast<FunctionCallUNode*>(code))
         convert(dynamic_cast<FunctionCallUNode*>(code));
+    else if (dynamic_cast<AnomymousCallUNode*>(code))
+        convert(dynamic_cast<AnomymousCallUNode*>(code));
     else if(dynamic_cast<IfUNode*>(code))
         convert(dynamic_cast<IfUNode*>(code));
     else if(dynamic_cast<WhileUNode*>(code))

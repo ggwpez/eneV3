@@ -20,3 +20,8 @@ notzero:
 xor rax, rax
 not rax
 ret
+
+
+get_eip:
+    mov rax, [esp]
+    ret

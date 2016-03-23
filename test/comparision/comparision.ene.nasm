@@ -20,6 +20,10 @@ notzero:
 xor eax, eax
 not eax
 ret
+
+get_eip:
+    mov eax, [esp]
+    ret
 section .bss
 test_c: resb 4
 section .text
@@ -511,5 +515,5 @@ mov esp, ebp
 pop ebp
 ret 
 section .data
-__str_1: db "%d: OK  ", 0
-__str_2: db "%d: ###### ERR ######", 0
+__str_1: db "%02d: OK  ", 0
+__str_2: db "%02d: ###### ERR ######", 0

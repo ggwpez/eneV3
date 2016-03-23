@@ -1,6 +1,21 @@
 void printf(u32° fmt, u32° x, u32° y);
 void putchar(u8° c);
 
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%02d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%02d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
+
 u32 quads_short(i32° x)
 {
     return x~$*;
@@ -8,12 +23,12 @@ u32 quads_short(i32° x)
 
 void main()
 {
-    u32°: i;
-    i =	0 1-;
+    test_c = 0;
 
-    while  (i~ 10 < i$=~1+)
-    {
-	printf("x = %d  x^2 = %d", i~, quads_short(i~));
-	putchar(10);
-    }
+    assert(quads_short(10) 100?);
+    assert(quads_short(20) 400?);
+    assert(quads_short(72) 5184?);
+    assert(quads_short(9836) 96746896?);
+
+    putchar(10);
 }

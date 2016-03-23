@@ -77,7 +77,7 @@ int parse_args(int argc, char** argv, cmp_args& ret)
                 print_version();
                 return -1;
             default:
-                print_help();
+                ERR(err_t::IO_CMD_ARG_AS_UNKNOWN, optarg);
                 return -1;
         }
     }
@@ -89,7 +89,7 @@ int parse_args(int argc, char** argv, cmp_args& ret)
     }
 
     if (!output.size())
-        output = inputs.front();
+        ERR(err_t::IO_CMD_ARG_NO_OUTPUT);
 
     ret = cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
     return 0;

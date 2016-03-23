@@ -20,3 +20,7 @@ notzero:
 xor  ax,  ax
 not  ax
 ret
+
+get_eip:
+    mov ax, [esp]
+    ret
