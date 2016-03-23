@@ -1,0 +1,40 @@
+void printf(u8°° str, u32° a, u32° b, u32° ab);
+void putchar(u8° c);
+
+u32°: test_c;
+void assert(i32° v)
+{
+    if (v)
+    {
+	   printf("%02d: OK  ", test_c~);
+    }
+    else
+    {
+	   printf("%02d: ###### ERR ######", test_c~);
+    }
+
+    test_c$=~1+;
+}
+
+u32 fac(u32° v)
+{
+	u32°: val;
+	val = 1;
+
+	while (v~)
+	{
+		val = val~v~*;
+		v$=~1-;
+	}
+
+	return val~;
+}
+
+void main()
+{
+	assert(3628800 fac(10) ?);
+	assert(  40320 fac( 8) ?);
+	assert(     24 fac( 4) ?);
+	assert(      1 fac( 0) ?);
+	putchar(10);
+}

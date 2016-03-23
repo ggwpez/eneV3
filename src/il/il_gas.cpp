@@ -322,7 +322,7 @@ void il_gas::generate(ReturnNode* code)
     generate(code->val);
     pop(rax);
 
-    eml("jmp .end_" << ret_c -1);
+    eml("jmp .end_" << ret_c);
 };
 
 void il_gas::generate(BreakNode* code)
@@ -427,7 +427,7 @@ void il_gas::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++if_c);
 
-    eml(name << ':' << endl);
+    eml(name << ':');
     generate(code->cond);
     pop(rax);
 
@@ -466,9 +466,9 @@ void il_gas::generate()
 {
     generate(input);
 
-    *ss << " .bss"  << endl << ss_bss ->str()  <<
-           " .text" << endl << ss_codeh->str() << ss_code->str() <<
-           " .data" << endl << ss_data->str();
+    *ss << ".bss"  << endl << ss_bss ->str()  <<
+           ".text" << endl << ss_codeh->str() << ss_code->str() <<
+           ".data" << endl << ss_data->str();
 }
 
 void il_gas::generate_ProgramNode_term(tast* code)
