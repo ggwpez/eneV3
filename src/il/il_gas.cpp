@@ -316,13 +316,13 @@ void il_gas::generate(OperatorNode* code)
     il::generate(code);
 };
 
-int ret_c = 0;
 void il_gas::generate(ReturnNode* code)
 {
+    eml(L"xor " << rax << L", " << rax);
     generate(code->val);
     pop(rax);
 
-    eml("jmp .end_" << ret_c);
+    eml("jmp end_" << ret_c);
 };
 
 void il_gas::generate(BreakNode* code)
@@ -396,7 +396,7 @@ void il_gas::generate(FunctionNode* code)
 
     generate(code->code);
 
-    eml(".end_" << ++ret_c << ":");
+   eml(L"end_" << ++ret_c << L":\t;end of function code->head->name->str");
     generate_sf_leave(code->code->stack_s);
 };
 
@@ -415,12 +415,12 @@ void il_gas::generate(FunctionCallNode* code)
 
 void il_gas::generate(AnomymousCallNode* code)
 {
-    pop(rcx);
-    eml(L"call get_eip");
-    eml(L"add " << rax << L", " << 2 *__BYTES__);
-    push(rax);
-    push(rcx);
-    eml(L"ret");
+    pop(rax);
+    push(L"anonym_end_" << ++anym_c);
+    eml(L"jmp " << rax);
+
+    eml(L"anonym_end_" << anym_c << L':');
+
 }
 
 void il_gas::generate(IfNode* code)

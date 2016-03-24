@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"return", L"struct", L"EOS" };
+const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"\\", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"return", L"struct", L"EOS" };
 const schar* op_strings[] = {L"+", L"-", L"*", L"/", L"~", L"?", L"<", L">", L"!", L"^", L"$", L"&", L"|"};
 
 void tok::print(std::wostream& out)

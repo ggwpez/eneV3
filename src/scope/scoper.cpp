@@ -4,6 +4,7 @@
 #include "target.h"
 
 #include "ptr_t.h"
+#include "fptr_t.h"
 
 #define last_type (!last_types->size() ? nullptr : last_types->top())
 #define clear_types while(last_types->size()) {last_types->pop();}
@@ -115,6 +116,16 @@ tast* scoper::convert(ReturnUNode* code)
 
 tast* scoper::convert(TypeUNode* code)
 {
+    if (dynamic_cast<AtomTypeUNode*>(code))
+        return convert(dynamic_cast<AtomTypeUNode*>(code));
+    else if (dynamic_cast<FptrTypeUNode*>(code))
+        return convert(dynamic_cast<FptrTypeUNode*>(code));
+    else
+        ERR(err_t::GEN_SCR);
+};
+
+tast* scoper::convert(AtomTypeUNode* code)
+{
     itype* ret = mng->get_type(code->parts->at(0));   //base type
     TypeNode* rret = new TypeNode(ret);
     rret->set_pos(code);
@@ -129,7 +140,22 @@ tast* scoper::convert(TypeUNode* code)
 
     rret->t = ret;
     return rret;
-};
+}
+
+tast* scoper::convert(FptrTypeUNode* code)
+{
+    ListTypeNode* args = convert(code->args);
+    TypeNode* ret_t = convert(code->ret);
+
+    std::vector<itype*>* types = new std::vector<itype*>();
+    for (TypeNode* t : *args->items)
+        types->push_back(t->t);
+
+    itype* t = new fptr_t(types, ret_t->t);
+    TypeNode* ret = new TypeNode(t);
+
+    return ret;
+}
 
 tast* scoper::convert(VariableUNode* code)
 {

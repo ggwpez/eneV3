@@ -41,7 +41,8 @@ HEADERS += \
     compiler.h \
     io.h \
     string_def.h \
-    target.h
+    target.h \
+    scope/fptr_t.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -66,4 +67,5 @@ SOURCES += \
     compiler.cpp \
     io.cpp \
     main.cpp \
-    target.cpp
+    target.cpp \
+    scope/fptr_t.cpp

@@ -52,7 +52,7 @@ int parse_args(int argc, char** argv, cmp_args& ret)
                 only_compile |= 1;
                 break;
             case 'w':
-                no_warn |= 1;
+                no_warn = 1;
                 break;
             case 'a':
                 if (!strcmp("nasm", optarg))

@@ -25,6 +25,7 @@ enum class tok_type
     RCBRK,
     DOT,
     SEMI,
+    BACKSLASH,
     WHILE,
     FOR,
     IF,

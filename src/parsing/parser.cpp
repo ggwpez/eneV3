@@ -354,7 +354,12 @@ ArgUNode* parser::parse_arg(int s, int& l)
 
 TypeUNode* parser::parse_type(int s, int& l)
 {
-    tassert(tok_type::IDENT, input[s]); l = 0;
+    if (input[s]->type == tok_type::BACKSLASH)
+        return parse_fptr_type(s, l);
+    else
+        tassert(tok_type::IDENT, input[s]);
+
+    l = 0;
     IdentNode* tname = parse_ident(s, l);
     std::vector<IdentNode*>* parts = new std::vector<IdentNode*>();
     parts->push_back(tname);
@@ -365,7 +370,42 @@ TypeUNode* parser::parse_type(int s, int& l)
         parts->push_back(new IdentNode(L"°"));
     }
 
-    return new TypeUNode(parts);
+    return new AtomTypeUNode(parts);
+}
+
+TypeUNode* parser::parse_fptr_type(int s, int& l)
+{
+    tassert(tok_type::BACKSLASH, input[s +l++]);
+    int args_l = 0, type_l = 0;
+
+    ListTypeUNode* args = parse_type_list(s +l, args_l);
+    args_l += l;
+    tassert(tok_type::DDOT, input[s +l++]);
+
+    TypeUNode* ret_type = parse_type(s +l, type_l);
+    l += type_l;
+
+    return new FptrTypeUNode(args, ret_type);
+}
+
+ListTypeUNode* parser::parse_type_list(int s, int& l)
+{
+    std::vector<TypeUNode*>* types = new std::vector<TypeUNode*>();
+    ListTypeUNode* ret = new ListTypeUNode(types); l = 0;
+    int type_l;
+    ret->set_pos_start(input[s]);
+
+    TypeUNode* next = null;
+
+    while ((l += type_l) +s < this->length && (input[s +l]->type == tok_type::IDENT || input[s +l]->type == tok_type::BACKSLASH))
+    {
+        type_l = 0;
+        next = parse_type(s +l, type_l);
+        types->push_back(next);
+    }
+
+    ret->set_pos_end(input[s +l]);
+    return ret;
 }
 
 AssignUNode* parser::parse_assign(int s, int& l)

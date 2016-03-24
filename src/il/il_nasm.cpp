@@ -314,10 +314,11 @@ void il_nasm::generate(OperatorNode* code)
 
 void il_nasm::generate(ReturnNode* code)
 {
+    eml(L"xor " << rax << L", " << rax);    //return 0 if no return value given
     generate(code->val);
     pop(rax);
 
-    eml("jmp .end");
+    eml("jmp end_" << ret_c);
 };
 
 void il_nasm::generate(BreakNode* code)
@@ -410,7 +411,8 @@ void il_nasm::generate(FunctionNode* code)
 
     generate(code->code);
 
-    eml(code->head->name->str << L".end:");
+    //eml( << L".end_");
+    eml(L"end_" << ++ret_c << L":\t;end of function code->head->name->str");
     generate_sf_leave(code->code->stack_s);
 };
 
@@ -429,12 +431,11 @@ void il_nasm::generate(FunctionCallNode* code)
 
 void il_nasm::generate(AnomymousCallNode* code)
 {
-    pop(rcx);
-    eml(L"call get_eip");
-    eml(L"add " << rax << L", " << 2 *__BYTES__);
-    push(rax);
-    push(rcx);
-    eml(L"ret");                            //actualisy is a call
+    pop(rax);
+    push(L"anonym_end_" << ++anym_c);
+    eml(L"jmp " << rax);
+
+    eml(L"anonym_end_" << anym_c << L':');
 }
 
 void il_nasm::generate(IfNode* code)

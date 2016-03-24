@@ -1,5 +1,6 @@
 #include "parsing/ast/uast.h"
 #include "errors/warnings.h"
+#include "target.h"
 
 ProgramNode::ProgramNode(tast_arr* code) : ast(code->empty() ? nullptr : code->front(), code->empty() ? nullptr : code->back())
 {
@@ -117,15 +118,48 @@ TypeNode::TypeNode(itype* t)
     this->t = t;
 }
 
-TypeNode::~TypeNode()
+void TypeNode::print(std::wostream &out) const
+{
+    t->print(out);
+}
+
+/*AtomTypeNode::AtomTypeNode(itype* t)
+{
+    this->t = t;
+}
+
+AtomTypeNode::~AtomTypeNode()
 {
 
 }
 
-void TypeNode::print(std::wostream& out) const
+void AtomTypeNode::print(std::wostream& out) const
 {
-    this->t->print(out);
+    out << L"<AtomTypeNode <t ";
+    t->print(out);
+    out << L">>";
 }
+
+FptrTypeNode::FptrTypeNode(ListTypeNode* args, TypeNode* ret)
+{
+    this->args = args;
+    this->ret = ret;
+}
+
+FptrTypeNode::~FptrTypeNode()
+{
+    delete this->args;
+    delete this->ret;
+}
+
+void FptrTypeNode::print(std::wostream& out) const
+{
+    out << L"<FptrTypeNode <args ";
+    args->print(out);
+    out << L"><ret ";
+    ret->print(out);
+    out << L">>";
+}*/
 
 VariableNode::VariableNode(TypeNode* type, IdentNode* var_name) : ast(type, var_name)
 {
@@ -278,6 +312,27 @@ void ListArgNode::print(std::wostream &out) const
 {
     out << L"<ListArgNode <items ";
     for (tast* item : *items)
+        item->print(out);
+    out << L">>";
+}
+
+ListTypeNode::ListTypeNode(std::vector<TypeNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
+{
+    this->items = items;
+}
+
+ListTypeNode::~ListTypeNode()
+{
+    for (TypeNode* item : *items)
+        delete item;
+
+    delete this->items;
+}
+
+void ListTypeNode::print(std::wostream &out) const
+{
+    out << L"<ListTypeNode <types ";
+    for (TypeNode* item : *items)
         item->print(out);
     out << L">>";
 }

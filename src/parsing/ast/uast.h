@@ -91,12 +91,34 @@ public:
 
 class TypeUNode : public uast
 {
-public:
+/*public:
     TypeUNode(std::vector<IdentNode*>* parts);
     ~TypeUNode();
     void print(std::wostream& out) const;
 
+    std::vector<IdentNode*>* parts;*/
+};
+
+class AtomTypeUNode : public TypeUNode
+{
+public:
+    AtomTypeUNode(std::vector<IdentNode*>* parts);
+    ~AtomTypeUNode();
+    void print(std::wostream& out) const;
+
     std::vector<IdentNode*>* parts;
+};
+
+class ListTypeUNode;
+class FptrTypeUNode : public TypeUNode
+{
+public:
+    FptrTypeUNode(ListTypeUNode* args, TypeUNode* ret);
+    ~FptrTypeUNode();
+    void print(std::wostream& out) const;
+
+    ListTypeUNode* args;
+    TypeUNode* ret;
 };
 
 class VariableUNode : public uast
@@ -139,6 +161,16 @@ public:
     void print(std::wostream& out) const;
 
     std::vector<ArgUNode*>* items;
+};
+
+class ListTypeUNode : public uast               //int int
+{
+public:
+    ListTypeUNode(std::vector<TypeUNode*>* items);
+    ~ListTypeUNode();
+    void print(std::wostream& out) const;
+
+    std::vector<TypeUNode*>* items;
 };
 
 class FunctionHeaderUNode : public uast

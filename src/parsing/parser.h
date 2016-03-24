@@ -34,12 +34,14 @@ private:
     ProgramUNode*           parse_program(int s, int& l);
     ArgUNode*               parse_arg(int s, int& l);
     ListArgUNode*           parse_arg_list(int s, int& l);
+    ListTypeUNode*          parse_type_list(int s, int& l);
     ListUNode*              parse_list(int s, int& l);
     BlockUNode*             parse_block(int s, int& l);
     uast*                   parse_block_statement(int s, int& l);
     uast*                   parse_expression(int s, int& l);
     ExpressionTermUNode*    parse_expression_term(int s, int& l);
-    TypeUNode *parse_type(int s, int& l);
+    TypeUNode* parse_type(int s, int& l);
+    TypeUNode* parse_fptr_type(int s, int& l);
 
     size_t length;
     std::vector<tok*> input;

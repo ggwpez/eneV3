@@ -85,7 +85,7 @@ protected:
     virtual void generate_ssp_init() = 0;
     virtual void generate_ssp_check() = 0;
 
-    int str_c, sml_c, grt_c, if_c, while_c, ssp_c;
+    int str_c, sml_c, grt_c, if_c, while_c, ssp_c, anym_c, ret_c;
 };
 
 #endif // IL_H

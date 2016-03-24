@@ -9,6 +9,13 @@
 *.so
 *.dll
 *.dylib
+*.out
+*.obj
+
+# ASM
+*.s
+*.nasm
+*.asm
 
 # Qt-es
 
@@ -31,3 +38,5 @@ ui_*.h
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+
+bin/

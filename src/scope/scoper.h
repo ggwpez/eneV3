@@ -32,6 +32,8 @@ private:
     tast* scoper::convert(PushUNode* code);
     tast* scoper::convert(ReturnUNode* code);
     tast* scoper::convert(TypeUNode* code);
+    tast* scoper::convert(AtomTypeUNode* code);
+    tast* scoper::convert(FptrTypeUNode* code);
     tast* scoper::convert(VariableUNode* code);
     ArgNode *scoper::convert(ArgUNode *code);
     tast* scoper::convert(ListUNode* code);

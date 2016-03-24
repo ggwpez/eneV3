@@ -81,11 +81,32 @@ class TypeNode : public tast
 {
 public:
     TypeNode(itype* t);
-    ~TypeNode();
+    void print(std::wostream &out) const;
+
+    itype* t;
+};
+
+/*class AtomTypeNode : public tast
+{
+public:
+    AtomTypeNode(itype *t);
+    ~AtomTypeNode();
     void print(std::wostream& out) const;
 
     itype* t;
 };
+
+class ListTypeNode;
+class FptrTypeNode : public tast
+{
+public:
+    FptrTypeNode(ListTypeNode* args, TypeNode* ret);
+    ~FptrTypeNode();
+    void print(std::wostream& out) const;
+
+    ListTypeNode* args;
+    TypeNode* ret;
+};*/
 
 class VariableNode : public tast
 {
@@ -129,6 +150,16 @@ public:
     void print(std::wostream& out) const;
 
     std::vector<ArgNode*>* items;
+};
+
+class ListTypeNode : public tast               //int int
+{
+public:
+    ListTypeNode(std::vector<TypeNode*>* items);
+    ~ListTypeNode();
+    void print(std::wostream& out) const;
+
+    std::vector<TypeNode*>* items;
 };
 
 class FunctionHeaderNode : public tast

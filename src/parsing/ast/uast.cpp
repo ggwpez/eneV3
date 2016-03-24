@@ -100,12 +100,12 @@ void ArgUNode::print(std::wostream& out) const
 
 }
 
-TypeUNode::TypeUNode(std::vector<IdentNode*>* parts) : ast(parts->empty() ? nullptr : parts->front(), parts->empty() ? nullptr : parts->back())
+AtomTypeUNode::AtomTypeUNode(std::vector<IdentNode*>* parts) : ast(parts->empty() ? nullptr : parts->front(), parts->empty() ? nullptr : parts->back())
 {
     this->parts = parts;
 }
 
-TypeUNode::~TypeUNode()
+AtomTypeUNode::~AtomTypeUNode()
 {
     for (IdentNode* i : *this->parts)
         delete i;
@@ -113,10 +113,30 @@ TypeUNode::~TypeUNode()
     delete this->parts;
 }
 
-void TypeUNode::print(std::wostream& out) const
+void AtomTypeUNode::print(std::wostream& out) const
 {
     for (IdentNode* str : *parts)
         out << str->str;
+}
+
+FptrTypeUNode::FptrTypeUNode(ListTypeUNode* args, TypeUNode* ret)
+{
+    this->args = args;
+    this->ret = ret;
+}
+
+FptrTypeUNode::~FptrTypeUNode()
+{
+    delete this->args;
+    delete this->ret;
+}
+
+void FptrTypeUNode::print(std::wostream& out) const
+{
+    out << L'\\';
+    this->args->print(out);
+    out << L" : ";
+    ret->print(out);
 }
 
 VariableUNode::VariableUNode(TypeUNode* type_name, IdentNode* var_name) : ast(type_name, var_name)
@@ -235,6 +255,27 @@ void ListArgUNode::print(std::wostream &out) const
 {
     out << L"<ListArgUNode <items ";
     for (uast* item : *items)
+        item->print(out);
+    out << L">>";
+}
+
+ListTypeUNode::ListTypeUNode(std::vector<TypeUNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
+{
+    this->items = items;
+}
+
+ListTypeUNode::~ListTypeUNode()
+{
+    for (TypeUNode* item : *items)
+        delete item;
+
+    delete this->items;
+}
+
+void ListTypeUNode::print(std::wostream &out) const
+{
+    out << L"<ListTypeUNode <types ";
+    for (TypeUNode* item : *items)
         item->print(out);
     out << L">>";
 }
