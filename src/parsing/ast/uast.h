@@ -18,7 +18,7 @@ public:
     ~ProgramUNode();
     void print(std::wostream& out) const;
 
-   uast_arr* code;
+   const uast_arr* code;
 };
 
 class BlockUNode : public uast

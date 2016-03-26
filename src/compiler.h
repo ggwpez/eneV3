@@ -6,6 +6,9 @@
 #include "il/il_nasm.h"
 #include "il/il_gas.h"
 #include "scope/scoper.h"
+#include "io.h"
+#include "errors/warnings.h"
+#include "errors/errors.hpp"
 #include "target.h"
 
 #include <string.h>
@@ -25,17 +28,37 @@ struct cmp_args
     bool pedantic_err;
 };
 
+class praep;
+struct comp_alloc
+{
+    comp_alloc();
+    ~comp_alloc();
+
+    lexer* lex;
+    praep* prae;
+    std::vector<tok*>* lexer_toks;
+    std::vector<tok*>* praep_toks;
+    parser* par;
+    uast* un_ast;
+    scoper* scr;
+    ProgramNode* t_ast;
+    il* gen;
+};
+
 class compiler
 {
 public:
     compiler(cmp_args& args);
+    ~compiler();
 
     int compile();
+    void compile_file(scope *sc, std::string const& file_name, std::string& output_file_name, std::vector<std::string> *included_asm);
+    std::string working_dir;
 
 private:
     cmp_args* args;
+    std::vector<comp_alloc*>* allocs;
 
-    void compile_file(std::string const& file_name, std::string& output_file_name);
     void post_as(std::string& i_file, std::string& o_file);
     void post_ld(std::vector<std::string>& i_file, std::string& o_file);
     void write_wstr(std::wostringstream &ss, std::string& file_name);

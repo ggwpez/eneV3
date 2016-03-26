@@ -78,6 +78,8 @@ public:
     bool is_fun_head_reg(IdentNode* name);
     bool is_fun_reg(IdentNode* name);
 
+    void dump();
+
     std::vector<sc_local_alloc*>* scopes;
     std::vector<sc_type*>*  gl_types;
     std::vector<sc_head*>*  gl_heads;       //all function header, implicitly marked as extern

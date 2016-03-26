@@ -77,12 +77,12 @@ public:
 
     void print(std::wostream &out);
     void print_pos(std::wostream& out);
-    void set_pos_st(char* pos_file, int pos_line, int pos_line_char);
-    void set_pos_en(char* pos_file, int pos_line, int pos_line_char);
+    void set_pos_st(int pos_line, int pos_line_char);
+    void set_pos_en(int pos_line, int pos_line_char);
     tok_type type;
 
-    char* pos_st_file, pos_st_line, pos_st_line_char,
-        * pos_en_file, pos_en_line, pos_en_line_char;
+    char* pos_file, pos_st_line, pos_st_line_char,
+          pos_en_line, pos_en_line_char;
 
     union
     {

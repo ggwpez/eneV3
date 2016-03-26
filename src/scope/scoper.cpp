@@ -27,6 +27,10 @@ scoper::~scoper()
 tast* scoper::convert(ProgramUNode* code)
 {
     tast_arr* ncode = new tast_arr();
+    for (sc_fun* f : *mng->gl_funs)
+    {
+        ncode->push_back(new FunctionExternNode(new IdentNode(f->fun->head->name)));
+    }
 
     for (size_t i = 0; i < code->code->size(); i++)
     {
@@ -263,6 +267,7 @@ tast* scoper::convert(FunctionCallUNode* code)
     }
     else
     {
+        mng->dump();
         ERR(err_t::SC_FUN_NAME_UNKOWN, t);
     }
 

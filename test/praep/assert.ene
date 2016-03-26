@@ -1,3 +1,6 @@
+#use "io.ene"
+
+asm("global assert");
 u32°: test_c;
 void assert(i32° v)
 {

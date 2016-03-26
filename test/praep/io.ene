@@ -1,0 +1,2 @@
+void printf(u32° fmt, u32° str);
+void putchar(u32° c);

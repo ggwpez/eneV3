@@ -5,11 +5,31 @@ io::io()
 {
 }
 
+std::string io::get_dir(std::string& file_name)
+{
+    std::string directory;
+    const size_t last_slash_idx = file_name.rfind('/');
+    if (std::string::npos != last_slash_idx)
+    {
+        directory = file_name.substr(0, last_slash_idx) +std::string("/");
+    }
+
+    return directory;
+}
 const schar* io::get_wc(const char* c)
 {
-    const size_t cSize = mbstowcs(NULL, c, 0)+1;
+    const size_t cSize = mbstowcs(NULL, c, 0) +sizeof(char);
     wchar_t* wc = new wchar_t[cSize];
     mbstowcs (wc, c, cSize);
+
+    return wc;
+}
+
+const char* io::get_c(const wchar_t* c)
+{
+    const size_t cSize = wcslen(c) +sizeof(wchar_t);
+    char* wc = new char[cSize];
+    wcstombs(wc, c, cSize);
 
     return wc;
 }

@@ -2,39 +2,56 @@
 #include <iostream>
 #include <string>
 
+#include "praep.h"
+
 #define SKIP_AS 0
 #define SKIP_LD 0
 #define SKIP_IO 0
 
 #include "compiler.h"
-#include "io.h"
-#include "errors/warnings.h"
-#include "errors/errors.hpp"
-#include "target.h"
-#include "praep.h"
+
+std::string ex_asm  = std::string();
+std::string ex_obj  = std::string();
 
 compiler::compiler(cmp_args& args)
 {
     target = targets[(args.bits >> 5) + ((int)args.assembler *3)];
     this->args = &args;
+    this->allocs = new std::vector<comp_alloc*>();
+    this->working_dir = io::get_dir(args.inputs.front());
+
+    ex_asm = std::string(target->assembler == as::NASM ? ".nasm" : ".s");
+    ex_obj = std::string(".obj");
+}
+
+compiler::~compiler()
+{
+    for (auto it = allocs->begin(); it != allocs->end(); it++)
+        delete *it;
+
+    delete allocs;
 }
 
 int compiler::compile()
 {
     std::vector<std::string>* i_files = &this->args->inputs;
     std::vector<std::string>  obj_files;
-    std::string const ex_asm(target->assembler == as::NASM ? ".nasm" : ".s");
-    std::string const ex_obj(".obj");
 
     //Compile ene
+    scope* sc = new scope();                        //global scope, used for the main file and all included files
+    std::vector<std::string> included_asm = std::vector<std::string>();     //included files, already compiled, now in asm form
     for (std::string const& file : *i_files)
     {
         std::string output = file +ex_asm;
 
-        compile_file(file, output);
+        compile_file(sc, file, output, &included_asm);
     }
+    delete sc;
 
     //Assemble nasm
+    for (std::string f : included_asm)
+        i_files->insert(i_files->begin(), f);
+
     for (std::string const& file : *i_files)
     {
         std::string input  = file +ex_asm;
@@ -49,56 +66,41 @@ int compiler::compile()
     return 0;
 }
 
-void compiler::compile_file(std::string const& file_name, std::string& output_file_name)
+void compiler::compile_file(scope* sc, std::string const& file_name, std::string& output_file_name, std::vector<std::string>* included_asm)
 {
     std::wostringstream out;
-    if (!args->no_warn)
+    /*if (!args->no_warn)
     {
         war_init();
         war_as_error = args->pedantic_err;
-    }
+    }*/
 
-    lexer* lex = new lexer(file_name.c_str());
-    std::vector<tok*>* lexer_toks = lex->lex();
+    comp_alloc* alloc = new comp_alloc();
 
-    praep* prae = new praep(lexer_toks);
-    std::vector<tok*>* praep_toks = prae->process();
+    alloc->lex = new lexer(file_name.c_str());
+    alloc->lexer_toks = alloc->lex->lex();
 
-    parser* par = new parser(praep_toks);
-    uast* un_ast = par->parse();
+    alloc->prae = new praep(sc, this, alloc->lexer_toks, included_asm);
+    alloc->praep_toks = alloc->prae->process();
 
-    scope* sc = new scope();
-    scoper* scr = new scoper(un_ast, sc);
-    ProgramNode* ast = scr->convert();
+    alloc->par = new parser(alloc->praep_toks);
+    alloc->un_ast = alloc->par->parse();
+
+    alloc->scr = new scoper(alloc->un_ast, sc);
+    alloc->t_ast = alloc->scr->convert();
 
     this->load_template(out);
-    il* gen;
     if (target->assembler == as::NASM)
-        gen = new il_nasm(ast, &out);
+        alloc->gen = new il_nasm(alloc->t_ast, &out);
     else
-        gen = new il_gas(ast, &out);
-    gen->generate();
+        alloc->gen = new il_gas(alloc->t_ast, &out);
+    alloc->gen->generate();
 
-    if (!args->no_warn)
-        war_dump(std::wcout);
+    //if (!args->no_warn)
+      //  war_dump(std::wcout);
 
     write_wstr(out, output_file_name);
-
-    delete gen;
-    delete ast;
-    delete scr;
-    delete sc;
-    delete un_ast;
-    delete par;
-    delete prae;
-    delete lex;
-
-    delete praep_toks;                 //yee
-
-    for (tok* t : *lexer_toks)
-        delete t;
-
-    delete lexer_toks;
+    this->allocs->push_back(alloc);
 }
 
 void compiler::post_as(std::string& i_file, std::string& o_file)
@@ -184,4 +186,28 @@ cmp_args::cmp_args(size_t bits, std::vector<std::string> inputs, std::string out
         ERR(err_t::IO_CMD_ARG_NO_OUTPUT);
     if (assembler == as::size)
         ERR(err_t::IO_CMD_ARG_NO_AS);
+}
+
+comp_alloc::comp_alloc()
+{
+
+}
+
+comp_alloc::~comp_alloc()
+{
+    delete gen;
+    delete prae;
+    delete scr;
+    delete par;
+
+    delete t_ast;
+    delete un_ast;
+
+    delete praep_toks;
+
+    for (tok* t : *lexer_toks)
+        delete t;
+
+    delete lexer_toks;
+    delete lex;
 }

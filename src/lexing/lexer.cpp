@@ -100,8 +100,9 @@ std::vector<tok*>* lexer::lex()
             ERR(err_t::LEX_WRONG, c);
         else
         {
-            push->set_pos_st(file_name, line, char_c-l);
-            push->set_pos_en(file_name, line, char_c);
+            push->set_pos_st(line, char_c-l);
+            push->set_pos_en(line, char_c);
+            push->pos_file = this->file_name;
             toks->push_back(push);
         }
     }

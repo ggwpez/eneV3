@@ -30,6 +30,7 @@ public:
 
     virtual ~ast();
 
+    char* pos_file;
     int pos_st_line;
     int pos_st_line_char;
     int pos_en_line;

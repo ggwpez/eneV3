@@ -22,28 +22,27 @@ tok::tok()
     this->type = tok_type::size;
     this->string = NULL;
 
-    this->pos_en_file = this->pos_en_line = this->pos_en_line_char = this->pos_st_file = this->pos_st_line = this->pos_st_line_char = NULL;
+
+    this->pos_file = this->pos_en_line = this->pos_en_line_char = this->pos_st_line = this->pos_st_line_char = NULL;
 }
 
 void tok::print_pos(std::wostream& out)
 {
-    out << L" in file "<< this->pos_st_file
+    out << L" in file "<< this->pos_file
         << L" line " << this->pos_st_line
         << L" pos " << this->pos_st_line_char
         << L" to line " << this->pos_en_line
         << L" pos " << this->pos_en_line_char;
 }
 
-void tok::set_pos_st(char* pos_file, int pos_line, int pos_line_char)
+void tok::set_pos_st(int pos_line, int pos_line_char)
 {
-    this->pos_st_file = pos_file;
     this->pos_st_line = pos_line;
     this->pos_st_line_char = pos_line_char;
 }
 
-void tok::set_pos_en(char* pos_file, int pos_line, int pos_line_char)
+void tok::set_pos_en(int pos_line, int pos_line_char)
 {
-    this->pos_en_file = pos_file;
     this->pos_en_line = pos_line;
     this->pos_en_line_char = pos_line_char;
 }

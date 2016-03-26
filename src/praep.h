@@ -7,11 +7,13 @@
 #include "lexing/token.hpp"
 #include "string_def.h"
 #include "target.h"
+#include "scope/scoper.h"
+#include "compiler.h"
 
 class praep
 {
 public:
-    praep(std::vector<tok*>* toks);
+    praep(scope* sc, compiler* comp, std::vector<tok *> *toks, std::vector<std::string> *included_asm);
 
     std::vector<tok*>* process();
 
@@ -23,6 +25,10 @@ private:
 
     std::vector<tok*> input;
     std::vector<tok*>* output;
+
+    scope* sc;
+    compiler* comp;
+    std::vector<std::string>* included_asm;
 
     std::unordered_map<schar*, tok*>* defines;
 };

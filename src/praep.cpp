@@ -1,13 +1,18 @@
 #include "praep.h"
+#include "io.h"
 #include "errors/errors.hpp"
 
 #define tassert(tt, to) {if (to->type != tt) ERR(err_t::PAR_WRONG_BUT, (int)tt, to); }
 
-praep::praep(std::vector<tok*>* toks)
+praep::praep(scope* sc, compiler* comp, std::vector<tok*>* toks, std::vector<std::string>* included_asm)
 {
     this->input = *toks;
     this->output = new std::vector<tok*>();
     this->defines = new std::unordered_map<schar*, tok*>();
+
+    this->sc = sc;
+    this->comp = comp;
+    this->included_asm = included_asm;
 };
 
 std::vector<tok*>* praep::process()
@@ -57,7 +62,7 @@ void praep::parse_statement(int s, int& l)
 //#def ene cool
 void praep::parse_def(int s, int& l)
 {
-    tassert(tok_type::DEF, input[s]); l = 1;
+    tassert(tok_type::DEF,   input[s]); l = 1;
     tassert(tok_type::IDENT, input[s +l]);
 
     schar* name = input[s +l]->string;
@@ -75,7 +80,20 @@ void praep::parse_def(int s, int& l)
 
 void praep::parse_use(int s, int& l)
 {
+    tassert(tok_type::USE,    input[s]); l = 1;
+    tassert(tok_type::STRING, input[s +l]);
 
+    char* raw = io::get_c(input[s +l]->string);
+    std::string f_name;
+    f_name.assign(raw);
+    delete raw;
+    f_name = this->comp->working_dir +f_name;
+
+    std::string fo_name = f_name +std::string(target->assembler == as::NASM ? ".nasm" : ".s");
+    l++;
+
+    this->comp->compile_file(sc, f_name, fo_name, included_asm);
+    included_asm->push_back(f_name);
 }
 
 void praep::parse_pragma(int s, int& l)

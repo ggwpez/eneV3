@@ -1,9 +1,7 @@
-#def ene "cool"
-#def lol homo
-#def doto 1337
+#use "assert.ene"
 
 void main()
 {
-	u32: c;
-	c = 5;
+	assert(5 5 ?);
+	printf("Did work? :%s", "yeeeea");
 }

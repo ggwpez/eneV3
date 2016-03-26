@@ -2,6 +2,7 @@
 
 ast::ast()
 {
+    this->pos_file = nullptr;
     this->pos_en_line = this->pos_en_line_char = this->pos_st_line = this->pos_st_line_char = -1;
 }
 
@@ -27,6 +28,7 @@ ast::ast(tok* start, tok* end)
 {
     this->pos_st_line = start->pos_st_line;
     this->pos_st_line_char = start->pos_st_line_char;
+    this->pos_file = start->pos_file;
 
     this->pos_en_line = end->pos_en_line;
     this->pos_en_line_char = end->pos_en_line_char;
@@ -36,12 +38,14 @@ void ast::set_pos(ast* code)
 {
     this->set_pos_end(code);
     this->set_pos_start(code);
+    this->pos_file = code->pos_file;
 }
 
 void ast::set_pos(tok* code)
 {
     this->set_pos_end(code);
     this->set_pos_start(code);
+    this->pos_file = code->pos_file;
 }
 
 void ast::set_pos_end(ast* end)
@@ -66,6 +70,7 @@ void ast::set_pos_start(ast* start)
         return;
     this->pos_st_line = start->pos_st_line;
     this->pos_st_line_char = start->pos_st_line_char;
+    this->pos_file = start->pos_file;
 }
 
 void ast::set_pos_start(tok* start)
@@ -74,14 +79,14 @@ void ast::set_pos_start(tok* start)
         return;
     this->pos_st_line = start->pos_st_line;
     this->pos_st_line_char = start->pos_st_line_char;
+    this->pos_file = start->pos_file;
 }
 
 void ast::print_pos(std::wostream& out)
 {
-    out << L" from line " << this->pos_st_line
-        << L" pos " << this->pos_st_line_char
-        << L" to line " << this->pos_en_line
-        << L" pos " << this->pos_en_line_char;
+    out << L" in "
+        << L'[' << this->pos_file << L',' << this->pos_st_line << L',' << this->pos_st_line_char << L"] to "
+        << L'[' << this->pos_file << L',' << this->pos_en_line << L',' << this->pos_en_line_char << L"].";
 }
 
 ast::~ast()
