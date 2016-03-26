@@ -11,6 +11,7 @@
 #include "errors/warnings.h"
 #include "errors/errors.hpp"
 #include "target.h"
+#include "praep.h"
 
 compiler::compiler(cmp_args& args)
 {
@@ -57,11 +58,14 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
         war_as_error = args->pedantic_err;
     }
 
-    lexer lex = lexer(file_name.c_str());
-    std::vector<tok*>* toks = lex.lex();
+    lexer* lex = new lexer(file_name.c_str());
+    std::vector<tok*>* lexer_toks = lex->lex();
 
-    parser par = parser(*toks);
-    uast* un_ast = par.parse();
+    praep* prae = new praep(lexer_toks);
+    std::vector<tok*>* praep_toks = prae->process();
+
+    parser* par = new parser(praep_toks);
+    uast* un_ast = par->parse();
 
     scope* sc = new scope();
     scoper* scr = new scoper(un_ast, sc);
@@ -78,15 +82,23 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
     if (!args->no_warn)
         war_dump(std::wcout);
 
+    write_wstr(out, output_file_name);
+
     delete gen;
     delete ast;
     delete scr;
     delete sc;
-    for (tok* t : *toks)
-        delete t;
-    delete toks;
+    delete un_ast;
+    delete par;
+    delete prae;
+    delete lex;
 
-    write_wstr(out, output_file_name);
+    delete praep_toks;                 //yee
+
+    for (tok* t : *lexer_toks)
+        delete t;
+
+    delete lexer_toks;
 }
 
 void compiler::post_as(std::string& i_file, std::string& o_file)

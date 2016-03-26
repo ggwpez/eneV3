@@ -34,6 +34,7 @@ void main()
 {
 	assert(3628800 fac(10) ?);
 	assert(  40320 fac( 8) ?);
+	assert(    120 fac( 5) ?);
 	assert(     24 fac( 4) ?);
 	assert(      1 fac( 0) ?);
 	putchar(10);

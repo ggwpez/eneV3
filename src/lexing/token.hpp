@@ -35,6 +35,10 @@ enum class tok_type
     BREAK,
     RETURN,
     STRUCT,
+    PRAEP,
+    DEF,
+    USE,
+    PRAGMA,
     EOS,
     size
 };

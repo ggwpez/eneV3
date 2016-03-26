@@ -71,6 +71,8 @@ std::vector<tok*>* lexer::lex()
             push = new tok(tok_type::DOT), l++;
         else if (c == L';')
             push = new tok(tok_type::SEMI), l++;
+        else if (c == L'#')
+            push = new tok(tok_type::PRAEP), l++;
         else if (c == L':')
             push = ddot(pos, l);
         else if (c == '"')
@@ -138,26 +140,11 @@ tok* lexer::number(int s, int& l)
 
 tok* parse_ident(schar* ident)
 {
-    if (!wcscmp(L"namespace", ident))
-        return new tok(tok_type::NSPACE);
-    else if (!wcscmp(L"asm", ident))
-        return new tok(tok_type::ASM);
-    else if (!wcscmp(L"if", ident))
-        return new tok(tok_type::IF);
-    else if (!wcscmp(L"else", ident))
-        return new tok(tok_type::ELSE);
-    else if (!wcscmp(L"while", ident))
-        return new tok(tok_type::WHILE);
-    else if (!wcscmp(L"for", ident))
-        return new tok(tok_type::FOR);
-    else if (!wcscmp(L"return", ident))
-        return new tok(tok_type::RETURN);
-    else if (!wcscmp(L"struct", ident))
-        return new tok(tok_type::STRUCT);
-    else if (!wcscmp(L"break", ident))
-        return new tok(tok_type::BREAK);
-    else
-        return new tok(tok_type::IDENT, ident);
+    for (size_t i = (size_t)tok_type::WHILE; i < (int)tok_type::EOS; i++)
+        if (!wcscmp(tok_strings[i], ident))
+            return new tok((tok_type)i);
+
+    return new tok(tok_type::IDENT, ident);
 }
 
 tok* lexer::ident(int s, int& l)

@@ -12,13 +12,14 @@ public:
     lexer(char* file_name);
     ~lexer();
 
-    std::vector<tok*>* lex();
+    std::vector<tok *> *lex();
 
 private:
     char* file_name;
     schar* input;
     size_t length;
 
+    tok* praep(int s, int& l);
     op   oper(schar c);
     tok_type tok_typ(schar c);
     tok* number(int s, int& l);

@@ -9,7 +9,7 @@
 class parser
 {
 public:
-    parser(std::vector<tok*> input);
+    parser(std::vector<tok*>* input);
     uast* parse();
 
 private:

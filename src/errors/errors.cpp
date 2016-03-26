@@ -16,6 +16,15 @@ void post_processing_as_failed(va_list ap)
     e_out << L"Assemling (nasm) failed." << std::endl;
 }
 
+void praep_invalid_tok(va_list ap)
+{
+    tok* t = va_arg(ap, tok*);
+
+    e_out << L"Token: ";
+    t->print(e_out);
+    e_out << L" is not a praeprocessor directive.";
+};
+
 void io_file_not_found(va_list ap)
 {
     char* fn = va_arg(ap, char*);
@@ -212,6 +221,9 @@ int ERR(err_t type, ...)
             break;
         case err_t::POST_PROCESSING_AS_FAILED:
             post_processing_as_failed(ap);
+            break;
+        case err_t::PRAEP_INVALID_TOK:
+            praep_invalid_tok(ap);
             break;
         case err_t::IO_FILE_NOT_FOUND:
             io_file_not_found(ap);

@@ -1,4 +1,4 @@
-SOURCES:=$(wildcard *.ene)
+SOURCES:=praep.ene
 OUTS:=$(patsubst %.ene, %.out, $(SOURCES))
 
 all: $(OUTS)

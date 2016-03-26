@@ -14,7 +14,7 @@ class scoper
 public:
     scoper(uast* input, scope* mng);
     ~scoper();
-    ProgramNode *convert();
+    ProgramNode* convert();
 
 private:
     uast* input;

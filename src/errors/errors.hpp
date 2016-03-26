@@ -12,6 +12,7 @@ enum class err_t
 {
     GEN,
     GEN_LEX,
+    GEN_PRAEP,
     GEN_PAR,
     GEN_SC,
     GEN_SCR,
@@ -19,6 +20,7 @@ enum class err_t
     GEN_WAR,
     POST_PROCESSING_LD_FAILED,
     POST_PROCESSING_AS_FAILED,
+    PRAEP_INVALID_TOK,
     IO_FILE_NOT_FOUND,
     IO_CMD_ARG_UNKNOWN,
     IO_CMD_ARG_NO_INPUT,

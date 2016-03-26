@@ -318,12 +318,12 @@ tast* scoper::convert(IdentNode* code)
         this->last_types->push(v->type->t);
         to_add = v;
     }
-    else if (mng->is_fun_reg(code))
+    /*else if (mng->is_fun_reg(code))
     {   //anonymous call
         to_add = new IdentNode(code);
         //TODO ### add return type for anonymous calls
     }
-    //TODO ### add function heads, to allow extern anonymous calls
+    //TODO ### add function heads, to allow extern anonymous calls*/
     else
         ERR(err_t::SC_VAR_NAME_UNKOWN, code);
 
@@ -422,7 +422,6 @@ ProgramNode* scoper::convert()
 {
     tast* ret = convert(input);
 
-    delete input;
     return ret;
 }
 

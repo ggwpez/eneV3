@@ -5,14 +5,12 @@
 #define dc(t, v)  dynamic_cast<t*>(v)
 
 #define null nullptr
-/*{ if (v > input.data() +(length -1)) ERR(err_t::PAR_WRONG_BUT, tok_type::EOS, input[length -1]); else */
-//#define tassert(t, v) {if (v->type != t) ERR(err_t::PAR_WRONG_BUT, t, v); }
 #define tassert(tt, to) {if (to->type != tt) ERR(err_t::PAR_WRONG_BUT, (int)tt, to); }
 
-parser::parser(std::vector<tok*> input)
+parser::parser(std::vector<tok *> *input)
 {
-    this->input = input;
-    this->length = input.size();
+    this->input = *input;
+    this->length = input->size();
 }
 
 uast* parser::parse()

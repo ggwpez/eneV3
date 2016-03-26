@@ -1,0 +1,9 @@
+#def ene "cool"
+#def lol homo
+#def doto 1337
+
+void main()
+{
+	u32: c;
+	c = 5;
+}
