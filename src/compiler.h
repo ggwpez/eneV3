@@ -10,6 +10,7 @@
 #include "errors/warnings.h"
 #include "errors/errors.hpp"
 #include "target.h"
+#include "name_mng.h"
 
 #include <string.h>
 
@@ -52,11 +53,12 @@ public:
     ~compiler();
 
     int compile();
-    void compile_file(scope *sc, std::string const& file_name, std::string& output_file_name, std::vector<std::string> *included_asm);
-    std::string working_dir;
+    void compile_file(std::string const& file_name, std::string& output_file_name, std::vector<std::string> *included_asm);
 
 private:
     cmp_args* args;
+    scope* sc;
+    name_mng* names;
     std::vector<comp_alloc*>* allocs;
 
     void post_as(std::string& i_file, std::string& o_file);

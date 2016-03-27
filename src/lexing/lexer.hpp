@@ -2,6 +2,7 @@
 
 #include "token.hpp"
 #include "string_def.h"
+#include "name_mng.h"
 
 #include <vector>
 #include <wchar.h>
@@ -9,7 +10,7 @@
 class lexer
 {
 public:
-    lexer(char* file_name);
+    lexer(name_mng* names, char* file_name);
     ~lexer();
 
     std::vector<tok *> *lex();
@@ -17,6 +18,7 @@ public:
 private:
     char* file_name;
     schar* input;
+    name_mng* names;
     size_t length;
 
     tok* praep(int s, int& l);

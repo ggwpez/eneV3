@@ -277,7 +277,7 @@ int ERR(err_t type, ...)
             sc_type_exists_already(ap);
             break;
         case err_t::SC_FUN_HEAD_EXISTS_ALREADY:
-            sc_fun_exists_already(ap);
+            sc_fun_head_exists_already(ap);
             break;
         case err_t::SC_FUN_EXISTS_ALREADY:
             sc_fun_exists_already(ap);

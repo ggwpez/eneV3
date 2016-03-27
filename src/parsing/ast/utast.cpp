@@ -84,7 +84,7 @@ void ast::set_pos_start(tok* start)
 
 void ast::print_pos(std::wostream& out)
 {
-    out << L" in "
+    out << L" from "
         << L'[' << this->pos_file << L',' << this->pos_st_line << L',' << this->pos_st_line_char << L"] to "
         << L'[' << this->pos_file << L',' << this->pos_en_line << L',' << this->pos_en_line_char << L"].";
 }
@@ -146,6 +146,9 @@ void IdentNode::print(std::wostream& out) const
 
 bool IdentNode::operator==(const IdentNode& other) const
 {
+    if (this->str == other.str)
+        return true;
+
     schar* str1 = this->str,* str2 = other.str;
 
     while (*str1 && *str1 == *str2)

@@ -18,7 +18,8 @@ compiler::compiler(cmp_args& args)
     target = targets[(args.bits >> 5) + ((int)args.assembler *3)];
     this->args = &args;
     this->allocs = new std::vector<comp_alloc*>();
-    this->working_dir = io::get_dir(args.inputs.front());
+    this->sc = new scope();
+    this->names = new name_mng();
 
     ex_asm = std::string(target->assembler == as::NASM ? ".nasm" : ".s");
     ex_obj = std::string(".obj");
@@ -30,6 +31,8 @@ compiler::~compiler()
         delete *it;
 
     delete allocs;
+    delete sc;
+    delete names;
 }
 
 int compiler::compile()
@@ -38,15 +41,15 @@ int compiler::compile()
     std::vector<std::string>  obj_files;
 
     //Compile ene
-    scope* sc = new scope();                        //global scope, used for the main file and all included files
+    war_init();
     std::vector<std::string> included_asm = std::vector<std::string>();     //included files, already compiled, now in asm form
     for (std::string const& file : *i_files)
     {
         std::string output = file +ex_asm;
 
-        compile_file(sc, file, output, &included_asm);
+        compile_file(file, output, &included_asm);
     }
-    delete sc;
+    war_close();
 
     //Assemble nasm
     for (std::string f : included_asm)
@@ -66,21 +69,21 @@ int compiler::compile()
     return 0;
 }
 
-void compiler::compile_file(scope* sc, std::string const& file_name, std::string& output_file_name, std::vector<std::string>* included_asm)
+void compiler::compile_file(std::string const& file_name, std::string& output_file_name, std::vector<std::string>* included_asm)
 {
     std::wostringstream out;
-    /*if (!args->no_warn)
+    if (!args->no_warn)
     {
-        war_init();
+        war_enter(file_name);
         war_as_error = args->pedantic_err;
-    }*/
+    }
 
     comp_alloc* alloc = new comp_alloc();
 
-    alloc->lex = new lexer(file_name.c_str());
+    alloc->lex = new lexer(this->names, file_name.c_str());
     alloc->lexer_toks = alloc->lex->lex();
 
-    alloc->prae = new praep(sc, this, alloc->lexer_toks, included_asm);
+    alloc->prae = new praep(this, alloc->lexer_toks, included_asm);
     alloc->praep_toks = alloc->prae->process();
 
     alloc->par = new parser(alloc->praep_toks);
@@ -96,8 +99,8 @@ void compiler::compile_file(scope* sc, std::string const& file_name, std::string
         alloc->gen = new il_gas(alloc->t_ast, &out);
     alloc->gen->generate();
 
-    //if (!args->no_warn)
-      //  war_dump(std::wcout);
+    if (!args->no_warn)
+        war_dump(std::wcout);
 
     write_wstr(out, output_file_name);
     this->allocs->push_back(alloc);

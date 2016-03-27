@@ -10,7 +10,6 @@
 
 extern bool war_as_error;
 
-
 enum class war_t : int
 {
     INSTANCE_OF_VOID,               //why would you do "void: tmp;"
@@ -22,7 +21,18 @@ enum class war_t : int
     size
 };
 
+struct war_alloc
+{
+    war_alloc(std::string const& file_name);
+    ~war_alloc();
+
+    std::string const& file_name;
+    std::vector<std::wostringstream*>* ss;
+};
+
 void war_init();
+void war_enter(std::string const& file_name);
 void war_next();
 void war_dump(std::wostream& out);
+void war_close();
 int WAR(war_t type, ...);

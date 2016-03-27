@@ -73,7 +73,7 @@ tok::tok(tok_type t, uint32_t number)
 
 tok::~tok()
 {
-    if ((this->type == tok_type::IDENT || this->type == tok_type::STRING) && this->string)
+    if ((this->type == tok_type::STRING) && this->string)
     {
         free(this->string);
 

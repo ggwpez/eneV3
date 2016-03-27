@@ -1,7 +1,9 @@
-#use "assert.ene"
+#use "lib/assert.ene"
+#def lol 25
+#def uncool 25
 
 void main()
 {
-	assert(5 5 ?);
+	assert(lol uncool ?);
 	printf("Did work? :%s", "yeeeea");
 }

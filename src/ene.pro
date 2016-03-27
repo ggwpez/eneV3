@@ -43,7 +43,8 @@ HEADERS += \
     string_def.h \
     target.h \
     scope/fptr_t.h \
-    praep.h
+    praep.h \
+    name_mng.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -70,4 +71,5 @@ SOURCES += \
     main.cpp \
     target.cpp \
     scope/fptr_t.cpp \
-    praep.cpp
+    praep.cpp \
+    name_mng.cpp

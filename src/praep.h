@@ -13,7 +13,8 @@
 class praep
 {
 public:
-    praep(scope* sc, compiler* comp, std::vector<tok *> *toks, std::vector<std::string> *included_asm);
+    praep(compiler* comp, std::vector<tok *> *toks, std::vector<std::string> *included_asm);
+    ~praep();
 
     std::vector<tok*>* process();
 
@@ -26,11 +27,12 @@ private:
     std::vector<tok*> input;
     std::vector<tok*>* output;
 
+    std::string working_dir;
     scope* sc;
     compiler* comp;
     std::vector<std::string>* included_asm;
 
-    std::unordered_map<schar*, tok*>* defines;
+    std::unordered_map<schar*, tok*> defines;
 };
 
 #endif // PRAEP_H

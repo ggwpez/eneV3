@@ -8,12 +8,13 @@
 
 #define TAB_WIDTH 4
 
-lexer::lexer(char* file_name)
+lexer::lexer(name_mng* names, char* file_name)
 {
     io helper;
     this->input = helper.read_file(file_name);
     length = wcslen(input);
     this->file_name = file_name;
+    this->names = names;
 };
 
 lexer::~lexer()
@@ -150,15 +151,12 @@ tok* parse_ident(schar* ident)
 
 tok* lexer::ident(int s, int& l)
 {
-    schar* ident;
     while ((s +l) < length && (isalnum(input[s +l]) || input[s +l] == '_'))
         l++;
 
-    ident = malloc((l +1) * sizeof(schar));
-    wcpncpy(ident, input +s, l);
-    ident[l] = L'\0';
+    schar* new_ident = this->names->get_name(input +s, l);
 
-    return parse_ident(ident);
+    return parse_ident(new_ident);
 };
 
 tok* lexer::string(int s, int& l)

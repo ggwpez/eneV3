@@ -4,15 +4,23 @@
 
 #define tassert(tt, to) {if (to->type != tt) ERR(err_t::PAR_WRONG_BUT, (int)tt, to); }
 
-praep::praep(scope* sc, compiler* comp, std::vector<tok*>* toks, std::vector<std::string>* included_asm)
+praep::praep(compiler* comp, std::vector<tok*>* toks, std::vector<std::string>* included_asm)
 {
     this->input = *toks;
     this->output = new std::vector<tok*>();
-    this->defines = new std::unordered_map<schar*, tok*>();
+    this->defines = std::unordered_map<schar*, tok*>();
 
     this->sc = sc;
     this->comp = comp;
     this->included_asm = included_asm;
+
+    std::string tmp(toks->front()->pos_file);     //cpp wtf
+    this->working_dir = io::get_dir(tmp);
+};
+
+praep::~praep()
+{
+
 };
 
 std::vector<tok*>* praep::process()
@@ -28,8 +36,16 @@ std::vector<tok*>* praep::process()
             parse_statement(i, l);
             i += l -1;
         }
+        else if (input[i]->type == tok_type::IDENT)
+        {
+            auto it = defines.find(input[i]->string);
+            if (it != defines.end())                            //this ident is defined, aka #def ident lelle
+                output->push_back(it->second);
+            else
+                output->push_back(input[i]);                    //not defined
+        }
         else
-            output->push_back(input[i]);
+            output->push_back(input[i]);                        //not even an ident
     }
 
     return output;
@@ -71,13 +87,16 @@ void praep::parse_def(int s, int& l)
     if (input[s +l]->type == tok_type::IDENT ||
         input[s +l]->type == tok_type::NUM ||
         input[s +l]->type == tok_type::STRING)
-        defines->operator [](name) = input[s +l];
+    {
+        defines[name] = input[s +l];
+    }
     else
         ERR(err_t::PRAEP_INVALID_TOK, input[s +l]);
 
     l++;
 }
 
+//#use "assert.ene"
 void praep::parse_use(int s, int& l)
 {
     tassert(tok_type::USE,    input[s]); l = 1;
@@ -87,12 +106,12 @@ void praep::parse_use(int s, int& l)
     std::string f_name;
     f_name.assign(raw);
     delete raw;
-    f_name = this->comp->working_dir +f_name;
+    f_name = this->working_dir +f_name;
 
     std::string fo_name = f_name +std::string(target->assembler == as::NASM ? ".nasm" : ".s");
     l++;
 
-    this->comp->compile_file(sc, f_name, fo_name, included_asm);
+    this->comp->compile_file(f_name, fo_name, included_asm);
     included_asm->push_back(f_name);
 }
 

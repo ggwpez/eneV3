@@ -5,7 +5,7 @@ bool war_as_error = false;
 bool inited = false;
 #define w_out (*w_ss)
 
-std::vector<std::wostringstream*>* warnings;
+std::vector<war_alloc*>* warnings;
 std::wostringstream* w_ss;
 
 void instance_of_void(va_list ap)
@@ -112,28 +112,53 @@ int WAR(war_t type, ...)
 
 void war_init()
 {
-    warnings = new std::vector<std::wostringstream*>();
+    warnings = new std::vector<war_alloc*>();
+}
+
+void war_enter(std::string const& file_name)
+{
+    warnings->push_back(new war_alloc(file_name));
     inited = true;
 }
 
 void war_next()
 {
-    warnings->push_back(new std::wostringstream());
-    w_ss = warnings->back();
+    warnings->back()->ss->push_back(new std::wostringstream());
+    w_ss = warnings->back()->ss->back();
 }
 
 void war_dump(std::wostream& out)
 {
     if (warnings->size())
     {
-        out << L"Warnings (" << warnings->size() << L")" << std::endl;
-
-        for (size_t i = 0; i < warnings->size(); i++)
+        int i = 0;
+        for (std::wostringstream* s : *warnings->back()->ss)
         {
-            out << L'(' << i << L"): "  << warnings->at(i)->str().c_str();
-            delete warnings->at(i);
+            out << L'(' << i++ << L"): "  << s->str().c_str();
         }
+
+        delete warnings->back();
+        warnings->pop_back();
     }
+}
+
+void war_close()
+{
+    if (warnings->size())
+        ERR(err_t::GEN_WAR);
 
     delete warnings;
+}
+
+war_alloc::war_alloc(std::string const& file_name) : file_name(file_name)
+{
+    this->ss = new std::vector<std::wostringstream*>();
+}
+
+war_alloc::~war_alloc()
+{
+    for (std::wostringstream* s : *this->ss)
+        delete s;
+
+    delete this->ss;
 }
