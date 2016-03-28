@@ -76,6 +76,11 @@ PushUNode::PushUNode(uast* v) : ast(v, v)
     this->v = v;
 }
 
+PushUNode::~PushUNode()
+{
+    delete this->v;
+}
+
 void PushUNode::print(std::wostream& out) const
 {
     out << "<push ";
@@ -326,6 +331,11 @@ AnomymousCallUNode::~AnomymousCallUNode()
 ReturnUNode::ReturnUNode(ExpressionTermUNode* val) : ast(val)
 {
     this->val = val;
+}
+
+ReturnUNode::~ReturnUNode()
+{
+    delete this->val;
 }
 
 void ReturnUNode::print(std::wostream& out) const

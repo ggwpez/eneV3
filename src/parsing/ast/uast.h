@@ -76,6 +76,7 @@ class PushUNode : public uast
 {
 public:
     PushUNode(uast* v);
+    ~PushUNode();
     void print(std::wostream& out) const;
 
     uast* v;
@@ -85,6 +86,7 @@ class ReturnUNode : public uast
 {
 public:
     ReturnUNode(ExpressionTermUNode* val);
+    ~ReturnUNode();
     void print(std::wostream& out) const;
 
     ExpressionTermUNode* val;
