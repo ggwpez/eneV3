@@ -11,7 +11,9 @@ il::il(ProgramNode *code, std::wostringstream *ss)
     ss_codeh = new std::wostringstream();
     ss_data  = new std::wostringstream();
     ss_bss   = new std::wostringstream();
-    str_c = if_c = while_c = sml_c = grt_c = ssp_c = anym_c = ret_c = 0;
+
+    funtion_returns = new std::stack<schar*>();
+    str_c = blk_c = sml_c = grt_c = ssp_c = anym_c = 0;
 }
 
 il::~il()
@@ -20,21 +22,23 @@ il::~il()
     delete ss_codeh;
     delete ss_data;
     delete ss_bss;
+
+    delete funtion_returns;
 }
 
 void il::generate_sf_enter(int size)
 {
     eml(L"push ebp" << std::endl <<
-          L"mov ebp, esp" << std::endl <<
-          L"sub esp, " << size);
+        L"mov ebp, esp" << std::endl <<
+        L"sub esp, " << size);
 }
 
 void il::generate_sf_leave(int size)
 {
     eml(L"add esp, " << size << std::endl <<
-          L"mov esp, ebp" << std::endl <<
-          L"pop ebp" << std::endl <<
-          L"ret ");
+        L"mov esp, ebp" << std::endl <<
+        L"pop ebp" << std::endl <<
+        L"ret ");
 }
 
 void il::generate_global(VariableNode *code)

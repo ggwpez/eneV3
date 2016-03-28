@@ -54,6 +54,7 @@ class AssignUNode : public uast
 {
 public:
     AssignUNode(ExpressionTermUNode* term);
+    ~AssignUNode();
     void print(std::wostream& out) const;
 
     ExpressionTermUNode* term;

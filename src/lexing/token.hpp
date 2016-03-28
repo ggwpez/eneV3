@@ -39,6 +39,7 @@ enum class tok_type
     DEF,
     USE,
     PRAGMA,
+    NEW_LINE,
     EOS,
     size
 };

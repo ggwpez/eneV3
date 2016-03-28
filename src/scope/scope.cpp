@@ -261,11 +261,3 @@ bool scope::is_fun_reg(IdentNode* name)
 
     return false;
 }
-
-void scope::dump()
-{
-    std::wcout << std::endl;
-
-    for (sc_head* gh : *this->gl_heads)   //gets freed in ~ProgramNode
-        std::wcout << L"f: " << gh->name->str << std::endl;
-}

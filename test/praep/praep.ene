@@ -1,9 +1,11 @@
-#use "lib/assert.ene"
+#use "../lib/assert.ene"
 #def lol 25
 #def uncool 25
 
-void main()
+void main()									##hi, im a comment
 {
-	assert(lol uncool ?);
+	assert(lol uncool ?);					#+ 	im
+												a longer comment,
+												bye +#
 	printf("Did work? :%s", "yeeeea");
 }

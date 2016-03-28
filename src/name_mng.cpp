@@ -10,19 +10,18 @@ name_mng::name_mng()
 name_mng::~name_mng()
 {
     for (schar* n : names)
-        delete n;
+        delete[] n;
 }
 
-schar* name_mng::get_name(schar* n, size_t l)
+schar* name_mng::get_mem(schar* n, size_t l)
 {
     for (schar* s : names)
     {
-        if (!wcsncmp(s, n, l))
+        if ((wcslen(s) == l) && !wcsncmp(s, n, l))
             return s;
     }
 
-    size_t len = wcslen(n) +1;
-    schar* nn = new schar[len];
+    schar* nn = new schar[l +1];
 
     wcsncpy(nn, n, l);
     nn[l] = 0;

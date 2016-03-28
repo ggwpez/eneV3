@@ -23,6 +23,7 @@ private:
     void parse_def(int s, int& l);
     void parse_use(int s, int& l);
     void parse_pragma(int s, int& l);
+    void parse_comment(int s, int& l);
 
     std::vector<tok*> input;
     std::vector<tok*>* output;

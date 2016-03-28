@@ -2,14 +2,15 @@
 #define IL_H
 
 #include <sstream>
+#include <stack>
 
 #include "target.h"
 #include "parsing/ast/uast.h"
 #include "string_def.h"
 #include "scope/scope.hpp"
 
-#define pop(t)  (eml(L"pop  " << t))
-#define push(t) (eml(L"push " << t))
+#define POP(t)  (eml(L"pop  " << t))
+#define PUSH(t) (eml(L"push " << t))
 #define em(s) emCODE(s)
 #define eml(s) emlCODE(s)
 #define emCODE(s) (*ss_code << s)
@@ -85,7 +86,8 @@ protected:
     virtual void generate_ssp_init() = 0;
     virtual void generate_ssp_check() = 0;
 
-    int str_c, sml_c, grt_c, if_c, while_c, ssp_c, anym_c, ret_c;
+    int str_c, sml_c, grt_c, blk_c, ssp_c, anym_c;
+    std::stack<schar*>* funtion_returns;
 };
 
 #endif // IL_H

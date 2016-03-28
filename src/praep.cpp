@@ -14,8 +14,8 @@ praep::praep(compiler* comp, std::vector<tok*>* toks, std::vector<std::string>* 
     this->comp = comp;
     this->included_asm = included_asm;
 
-    std::string tmp(toks->front()->pos_file);     //cpp wtf
-    this->working_dir = io::get_dir(tmp);
+    std::string tmp(toks->front()->pos_file);
+    this->working_dir = io::get_dir(tmp);           //cpp wtf - instances work but constructor calls do not
 };
 
 praep::~praep()
@@ -25,17 +25,16 @@ praep::~praep()
 
 std::vector<tok*>* praep::process()
 {
-    //output->reserve((size_t)(this->input.size() *0.95f);        //probably about 5% praep code
-    int l;
-
     for (int i = 0; i < input.size(); i++)
     {
         if (input[i]->type == tok_type::PRAEP)
         {
-            l = 0;
+            int l = 0;
             parse_statement(i, l);
             i += l -1;
         }
+        else if (input[i]->type == tok_type::NEW_LINE)
+            continue;
         else if (input[i]->type == tok_type::IDENT)
         {
             auto it = defines.find(input[i]->string);
@@ -58,6 +57,9 @@ void praep::parse_statement(int s, int& l)
 
     switch (input[s +l]->type)
     {
+        case tok_type::PRAEP: case tok_type::OP:
+            parse_comment(s +l, t_l);
+            break;
         case tok_type::DEF:
             parse_def(s +l, t_l);
             break;
@@ -71,8 +73,23 @@ void praep::parse_statement(int s, int& l)
             ERR(err_t::PRAEP_INVALID_TOK, input[s +l]);
             break;
     }
-
     l += t_l;
+}
+
+void praep::parse_comment(int s, int& l)
+{
+    if (input[s]->type == tok_type::PRAEP)          //## comment until end of line
+        while (input[++l +s]->type != tok_type::NEW_LINE);
+    else if (input[s]->type == tok_type::OP)        //#+ comment until next +#
+    {
+        while (++l)
+            if (input[s +l]->type == tok_type::OP && input[s +l +1]->type == tok_type::PRAEP)
+            {
+                l += 2; break;
+            }
+    }
+    else
+        ERR(err_t::GEN_PAR);                        //should never happen
 }
 
 //#def ene cool
@@ -108,14 +125,16 @@ void praep::parse_use(int s, int& l)
     delete raw;
     f_name = this->working_dir +f_name;
 
-    std::string fo_name = f_name +std::string(target->assembler == as::NASM ? ".nasm" : ".s");
+    std::string fo_name = f_name +std::string(target->assembler == as::NASM ? EX_NASM : EX_GAS);
     l++;
 
     this->comp->compile_file(f_name, fo_name, included_asm);
     included_asm->push_back(f_name);
 }
 
+//#pragma { warnings=false, warning13=false}
 void praep::parse_pragma(int s, int& l)
 {
+    tassert(tok_type::PRAGMA, input[s]); l = 1;
 
 }

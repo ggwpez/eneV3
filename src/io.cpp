@@ -16,6 +16,7 @@ std::string io::get_dir(std::string& file_name)
 
     return directory;
 }
+
 const schar* io::get_wc(const char* c)
 {
     const size_t cSize = mbstowcs(NULL, c, 0) +sizeof(char);
@@ -41,7 +42,7 @@ void io::read_file(char* path, std::wostringstream& str)
         return;
 
     str << tem;
-    free(tem);
+    delete[] tem;
 }
 
 schar* io::read_file(char* path)
@@ -59,14 +60,14 @@ schar* io::read_file(char* path)
     l = ftell(f) +1;
     rewind(f);
 
-    buf = malloc(l);
+    buf = new char[l];
     fread(buf, 1, l, f);
     buf[l -1] = 0;
 
     fclose(f);
 
     wchar_t* ret = get_wc(buf);
-    free(buf);
+    delete[] buf;
 
     return ret;
 }

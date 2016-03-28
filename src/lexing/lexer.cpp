@@ -19,7 +19,7 @@ lexer::lexer(name_mng* names, char* file_name)
 
 lexer::~lexer()
 {
-    free(input);
+    delete[] input;
     length = 0;
 }
 
@@ -82,14 +82,15 @@ std::vector<tok*>* lexer::lex()
             push = ident(pos, l);
         else if (iswdigit(c))
             push = number(pos, l);
+        else if (c == L'\n')
+        {
+            line++, char_c = 0;
+            push = new tok(tok_type::NEW_LINE), l = 1;
+        }
         else if (iswspace(c))
         {
-            if (c == L'\n')
-            {
-                line++;
-                char_c = 0;
-            }
-            else if (c == L'\t')
+
+            if (c == L'\t')
                 char_c += TAB_WIDTH;
 
             l = 1; char_c++;
@@ -154,7 +155,7 @@ tok* lexer::ident(int s, int& l)
     while ((s +l) < length && (isalnum(input[s +l]) || input[s +l] == '_'))
         l++;
 
-    schar* new_ident = this->names->get_name(input +s, l);
+    schar* new_ident = this->names->get_mem(input +s, l);
 
     return parse_ident(new_ident);
 };
@@ -167,9 +168,7 @@ tok* lexer::string(int s, int& l)
     while ((s+l) < length && input[s +l] != L'"')
         l++;
 
-    string = malloc(l * sizeof(schar) +2);
-    wcpncpy(string, input +s +1, l);
-    string[l++ -1] = L'\0';
+    string = names->get_mem(input +s +1, l++ -1);
 
     return new tok(tok_type::STRING, string);
 };

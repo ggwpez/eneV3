@@ -179,7 +179,6 @@ VariableNode::~VariableNode()
 {
     delete this->type;
     delete this->var_name;
-    //delete this->var_name;
 }
 
 void VariableNode::print(std::wostream& out) const
@@ -357,6 +356,7 @@ void FunctionCallNode::print(std::wostream& out) const
 FunctionCallNode::~FunctionCallNode()
 {
     delete this->target;
+    delete this->return_type;
     delete this->args;
 }
 

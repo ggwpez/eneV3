@@ -29,6 +29,10 @@
 #define  cl target->regs[3][2]
 #define  dl target->regs[3][3]
 
+#define EX_NASM ".nasm"
+#define EX_GAS  ".s"
+#define EX_OBJ  ".obj"
+
 enum class as
 {
     NASM,

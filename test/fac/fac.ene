@@ -1,20 +1,4 @@
-void printf(u8°° str, u32° a, u32° b, u32° ab);
-void putchar(u8° c);
-
-u32°: test_c;
-void assert(i32° v)
-{
-    if (v)
-    {
-	   printf("%02d: OK  ", test_c~);
-    }
-    else
-    {
-	   printf("%02d: ###### ERR ######", test_c~);
-    }
-
-    test_c$=~1+;
-}
+#use "../lib/assert.ene"
 
 u32 fac(u32° v)
 {

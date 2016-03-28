@@ -54,8 +54,8 @@ void il_nasm::generate(AssignNode* code)
     generate(code->term);
 
     //write
-    pop(rax);
-    pop(rcx);
+    POP(rax);
+    POP(rcx);
 
     switch (code->to_write->size)
     {
@@ -79,7 +79,7 @@ void il_nasm::generate(AssignNode* code)
 
 void il_nasm::generate(NumNode* code)
 {
-    push(code->num);
+    PUSH(code->num);
 };
 
 void il_nasm::generate(IdentNode* code)
@@ -95,21 +95,21 @@ void il_nasm::generate(BoolNode* code)
 void il_nasm::generate(PushNode* code)
 {
     if (IdentNode* i = dynamic_cast<IdentNode*>(code->v))
-        push(i->str);
+        PUSH(i->str);
     else if (NumNode*  n = dynamic_cast<NumNode*>(code->v))
-        push(n->num);
+        PUSH(n->num);
     else if (VariableNode* v = dynamic_cast<VariableNode*>(code->v))     //its a variable in the stack frame
     {
         if (v->ebp_off)
         {
             std::wstring adder = v->ebp_off >= 0 ? std::wstring(L"+") + std::to_wstring(v->ebp_off) : std::to_wstring(v->ebp_off);
             eml(L"lea " << rdx << L", [ebp " << adder << L']');
-            push(rdx);
+            PUSH(rdx);
         }
         else
         {
             eml(L"lea " << rdx << L", [" << v->var_name->str << L']');
-            push(rdx);
+            PUSH(rdx);
         }
     }
     else
@@ -136,45 +136,45 @@ void il_nasm::generate(StringNode* code)
     std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
 
     emlDATA(name << L": db \"" << code->str << L"\", 0");
-    push(name.c_str());
+    PUSH(name.c_str());
 };
 
 void il_nasm::generate_op_add(OperatorNode* code)
 {
-    pop(rax);
-    pop(rcx);
+    POP(rax);
+    POP(rcx);
     eml(L"add " << rax << L", " << rcx);
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_sub(OperatorNode* code)
 {
-    pop(rcx);
-    pop(rax);
+    POP(rcx);
+    POP(rax);
     eml(L"sub " << rax << L", " << rcx);
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_mul(OperatorNode* code)
 {
-    pop(eax);
-    pop(ecx);
+    POP(eax);
+    POP(ecx);
     eml(L"mul " << rcx);
-    push(eax);
+    PUSH(eax);
 }
 
 void il_nasm::generate_op_div(OperatorNode* code)
 {
-    pop(rcx);
-    pop(rax);
+    POP(rcx);
+    POP(rax);
     eml(L"xor " << rdx << L", " << rdx);
     eml(L"div " << rcx);
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_drf(OperatorNode* code)
 {
-    pop(rax);
+    POP(rax);
 
     switch (code->operand_type->size)
     {
@@ -195,7 +195,7 @@ void il_nasm::generate_op_drf(OperatorNode* code)
             break;
     }
 
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_equ(OperatorNode* code)
@@ -214,8 +214,8 @@ void il_nasm::generate_op_sml(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__sml_") + std::to_wstring(++sml_c);
 
-    pop(rax);
-    pop(rcx);
+    POP(rax);
+    POP(rcx);
 
     eml(L"cmp " << rax << ", " << rcx);
     eml(L"jl " << name << L".fail");
@@ -231,15 +231,15 @@ void il_nasm::generate_op_sml(OperatorNode* code)
     eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_grt(OperatorNode* code)
 {
     std::wstring name = std::wstring(L"__grt_") + std::to_wstring(++grt_c);
 
-    pop(rax);
-    pop(rcx);
+    POP(rax);
+    POP(rcx);
 
     eml(L"cmp " << rax << ", " << rcx);
     eml("jg " << name << L".fail");
@@ -255,24 +255,24 @@ void il_nasm::generate_op_grt(OperatorNode* code)
     eml("jmp " << name << L".end");
 
     eml(name << L".end:");
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_neq(OperatorNode* code)
 {
-    pop(rax);
-    pop(rcx);
+    POP(rax);
+    POP(rcx);
     eml(L"xor " << rax << L", " << rcx);
     eml(L"call boolNormalize");
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_not(OperatorNode* code)
 {
-    pop(rax);
+    POP(rax);
     eml(L"call boolNormalize");
     eml(L"call boolNot");
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_pop(OperatorNode* code)
@@ -282,29 +282,29 @@ void il_nasm::generate_op_pop(OperatorNode* code)
 
 void il_nasm::generate_op_cpy(OperatorNode* code)
 {
-    pop(rax);
-    push(rax);
-    push(rax);
+    POP(rax);
+    PUSH(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_and(OperatorNode* code)
 {
     eml(L"call boolNormalize");
-    pop(rax);
+    POP(rax);
     eml(L"call boolNormalize");
-    pop(rcx);
+    POP(rcx);
     eml(L"and " << rax << L", " << rcx);
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate_op_or (OperatorNode* code)
 {
     eml(L"call boolNormalize");
-    pop(rax);
+    POP(rax);
     eml(L"call boolNormalize");
-    pop(rcx);
+    POP(rcx);
     eml(L"or  " << rax << L", " << rcx);
-    push(rax);
+    PUSH(rax);
 }
 
 void il_nasm::generate(OperatorNode* code)
@@ -316,9 +316,9 @@ void il_nasm::generate(ReturnNode* code)
 {
     eml(L"xor " << rax << L", " << rax);    //return 0 if no return value given
     generate(code->val);
-    pop(rax);
+    POP(rax);
 
-    eml("jmp end_" << ret_c);
+    eml("jmp end_" << this->funtion_returns->top());
 };
 
 void il_nasm::generate(BreakNode* code)
@@ -381,13 +381,13 @@ void il_nasm::generate_ssp_init()
 {
     ssp_magic = rand();
     eml(L"__ssp_init_" << ++ssp_c << L':');
-    push(ssp_magic);
+    PUSH(ssp_magic);
 }
 
 void il_nasm::generate_ssp_check()
 {
     eml(L"__ssp_check_" <<  ssp_c << L':');
-    pop(rax);
+    POP(rax);
     eml(L"cmp " << rax << L", " << ssp_magic);
     eml(L"je .ok");
     eml(L"jmp .fail");
@@ -404,16 +404,19 @@ void il_nasm::generate_ssp_check()
     eml(L".end");
 }
 
+
 void il_nasm::generate(FunctionNode* code)
 {
-    eml(code->head->name->str << L':');
-    generate_sf_enter(code->code->stack_s);
+    schar* name = code->head->name->str;
+    eml(name << L":\t;start of function " << name);
 
+    this->funtion_returns->push(name);
+    generate_sf_enter(code->code->stack_s);
     generate(code->code);
 
-    //eml( << L".end_");
-    eml(L"end_" << ++ret_c << L":\t;end of function code->head->name->str");
+    eml(L"end_" << name << L":\t;end of function " << name);
     generate_sf_leave(code->code->stack_s);
+    this->funtion_returns->pop();
 };
 
 void il_nasm::generate(FunctionCallNode* code)
@@ -426,13 +429,13 @@ void il_nasm::generate(FunctionCallNode* code)
     eml(L"add esp, " << code->args_size);   //### TODO allign to stack size
 
     if (code->return_type->t->size)
-        push(rax);
+        PUSH(rax);
 };
 
 void il_nasm::generate(AnomymousCallNode* code)
 {
-    pop(rax);
-    push(L"anonym_end_" << ++anym_c);
+    POP(rax);
+    PUSH(L"anonym_end_" << ++anym_c);
     eml(L"jmp " << rax);
 
     eml(L"anonym_end_" << anym_c << L':');
@@ -440,11 +443,11 @@ void il_nasm::generate(AnomymousCallNode* code)
 
 void il_nasm::generate(IfNode* code)
 {
-    std::wstring name = std::wstring(L"__if_") + std::to_wstring(++if_c);
+    std::wstring name = std::wstring(L"__if_") + std::to_wstring(++blk_c);
 
     eml(name << ':' << endl);
     generate(code->cond);
-    pop(rax);
+    POP(rax);
 
     eml(L"test " << rax << ", -1");
     eml(L"jz " << name << L".else");
@@ -461,11 +464,11 @@ void il_nasm::generate(IfNode* code)
 
 void il_nasm::generate(WhileNode* code)
 {
-    std::wstring name = std::wstring(L"__while_") + std::to_wstring(++while_c);
+    std::wstring name = std::wstring(L"__while_") + std::to_wstring(++blk_c);
 
     eml(name << L".start:");
     generate(code->cond);
-    pop(L"eax");
+    POP(L"eax");
     eml(L"test " << rax << ", -1");
     eml(L"jnz " << name << L".code");
     eml(L"jmp " << name << L".end");

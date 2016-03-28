@@ -263,11 +263,10 @@ tast* scoper::convert(FunctionCallUNode* code)
         arg_c = n->args->items->size();
         for (ArgNode* arg : *n->args->items)
             args_s += arg->type->t->size;
-        WAR(war_t::CALLING_UMIMPL_FUNC, code);
+        //WAR(war_t::CALLING_UMIMPL_FUNC, code);
     }
     else
     {
-        mng->dump();
         ERR(err_t::SC_FUN_NAME_UNKOWN, t);
     }
 
@@ -279,8 +278,8 @@ tast* scoper::convert(FunctionCallUNode* code)
     }
     else
         ret = new FunctionCallNode(t, new TypeNode(ret_type), args, args_s);
-    this->last_types->push(ret_type);
 
+    this->last_types->push(ret_type);
     return ret;
 };
 

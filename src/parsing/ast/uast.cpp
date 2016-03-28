@@ -185,6 +185,11 @@ AssignUNode::AssignUNode(ExpressionTermUNode* term) : ast(term)
     this->term = term;
 }
 
+AssignUNode::~AssignUNode()
+{
+    delete this->term;
+}
+
 void AssignUNode::print(std::wostream& out) const
 {
     out << L"<AssignUNode <term ";

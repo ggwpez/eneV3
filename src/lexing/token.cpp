@@ -1,7 +1,7 @@
 #include "token.hpp"
 
 const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"\\", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"return", L"struct",
-                    /*praep*/  L"#", L"def", L"use", L"pragma",
+                    /*praep*/  L"#", L"def", L"use", L"pragma", L"<newline>",
                                L"EOS" };
 const schar* op_strings[] = { L"+", L"-", L"*", L"/", L"~", L"?", L"<", L">", L"!", L"^", L"$", L"&", L"|" };
 
@@ -73,10 +73,5 @@ tok::tok(tok_type t, uint32_t number)
 
 tok::~tok()
 {
-    if ((this->type == tok_type::STRING) && this->string)
-    {
-        free(this->string);
 
-        this->string = NULL;
-    }
 }

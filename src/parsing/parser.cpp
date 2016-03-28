@@ -191,7 +191,7 @@ uast* parser::parse_block_statement(int s, int& l)
 uast* parser::parse_single_ident_block(int s, int& l)
 {
     tassert(tok_type::IDENT, input[s]);
-    uast* tmp = parse_ident(s, l);
+    delete parse_ident(s, l);
 
     if (input[s +l]->type == tok_type::DDOT || input[s +l]->type == tok_type::CIRCLE)     //local var definition
         return parse_variable_definition(s, l);
@@ -243,6 +243,7 @@ uast* parser::parse_expression(int s, int& l)
         if (l == 1)
         {
             l = 0;
+            delete typeAST;
             return parse_ident(s, l);
         }
 

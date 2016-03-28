@@ -134,7 +134,7 @@ void war_dump(std::wostream& out)
         int i = 0;
         for (std::wostringstream* s : *warnings->back()->ss)
         {
-            out << L'(' << i++ << L"): "  << s->str().c_str();
+            out << L"warning (" << i++ << L"): "  << s->str().c_str();
         }
 
         delete warnings->back();

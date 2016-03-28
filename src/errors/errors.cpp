@@ -3,6 +3,7 @@
 #include "scope/itype.h"
 #include "parsing/ast/ast.h"
 #include "warnings.h"
+#include "target.h"
 
 #include <iostream>
 
@@ -13,7 +14,7 @@ void post_processing_ld_failed(va_list ap)
 
 void post_processing_as_failed(va_list ap)
 {
-    e_out << L"Assemling (nasm) failed." << std::endl;
+    e_out << L"Assemling (" << (target->assembler == as::NASM ? L"nasm" : L"GNU as") <<  L") failed." << std::endl;
 }
 
 void praep_invalid_tok(va_list ap)
