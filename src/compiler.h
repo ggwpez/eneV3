@@ -55,6 +55,8 @@ public:
     int compile();
     void compile_file(std::string const& file_name, std::string& output_file_name, std::vector<std::string> *included_asm);
 
+    std::string build_dir;
+
 private:
     cmp_args* args;
     scope* sc;

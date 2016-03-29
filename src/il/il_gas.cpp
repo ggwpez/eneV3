@@ -177,21 +177,22 @@ void il_gas::generate_op_div(OperatorNode* code)
 
 void il_gas::generate_op_drf(OperatorNode* code)
 {
-    POP(rax);
+    POP(rcx);
+    eml(L"xor " << rax << L", " << rax);
 
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov " <<  al << ", [" << rax << "]");
+            eml(L"mov " <<  al << ", [" << rcx << "]");
             break;
         case 2:
-            eml(L"mov " <<  ax << ", [" << rax << "]");
+            eml(L"mov " <<  ax << ", [" << rcx << "]");
             break;
         case 4:
-            eml(L"mov " << eax << ", [" << rax << "]");
+            eml(L"mov " << eax << ", [" << rcx << "]");
             break;
         case 8:
-            eml(L"mov " << rax << ", [" << rax << "]");
+            eml(L"mov " << rax << ", [" << rcx << "]");
             break;
         default:
             ERR(err_t::GEN_IL);
@@ -322,7 +323,7 @@ void il_gas::generate(ReturnNode* code)
     generate(code->val);
     POP(rax);
 
-    eml("jmp end_" << this->funtion_returns->top());
+    eml("jmp end_" << this->funtion_returns.top());
 };
 
 void il_gas::generate(BreakNode* code)
@@ -394,13 +395,13 @@ void il_gas::generate(FunctionNode* code)
     schar* name = code->head->name->str;
     eml(name << L":\t#start of function " << name);
 
-    this->funtion_returns->push(name);
+    this->funtion_returns.push(name);
     generate_sf_enter(code->code->stack_s);
     generate(code->code);
 
     eml(L"end_" << name << L":\t#end of function " << name);
     generate_sf_leave(code->code->stack_s);
-    this->funtion_returns->pop();
+    this->funtion_returns.pop();
 };
 
 void il_gas::generate(FunctionCallNode* code)

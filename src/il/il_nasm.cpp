@@ -133,10 +133,11 @@ void il_nasm::generate(ASMNode* code)
 
 void il_nasm::generate(StringNode* code)
 {
-    std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
+    //std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
+    std::wstring* name = il::generate_string_name(code->str);
 
-    emlDATA(name << L": db \"" << code->str << L"\", 0");
-    PUSH(name.c_str());
+    emlDATA(name->c_str() << L": db \"" << code->str << L"\", 0");
+    PUSH(name->c_str());
 };
 
 void il_nasm::generate_op_add(OperatorNode* code)
@@ -174,21 +175,22 @@ void il_nasm::generate_op_div(OperatorNode* code)
 
 void il_nasm::generate_op_drf(OperatorNode* code)
 {
-    POP(rax);
+    POP(rcx);
+    eml(L"xor " << rax << L", " << rax);
 
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov  " <<  al << ", byte [" << rax << "]");
+            eml(L"mov  " <<  al << ", byte [" << rcx << "]");
             break;
         case 2:
-            eml(L"mov  " <<  ax << ", word [" << rax << "]");
+            eml(L"mov  " <<  ax << ", word [" << rcx << "]");
             break;
         case 4:
-            eml(L"mov  " << eax << ", dword [" << rax << "]");
+            eml(L"mov  " << eax << ", dword [" << rcx << "]");
             break;
         case 8:
-            eml(L"mov  " << rax << ", qword [" << rax << "]");
+            eml(L"mov  " << rax << ", qword [" << rcx << "]");
             break;
         default:
             ERR(err_t::GEN_IL);
@@ -318,7 +320,7 @@ void il_nasm::generate(ReturnNode* code)
     generate(code->val);
     POP(rax);
 
-    eml("jmp end_" << this->funtion_returns->top());
+    eml("jmp end_" << this->funtion_returns.top());
 };
 
 void il_nasm::generate(BreakNode* code)
@@ -410,13 +412,13 @@ void il_nasm::generate(FunctionNode* code)
     schar* name = code->head->name->str;
     eml(name << L":\t;start of function " << name);
 
-    this->funtion_returns->push(name);
+    this->funtion_returns.push(name);
     generate_sf_enter(code->code->stack_s);
     generate(code->code);
 
     eml(L"end_" << name << L":\t;end of function " << name);
     generate_sf_leave(code->code->stack_s);
-    this->funtion_returns->pop();
+    this->funtion_returns.pop();
 };
 
 void il_nasm::generate(FunctionCallNode* code)

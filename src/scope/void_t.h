@@ -7,6 +7,7 @@ class void_t : public itype
 {
 public:
     void_t();
+    ~void_t();
 
     void print(std::wostream& out);
 };

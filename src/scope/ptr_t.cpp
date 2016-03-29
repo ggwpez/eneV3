@@ -4,14 +4,14 @@
 #include "struct_t.h"
 #include "target.h"
 
-ptr_t::ptr_t() : itype(__BYTES__)
+ptr_t::ptr_t() : itype(__BYTES__), to(nullptr)
 {
-    to = nullptr;
+
 }
 
-ptr_t::ptr_t(itype* to) : itype(__BYTES__)
+ptr_t::ptr_t(itype* to) : itype(__BYTES__), to(to)
 {
-    this->to = to;
+
 }
 
 ptr_t::~ptr_t()

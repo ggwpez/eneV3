@@ -54,6 +54,7 @@ public:
 class IdentNode : public uast, public tast
 {
 public:
+    IdentNode();
     IdentNode(schar* str);
     IdentNode(tok* code);
     IdentNode(IdentNode* UNode);

@@ -124,6 +124,9 @@ void tast::print(std::wostream& out) const
 
 }
 
+IdentNode::IdentNode() : str(nullptr)
+{ }
+
 IdentNode::IdentNode(schar* str)
 {
     this->str = str;
@@ -146,15 +149,7 @@ void IdentNode::print(std::wostream& out) const
 
 bool IdentNode::operator==(const IdentNode& other) const
 {
-    if (this->str == other.str)
-        return true;
-
-    schar* str1 = this->str,* str2 = other.str;
-
-    while (*str1 && *str1 == *str2)
-            str1++, str2++;
-
-    return !((unsigned short)*str1 - (unsigned short)*str2);
+    return !wcscmp(this->str, other.str);
 }
 
 NumNode::NumNode(int num)

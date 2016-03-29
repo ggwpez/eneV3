@@ -61,6 +61,7 @@ public:
     void leave();
 
     void add_type(IdentNode* name, TypeNode* t);
+    void add_type(IdentNode* name, itype* t);
     void add_var(VariableNode* var);
     void add_fun(FunctionNode* fun);
     void add_fun_head(FunctionHeaderNode* head);

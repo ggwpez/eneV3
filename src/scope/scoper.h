@@ -21,6 +21,7 @@ private:
     scope* mng;
     itype* int_type;
     std::stack<itype*>* last_types;
+    std::vector<itype*>* own_types;
 
     tast* scoper::convert(ProgramUNode* code);
     tast* scoper::convert(BlockUNode* code);

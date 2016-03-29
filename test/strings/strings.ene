@@ -1,0 +1,39 @@
+#use "../lib/assert.ene"
+
+u8°: str0;
+u8°: str1;
+
+u8 strcmp(u8°° a, u8°° b)
+{
+	while (a~~ a~~ b~~ ?&)
+	{
+		a = a~1+;
+		b = b~1+;
+	}
+
+	return a~~ b~~ -;
+}
+
+
+u32 len(u8°°° a)
+{
+	u32°: l;
+	l = 5;
+
+	while (a~~ l~+ u8°~)
+	{
+		l = 5;
+	}
+
+
+	return l~;
+}
+
+void main()
+{
+	str0 = "ABCDF";
+	str1 = "sdf";
+
+	printf("Length of str0 is: %u", len(str0));
+	putchar(10);
+}

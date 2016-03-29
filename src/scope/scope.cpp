@@ -25,6 +25,7 @@ sc_var::sc_var(IdentNode* name, VariableNode* var)
 
 sc_var::~sc_var()
 {
+    //delete this->var;
     delete this->name;
 }
 
@@ -98,6 +99,7 @@ scope::~scope()
     delete this->gl_types;
     delete this->gl_heads;
     delete this->gl_funs;
+    delete this->scopes;
 }
 
 void scope::enter()
@@ -118,6 +120,14 @@ void scope::add_type(IdentNode* name, TypeNode* t)
         ERR(err_t::SC_TYPE_EXISTS_ALREADY, t);
 
     this->gl_types->push_back(new sc_type(new IdentNode(name), t->t));
+}
+
+void scope::add_type(IdentNode* name, itype* t)
+{
+    if (is_type_reg(name))
+        ERR(err_t::SC_TYPE_EXISTS_ALREADY, t);
+
+    this->gl_types->push_back(new sc_type(new IdentNode(name), t));
 }
 
 void scope::add_var(VariableNode* var)

@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <stack>
+#include <unordered_map>
 
 #include "target.h"
 #include "parsing/ast/uast.h"
@@ -13,14 +14,15 @@
 #define PUSH(t) (eml(L"push " << t))
 #define em(s) emCODE(s)
 #define eml(s) emlCODE(s)
-#define emCODE(s) (*ss_code << s)
-#define emlCODE(s) (*ss_code << s << std::endl)
-#define emCODEH(s) (*ss_codeh << s)
-#define emlCODEH(s) (*ss_codeh << s << std::endl)
-#define emBSS(s) (*ss_bss << s)
-#define emlBSS(s) (*ss_bss << s << std::endl)
-#define emDATA(s) (*ss_data << s)
-#define emlDATA(s) (*ss_data << s << std::endl)
+#define emCODE(s) _ss_em(ss_code, s)
+#define emlCODE(s) _ss_em(ss_code, s << std::endl)
+#define emCODEH(s) _ss_em(ss_codeh, s)
+#define emlCODEH(s) _ss_em(ss_codeh, s << std::endl)
+#define emBSS(s) _ss_em(ss_bss, s)
+#define emlBSS(s) _ss_em(ss_bss, s << std::endl)
+#define emDATA(s) _ss_em(ss_data, s)
+#define emlDATA(s) _ss_em(ss_data, s << std::endl)
+#define _ss_em(s, msg) (*s << msg)
 
 class il
 {
@@ -85,9 +87,11 @@ protected:
     void generate_sf_leave(int size);
     virtual void generate_ssp_init() = 0;
     virtual void generate_ssp_check() = 0;
+    std::wstring *generate_string_name(schar* content);
 
     int str_c, sml_c, grt_c, blk_c, ssp_c, anym_c;
-    std::stack<schar*>* funtion_returns;
+    std::stack<schar*> funtion_returns;
+    std::unordered_map<schar*, std::wstring*> registered_strings;
 };
 
 #endif // IL_H

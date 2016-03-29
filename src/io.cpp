@@ -1,5 +1,6 @@
 #include "io.h"
 #include "errors/errors.hpp"
+#include <algorithm>
 
 io::io()
 {
@@ -15,6 +16,22 @@ std::string io::get_dir(std::string& file_name)
     }
 
     return directory;
+}
+
+struct MatchPathSeparator
+{
+    bool operator()( char ch ) const
+    {
+        return ch == '\\' || ch == '/';
+    }
+};
+
+std::string io::get_file_name(std::string const& path)
+{
+    return std::string(
+        std::find_if( path.rbegin(), path.rend(),
+                      MatchPathSeparator() ).base(),
+        path.end() );
 }
 
 const schar* io::get_wc(const char* c)

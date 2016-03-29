@@ -17,10 +17,15 @@ scoper::scoper(uast* input, scope* mng)
     this->int_type = mng->get_type(&IdentNode(target->int_t));
 
     this->last_types = new std::stack<itype*>();
+    own_types = new std::vector<itype*>();
 }
 
 scoper::~scoper()
 {
+    for (itype* t : *this->own_types)
+        delete t;
+
+    delete this->own_types;
     delete this->last_types;
 }
 
@@ -65,7 +70,8 @@ tast* scoper::convert(BlockUNode* code)
         {
             frame_s -= __BYTES__;
             v->ebp_off = frame_s;
-            mng->add_var(new VariableNode(new TypeNode(v->type->t), new IdentNode(v->var_name), v->ebp_off));    //### TODO try not to realloc v
+            mng->add_var(v);
+            delete v;
         }
         else
             ncode->push_back(ne);
@@ -142,6 +148,9 @@ tast* scoper::convert(AtomTypeUNode* code)
             ERR(err_t::IL_TYPE_UNKNOWN, rret);
     }
 
+    if (code->parts->size() > 1)
+        this->own_types->push_back(ret);                    //TODO ### optimize this, it always creates new pointer types, instead of reusing existing ones
+
     rret->t = ret;
     return rret;
 }
@@ -157,6 +166,8 @@ tast* scoper::convert(FptrTypeUNode* code)
 
     itype* t = new fptr_t(types, ret_t->t);
     TypeNode* ret = new TypeNode(t);
+    delete args;
+    delete ret_t;
 
     return ret;
 }
@@ -174,7 +185,7 @@ tast* scoper::convert(VariableUNode* code)
 ArgNode* scoper::convert(ArgUNode* code)
 {
     TypeNode* t = convert(code->type);
-    //std::wcout << std::endl << L"### " << code->name->str << L" ###" << std::endl;
+
     return new ArgNode(new IdentNode(code->name), t);
 }
 
@@ -223,15 +234,21 @@ tast* scoper::convert(FunctionUNode* code)
 
     mng->enter();
     int ebp_off = __BYTES__;
+    std::vector<VariableNode*> tmp_args;
+
     for (ArgNode* arg : *h->args->items)
     {
         ebp_off += __BYTES__;                   //only can push multiple of sizeof(void*)
 
-        VariableNode* tmp = new VariableNode(new TypeNode(arg->type->t), new IdentNode(arg->name), ebp_off);
-        mng->add_var(tmp);
+        VariableNode* v = new VariableNode(new TypeNode(arg->type->t), new IdentNode(arg->name), ebp_off);
+        tmp_args.push_back(v);
+        mng->add_var(v);
     }
 
     BlockNode* b = convert(code->code);
+
+    for (VariableNode* v : tmp_args)            //mng->leave() dosent delete VariableNodes
+        delete v;
     mng->leave();
 
     mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list

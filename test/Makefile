@@ -10,14 +10,14 @@ test:
 
 retest: clean all test
 
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+.PHONY: all $(SUBDIRS)
+
 clean:
 	@find . -name '*.o' -delete
 	@find . -name '*.out' -delete
 	@find . -name '*.obj' -delete
 	@find . -name '*.nasm' -delete
 	@find . -name '*.s' -delete
-
-$(SUBDIRS):
-	$(MAKE) -C $@
-
-.PHONY: all $(SUBDIRS)

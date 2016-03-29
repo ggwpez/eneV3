@@ -83,10 +83,13 @@ void praep::parse_comment(int s, int& l)
     else if (input[s]->type == tok_type::OP)        //#+ comment until next +#
     {
         while (++l)
-            if (input[s +l]->type == tok_type::OP && input[s +l +1]->type == tok_type::PRAEP)
+        {
+            if (input[s +l]->type == tok_type::OP &&
+                input[s +l +1]->type == tok_type::PRAEP)
             {
                 l += 2; break;
             }
+        }
     }
     else
         ERR(err_t::GEN_PAR);                        //should never happen
@@ -102,7 +105,7 @@ void praep::parse_def(int s, int& l)
     l++;
 
     if (input[s +l]->type == tok_type::IDENT ||
-        input[s +l]->type == tok_type::NUM ||
+        input[s +l]->type == tok_type::NUM   ||
         input[s +l]->type == tok_type::STRING)
     {
         defines[name] = input[s +l];
@@ -125,7 +128,7 @@ void praep::parse_use(int s, int& l)
     delete raw;
     f_name = this->working_dir +f_name;
 
-    std::string fo_name = f_name +std::string(target->assembler == as::NASM ? EX_NASM : EX_GAS);
+    std::string fo_name = this->comp->build_dir +io::get_file_name(f_name) +EX_ASM(target->assembler);
     l++;
 
     this->comp->compile_file(f_name, fo_name, included_asm);

@@ -28,11 +28,11 @@ void print_help()
 
 int parse_args(int argc, char** argv, cmp_args& ret)
 {
-    argc = 5;
+    /*argc = 5;
     argv[1] = "-i";
     argv[2] = "../test/bab_mult_long/bab_mult_long.ene";
     argv[3] = "-o";
-    argv[4] = "../test/bab_mult_long/bab_mult_long.out";
+    argv[4] = "../test/bab_mult_long/bab_mult_long.out";*/
 
     char arg = 0;
     size_t bits = 32;
@@ -95,7 +95,10 @@ int parse_args(int argc, char** argv, cmp_args& ret)
     }
 
     if (!output.size())
+    {
+        //output = inputs.front();
         ERR(err_t::IO_CMD_ARG_NO_OUTPUT);
+    }
 
     ret = cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
     return 0;

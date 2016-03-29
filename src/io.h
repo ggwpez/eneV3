@@ -14,6 +14,7 @@ public:
     io();
 
     static std::string get_dir(std::string& file_name);
+    static std::string get_file_name(std::string const& path);
     static const schar* get_wc(const char* c);
     static const char*  get_c (const wchar_t* c);
     static void read_file(char* path, std::wostringstream& str);

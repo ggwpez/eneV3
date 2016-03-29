@@ -12,18 +12,20 @@ il::il(ProgramNode *code, std::wostringstream *ss)
     ss_data  = new std::wostringstream();
     ss_bss   = new std::wostringstream();
 
-    funtion_returns = new std::stack<schar*>();
+    funtion_returns = std::stack<schar*>();
+    registered_strings = std::unordered_map<schar*, std::wstring*>();
     str_c = blk_c = sml_c = grt_c = ssp_c = anym_c = 0;
 }
 
 il::~il()
 {
+    for (std::pair<schar*, std::wstring*> i : this->registered_strings)
+        delete i.second;
+
     delete ss_code;
     delete ss_codeh;
     delete ss_data;
     delete ss_bss;
-
-    delete funtion_returns;
 }
 
 void il::generate_sf_enter(int size)
@@ -39,6 +41,21 @@ void il::generate_sf_leave(int size)
         L"mov esp, ebp" << std::endl <<
         L"pop ebp" << std::endl <<
         L"ret ");
+}
+
+std::wstring* il::generate_string_name(schar* content)
+{
+    auto it = this->registered_strings.find(content);
+
+    if (it == registered_strings.end())
+    {
+        std::wstring tmp = std::wstring(L"__str_") +std::to_wstring(++str_c);
+        std::wstring* to_add = new std::wstring(tmp);
+        registered_strings[content] = to_add;
+        return to_add;
+    }
+    else
+        return (*it).second;
 }
 
 void il::generate_global(VariableNode *code)

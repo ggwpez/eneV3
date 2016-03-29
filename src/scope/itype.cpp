@@ -1,8 +1,8 @@
 #include "itype.h"
 
-itype::itype(int size)
+itype::itype(int size) : size(size)
 {
-    this->size = size;
+
 }
 
 itype::~itype()
