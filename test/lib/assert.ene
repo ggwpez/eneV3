@@ -1,10 +1,10 @@
 #use "io.ene"
 
-asm("global assert");
+asm(".global assert");
 u32°: test_c;
-void assert(i32° v)
+void assert(i32° v) [global reg std]
 {
-    if (v)
+    if (v~)
     {
 	   printf("%02d: OK  ", test_c~);
     }

@@ -42,6 +42,7 @@ private:
     ExpressionTermUNode*    parse_expression_term(int s, int& l);
     TypeUNode* parse_type(int s, int& l);
     TypeUNode* parse_fptr_type(int s, int& l);
+    FMod parse_mods(int s, int& l);
 
     size_t length;
     std::vector<tok*> input;

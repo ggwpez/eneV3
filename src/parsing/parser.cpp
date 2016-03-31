@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "errors/errors.hpp"
+#include "fmod.h"
 
 #define is(v, t) (dynamic_cast<t*>(v) != nullptr)
 #define dc(t, v)  dynamic_cast<t*>(v)
@@ -89,9 +90,33 @@ VariableUNode* parser::parse_variable_definition(int s, int& l)
     return new VariableUNode(type, var_name);
 }
 
+FMod parser::parse_mods(int s, int& l)
+{
+    tassert(tok_type::LEBRK, input[s]); l = 1;
+    FMod mod = (FMod)0;
+
+    while ((s +l) < length && input[s +l]->type == tok_type::IDENT)
+    {
+        int i;
+        for (i = (int)FMod::_NONE +1; i <= (int)FMod::_SIZE; i++)
+            if (!wcscmp(input[s +l]->string, FMod_strings[i]))
+            {
+                mod = (FMod)((int)mod | (1 << i));      //wtf
+                break;
+            }
+
+        if (i == (int)FMod::_SIZE)
+            ERR(err_t::PAR_WRONG, input[s +l]);
+        else
+            l++;
+    }
+
+    tassert(tok_type::REBRK, input[s +l]); l++;
+}
+
 uast* parser::parse_function_definition(int s, int& l)
 {
-    int name_len = 0, args_len = 0, block_len = 0; l = 0;
+    int name_len = 0, args_len = 0, block_len = 0, mods_l = 0; l = 0;
 
     TypeUNode* ftype = parse_type(s, l);
 
@@ -102,7 +127,12 @@ uast* parser::parse_function_definition(int s, int& l)
     ListArgUNode* fargs = parse_arg_list(s +l, args_len);
     l += args_len;
 
-    FunctionHeaderUNode* head = new FunctionHeaderUNode(ftype, fname, fargs);
+    FMod mods = FMod::_NONE;
+    if (input[s +l]->type == tok_type::LEBRK)
+        mods = parse_mods(s +l, mods_l);
+    l += mods_l;
+
+    FunctionHeaderUNode* head = new FunctionHeaderUNode(ftype, fname, fargs, mods);
 
     if (input[s +l]->type == tok_type::SEMI)            //is it only a header?
         return head;

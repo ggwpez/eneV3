@@ -1,7 +1,7 @@
 SUBDIRS := $(wildcard */.)
 
 export ENE:=../../bin/ene
-export ENEFLAGS:=-b 32 -t ../../src/templates -a nasm
+export ENEFLAGS:=-b 32 -t ../../src/templates -a gas
 
 all: $(SUBDIRS)
 
@@ -20,4 +20,4 @@ clean:
 	@find . -name '*.out' -delete
 	@find . -name '*.obj' -delete
 	@find . -name '*.nasm' -delete
-	@find . -name '*.s' -delete
+	@find . -name '*.gas' -delete

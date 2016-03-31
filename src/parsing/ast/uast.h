@@ -8,6 +8,7 @@
 #include "lexing/token.hpp"
 #include "string_def.h"
 #include "ast.h"
+#include "../fmod.h"
 
 typedef std::vector<uast*> uast_arr;
 
@@ -179,13 +180,14 @@ public:
 class FunctionHeaderUNode : public uast
 {
 public:
-    FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args);
+    FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args, FMod mods);
     ~FunctionHeaderUNode();
     void print(std::wostream& out) const;
 
     TypeUNode* type;
     IdentNode* name;
     ListArgUNode* args;
+    FMod mods;
 };
 
 class FunctionUNode : public uast

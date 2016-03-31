@@ -223,7 +223,7 @@ tast* scoper::convert(FunctionHeaderUNode* code)
     for (ArgNode* a : *args->items)
         args_s += a->type->t->size;
 
-    FunctionHeaderNode* h = new FunctionHeaderNode(t, i, args, args_s);
+    FunctionHeaderNode* h = new FunctionHeaderNode(t, i, args, args_s, code->mods);
     mng->add_fun_head(h);
     return h;
 };

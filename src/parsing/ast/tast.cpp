@@ -229,12 +229,13 @@ void AssignNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size) : ast(type, args)
+FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size, FMod mods) : ast(type, args)
 {
     this->type = type;
     this->name = name;
     this->args = args;
     this->args_size = args_size;
+    this->mods = mods;
 }
 
 FunctionHeaderNode::FunctionHeaderNode(FunctionHeaderNode* code)

@@ -44,7 +44,8 @@ HEADERS += \
     target.h \
     scope/fptr_t.h \
     praep.h \
-    name_mng.h
+    name_mng.h \
+    parsing/fmod.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -72,4 +73,5 @@ SOURCES += \
     target.cpp \
     scope/fptr_t.cpp \
     praep.cpp \
-    name_mng.cpp
+    name_mng.cpp \
+    parsing/fmod.cpp

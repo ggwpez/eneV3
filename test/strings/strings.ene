@@ -18,12 +18,7 @@ u8 strcmp(u8°° a, u8°° b)
 u32 len(u8°°° a)
 {
 	u32°: l;
-	l = 5;
-
-	while (a~~ l~+ u8°~)
-	{
-		l = 5;
-	}
+	l = 0;
 
 
 	return l~;
@@ -31,7 +26,7 @@ u32 len(u8°°° a)
 
 void main()
 {
-	str0 = "ABCDF";
+	str0 = "A";
 	str1 = "sdf";
 
 	printf("Length of str0 is: %u", len(str0));

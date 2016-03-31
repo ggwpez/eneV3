@@ -133,7 +133,6 @@ void il_nasm::generate(ASMNode* code)
 
 void il_nasm::generate(StringNode* code)
 {
-    //std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
     std::wstring* name = il::generate_string_name(code->str);
 
     emlDATA(name->c_str() << L": db \"" << code->str << L"\", 0");
@@ -202,12 +201,6 @@ void il_nasm::generate_op_drf(OperatorNode* code)
 
 void il_nasm::generate_op_equ(OperatorNode* code)
 {
-    /*pop(rax);
-    pop(rcx);
-    eml(L"xor " << rax << L", " << rcx);
-    eml(L"not " << rax);
-    push(rax);*/
-
     generate_op_neq(code);
     generate_op_not(code);
 }

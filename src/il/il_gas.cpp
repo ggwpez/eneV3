@@ -136,10 +136,10 @@ void il_gas::generate(ASMNode* code)
 
 void il_gas::generate(StringNode* code)
 {
-    std::wstring name = std::wstring(L"__str_") + std::to_wstring(++str_c);
+    std::wstring* name = il::generate_string_name(code->str);
 
-    emlDATA(name << L": .asciz \"" << code->str << L'"');
-    generate(&PushNode(new IdentNode(name.c_str())));
+    emlDATA(name->c_str() << L": .asciz \"" << code->str << L'"');
+    generate(&PushNode(new IdentNode(name->c_str())));
 };
 
 void il_gas::generate_op_add(OperatorNode* code)
@@ -204,14 +204,8 @@ void il_gas::generate_op_drf(OperatorNode* code)
 
 void il_gas::generate_op_equ(OperatorNode* code)
 {
-    POP(rax);
-    POP(rcx);
-    eml(L"xor " << rax << L", " << rcx);
-    eml(L"not " << rax);
-    PUSH(rax);
-
-    //generate_op_neq(code);
-    //generate_op_not(code);
+    generate_op_neq(code);
+    generate_op_not(code);
 }
 
 void il_gas::generate_op_sml(OperatorNode* code)
@@ -221,12 +215,11 @@ void il_gas::generate_op_sml(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
-    eml(L"jl " << name << L".ok");
-    eml(L"jmp " << name << L".fail");
+    eml(L"cmp " << rax << ", " << rcx);
+    eml(L"jl " << name << L".fail");
+    eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    //eml(L"mov " << rax << ", ~0");
     eml(L"xor " << rax << ", " << rax);
     eml(L"not " << rax);
     eml(L"jmp " << name << L".end");
@@ -246,12 +239,11 @@ void il_gas::generate_op_grt(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
-    eml("jng " << name << L".fail");
+    eml(L"cmp " << rax << ", " << rcx);
+    eml("jg " << name << L".fail");
     eml("jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    //eml("mov " << rax << ", ~0");
     eml(L"xor " << rax << ", " << rax);
     eml(L"not " << rax);
     eml("jmp " << name << L".end");
@@ -268,7 +260,7 @@ void il_gas::generate_op_neq(OperatorNode* code)
 {
     POP(rax);
     POP(rcx);
-    eml(L"xor " << rax << L", " << rax);
+    eml(L"xor " << rax << L", " << rcx);
     eml(L"call boolNormalize");
     PUSH(rax);
 }
@@ -276,6 +268,7 @@ void il_gas::generate_op_neq(OperatorNode* code)
 void il_gas::generate_op_not(OperatorNode* code)
 {
     POP(rax);
+    eml(L"call boolNormalize");
     eml(L"call boolNot");
     PUSH(rax);
 }
@@ -431,7 +424,7 @@ void il_gas::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++blk_c);
 
-    eml(name << ':');
+    eml(name << ':' << std::endl);
     generate(code->cond);
     POP(rax);
 

@@ -111,7 +111,7 @@ void compiler::post_as(std::string& i_file, std::string& o_file)
     if (target->assembler == as::NASM)
         assembler << "nasm -f elf";
     else
-        assembler << "gcc -c -m";
+        assembler << "as -c --";
 
     assembler << __BITS__ << " " << i_file << " -o " << o_file;
 

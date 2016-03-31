@@ -202,11 +202,12 @@ void AssignUNode::print(std::wostream& out) const
     out << L">>";
 }
 
-FunctionHeaderUNode::FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args) : ast(type, args->items->empty() ? dynamic_cast<ast*>(name) : dynamic_cast<ast*>(args))
+FunctionHeaderUNode::FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args, FMod mods) : ast(type, args->items->empty() ? dynamic_cast<ast*>(name) : dynamic_cast<ast*>(args))
 {
     this->type = type;
     this->name = name;
     this->args = args;
+    this->mods = mods;
 }
 
 FunctionHeaderUNode::~FunctionHeaderUNode()

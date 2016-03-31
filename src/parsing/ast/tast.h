@@ -2,6 +2,7 @@
 //#define TAST_H
 #pragma once
 #include "ast.h"
+#include "../fmod.h"
 
 typedef std::vector<tast*> tast_arr;
 
@@ -165,7 +166,7 @@ public:
 class FunctionHeaderNode : public tast
 {
 public:
-    FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size);
+    FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size, FMod mods);
     FunctionHeaderNode(FunctionHeaderNode* code);
     ~FunctionHeaderNode();
     void print(std::wostream& out) const;
@@ -174,6 +175,7 @@ public:
     IdentNode* name;
     ListArgNode* args;
     int args_size;
+    FMod mods;
 };
 
 class FunctionExternNode : public tast
@@ -190,7 +192,7 @@ class FunctionNode : public tast
 public:
     FunctionNode(FunctionHeaderNode* head, BlockNode* code);
     ~FunctionNode();
-    void print(std::wostream& out) const;
+    void print(std::wostream& out) const;    
 
     FunctionHeaderNode* head;
     BlockNode* code;
