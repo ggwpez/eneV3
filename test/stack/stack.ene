@@ -1,0 +1,36 @@
+#use "../lib/assert.ene"
+u8°°: str;
+
+void main()
+{
+	654987221;				## magic
+	u32°: l;
+	u32°: tmp;
+	u32°: i;
+	i = 5;
+	l = 1;
+	tmp = 0;
+
+	while (i l~tmp~? 0& 10+ 50 5/- 22 ^+~)
+	{
+		i$ = ~1-;
+	}
+
+	i = 5;
+	while (i 220$ 22/^ 220/ 1- -~)
+	{
+		i$ = ~1-;
+	}
+
+	if (tmp 27 9/ 3/ 1- 64*+~)
+	{
+		assert(0);
+	}
+	else
+	{
+		assert(1);
+	}
+
+	assert(654987221 ?);	## still equal?
+	putchar(10);
+}
