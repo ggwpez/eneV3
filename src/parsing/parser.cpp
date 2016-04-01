@@ -112,6 +112,7 @@ FMod parser::parse_mods(int s, int& l)
     }
 
     tassert(tok_type::REBRK, input[s +l]); l++;
+    return mod;
 }
 
 uast* parser::parse_function_definition(int s, int& l)

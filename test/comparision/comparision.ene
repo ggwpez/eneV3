@@ -1,20 +1,4 @@
-void printf(u32° fmt, u32° v);
-void putchar(u8° c);
-
-u32°: test_c;
-void assert(i32° v)
-{
-    if (v)
-    {
-	   printf("%02d: OK  ", test_c~);
-    }
-    else
-    {
-	   printf("%02d: ###### ERR ######", test_c~);
-    }
-
-    test_c$=~1+;
-}
+#use "../lib/assert.ene"
 
 i32 compare_sml(u32° a, u32° b)
 {
@@ -38,8 +22,6 @@ i32 compare_neq(u32° a, u32° b)
 
 void main()
 {
-    test_c = 0;
-
     compare_sml(0, 1);
     compare_sml(10, 11);
     compare_sml(0 5-, 0 3-);

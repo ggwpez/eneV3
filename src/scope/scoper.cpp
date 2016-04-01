@@ -252,7 +252,7 @@ tast* scoper::convert(FunctionUNode* code)
     mng->leave();
 
     mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
-    FunctionNode* f =  new FunctionNode(h, b);
+    FunctionNode* f = new FunctionNode(h, b);
     //f->set_pos(code);
     mng->add_fun(f);
     return f;
@@ -280,6 +280,7 @@ tast* scoper::convert(FunctionCallUNode* code)
         arg_c = n->args->items->size();
         for (ArgNode* arg : *n->args->items)
             args_s += arg->type->t->size;
+        //delete n;
         //WAR(war_t::CALLING_UMIMPL_FUNC, code);
     }
     else

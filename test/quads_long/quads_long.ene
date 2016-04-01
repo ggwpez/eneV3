@@ -1,20 +1,4 @@
-void printf(u32° fmt, u32° x, u32° y);
-void putchar(u8° c);
-
-u32°: test_c;
-void assert(i32° v)
-{
-    if (v)
-    {
-       printf("%02d: OK  ", test_c~);
-    }
-    else
-    {
-       printf("%02d: ###### ERR ######", test_c~);
-    }
-
-    test_c$=~1+;
-}
+#use "../lib/assert.ene"
 
 u32 quads_long(i32° x)
 {
@@ -26,8 +10,6 @@ u32 quads_long(i32° x)
 
 void main()
 {
-    test_c = 0;
-
     assert(quads_long(10) 100?);
     assert(quads_long(20) 400?);
     assert(quads_long(72) 5184?);

@@ -102,6 +102,12 @@ ArgNode::ArgNode(IdentNode* name, TypeNode* type) : ast(type, name)
     this->type = type;
 }
 
+ArgNode::ArgNode(ArgNode* v)
+{
+    this->name = new IdentNode(v->name);
+    this->type = new TypeNode(v->type->t);
+}
+
 ArgNode::~ArgNode()
 {
     delete this->name;
@@ -175,6 +181,13 @@ VariableNode::VariableNode(TypeNode* type, IdentNode* var_name, int ebp_off) : a
     this->ebp_off = ebp_off;
 }
 
+VariableNode::VariableNode(VariableNode* v)
+{
+    this->type = new TypeNode(v->type->t);
+    this->var_name = new IdentNode(v->var_name);
+    this->ebp_off = v->ebp_off;
+}
+
 VariableNode::~VariableNode()
 {
     delete this->type;
@@ -240,10 +253,11 @@ FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgN
 
 FunctionHeaderNode::FunctionHeaderNode(FunctionHeaderNode* code)
 {
-    this->type = code->type;
-    this->name = code->name;
-    this->args = code->args;
+    this->type = new TypeNode(code->type->t);
+    this->name = new IdentNode(code->name);
+    this->args = new ListArgNode(code->args);
     this->args_size = code->args_size;
+    this->mods = code->mods;
 }
 
 FunctionHeaderNode::~FunctionHeaderNode()
@@ -298,6 +312,14 @@ void FunctionNode::print(std::wostream& out) const
 ListArgNode::ListArgNode(std::vector<ArgNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
 {
     this->items = items;
+}
+
+ListArgNode::ListArgNode(ListArgNode* v)
+{
+    this->items = new std::vector<ArgNode*>();
+
+    for (ArgNode* n :* v->items)
+        items->push_back(new ArgNode(n));
 }
 
 ListArgNode::~ListArgNode()

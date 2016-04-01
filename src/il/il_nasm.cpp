@@ -2,6 +2,7 @@
 #include "errors/errors.hpp"
 #include "errors/warnings.h"
 #include "target.h"
+#include "parsing/fmod.h"
 
 using namespace std;
 
@@ -403,6 +404,10 @@ void il_nasm::generate_ssp_check()
 void il_nasm::generate(FunctionNode* code)
 {
     schar* name = code->head->name->str;
+
+    if ((int)code->head->mods & (int)FMod::GLOBAL)
+        emlCODEH(L"global " << name);
+
     eml(name << L":\t;start of function " << name);
 
     this->funtion_returns.push(name);
@@ -479,7 +484,7 @@ void il_nasm::generate()
 {
     generate(input);
 
-    *ss << "section .bss"  << endl << ss_bss ->str()  <<
+    *ss << "section .bss"  << endl << ss_bss->str()  <<
            "section .text" << endl << ss_codeh->str() << ss_code->str() <<
            "section .data" << endl << ss_data->str();
 }

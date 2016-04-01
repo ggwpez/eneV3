@@ -15,6 +15,7 @@
 # ASM
 *.s
 *.nasm
+*.gas
 *.asm
 
 # Qt-es

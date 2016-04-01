@@ -114,6 +114,7 @@ class VariableNode : public tast
 public:
     VariableNode(TypeNode* type, IdentNode* var_name);
     VariableNode(TypeNode* type, IdentNode* var_name, int ebp_off);
+    VariableNode(VariableNode* v);
     ~VariableNode();
     void print(std::wostream& out) const;
 
@@ -126,6 +127,7 @@ class ArgNode : public tast
 {
 public:
     ArgNode(IdentNode* name, TypeNode* type);
+    ArgNode(ArgNode* v);
     ~ArgNode();
     void print(std::wostream& out) const;
 
@@ -147,6 +149,7 @@ class ListArgNode : public tast               //(int a, int b)
 {
 public:
     ListArgNode(std::vector<ArgNode*>* items);
+    ListArgNode(ListArgNode* v);
     ~ListArgNode();
     void print(std::wostream& out) const;
 
@@ -192,7 +195,7 @@ class FunctionNode : public tast
 public:
     FunctionNode(FunctionHeaderNode* head, BlockNode* code);
     ~FunctionNode();
-    void print(std::wostream& out) const;    
+    void print(std::wostream& out) const;
 
     FunctionHeaderNode* head;
     BlockNode* code;

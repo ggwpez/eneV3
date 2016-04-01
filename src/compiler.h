@@ -17,11 +17,12 @@
 struct cmp_args
 {
     cmp_args();
-    cmp_args(size_t bits, std::vector<std::string> inputs, std::string output, std::string template_path,  as assembler, bool no_warn, bool pedantic_err, bool only_compile);
+    ~cmp_args();
+    cmp_args(size_t bits, std::vector<std::string>* inputs, std::string* output, std::string* template_path,  as assembler, bool no_warn, bool pedantic_err, bool only_compile);
 
-    std::vector<std::string> inputs;
-    std::string output;
-    std::string template_path;
+    std::vector<std::string>* inputs;
+    std::string* output;
+    std::string* template_path;
     size_t bits;
     as assembler;
     bool no_warn;

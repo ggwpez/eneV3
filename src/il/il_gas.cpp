@@ -386,6 +386,10 @@ void il_gas::generate_ssp_check()
 void il_gas::generate(FunctionNode* code)
 {
     schar* name = code->head->name->str;
+
+    if ((int)code->head->mods & (int)FMod::GLOBAL)
+        emlCODEH(L".global " << name);
+
     eml(name << L":\t#start of function " << name);
 
     this->funtion_returns.push(name);

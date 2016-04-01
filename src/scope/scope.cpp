@@ -25,7 +25,7 @@ sc_var::sc_var(IdentNode* name, VariableNode* var)
 
 sc_var::~sc_var()
 {
-    //delete this->var;
+    delete this->var;
     delete this->name;
 }
 
@@ -48,6 +48,7 @@ sc_head::sc_head(IdentNode* name, FunctionHeaderNode* head)
 
 sc_head::~sc_head()
 {
+    delete this->head;
     delete this->name;
 }
 
@@ -135,7 +136,7 @@ void scope::add_var(VariableNode* var)
     if (this->is_var_reg(var->var_name))
         ERR(err_t::SC_VAR_EXISTS_ALREADY, var);
 
-    this->scopes->back()->vars->push_back(new sc_var(new IdentNode(var->var_name), var));
+    this->scopes->back()->vars->push_back(new sc_var(new IdentNode(var->var_name), new VariableNode(var)));
 }
 
 void scope::add_fun_head(FunctionHeaderNode* head)
@@ -143,7 +144,7 @@ void scope::add_fun_head(FunctionHeaderNode* head)
     if (this->is_fun_head_reg(head->name))
         ERR(err_t::SC_FUN_HEAD_EXISTS_ALREADY, head);
 
-    this->gl_heads->push_back(new sc_head(new IdentNode(head->name), head));
+    this->gl_heads->push_back(new sc_head(new IdentNode(head->name), new FunctionHeaderNode(head)));
 }
 
 void scope::rm_head(FunctionHeaderNode* head)
@@ -154,6 +155,7 @@ void scope::rm_head(FunctionHeaderNode* head)
     for (size_t i = 0; i < gl_heads->size(); i++)
         if (*gl_heads->at(i)->name == *head->name)
         {
+            delete gl_heads->at(i);
             this->gl_heads->erase(gl_heads->begin() +i);
             break;
         }
@@ -211,7 +213,7 @@ VariableNode* scope::get_var(IdentNode* name)
 {
     for (sc_local_alloc* sc : *this->scopes)
         for (sc_var* var : *sc->vars)
-            if (*var->name == *name)
+            if (var->name->str == name->str)
                 return new VariableNode(new TypeNode(var->var->type->t), new IdentNode(var->var->var_name), var->var->ebp_off);
 
     ERR(err_t::SC_VAR_NAME_UNKOWN, name);

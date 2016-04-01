@@ -125,7 +125,7 @@ void praep::parse_use(int s, int& l)
     char* raw = io::get_c(input[s +l]->string);
     std::string f_name;
     f_name.assign(raw);
-    delete raw;
+    delete[] raw;
     f_name = this->working_dir +f_name;
 
     std::string fo_name = this->comp->build_dir +io::get_file_name(f_name) +EX_ASM(target->assembler);

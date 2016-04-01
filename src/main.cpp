@@ -26,7 +26,7 @@ void print_help()
                   L"    -w                      Turn off warnings" << std::endl;
 }
 
-int parse_args(int argc, char** argv, cmp_args& ret)
+cmp_args* parse_args(int argc, char** argv)
 {
     /*argc = 5;
     argv[1] = "-i";
@@ -36,8 +36,8 @@ int parse_args(int argc, char** argv, cmp_args& ret)
 
     char arg = 0;
     size_t bits = 32;
-    std::vector<std::string> inputs;
-    std::string output, template_path = std::string("../src/templates/");
+    std::vector<std::string>* inputs = new std::vector<std::string>();
+    std::string* output,* template_path = new std::string("../src/templates/");
     as assembler = as::NASM;
     bool no_warn = false, only_compile = false, pedantic_err = false;
 
@@ -52,7 +52,7 @@ int parse_args(int argc, char** argv, cmp_args& ret)
                 pedantic_err = true;
                 break;
             case 't':
-                template_path = std::string(optarg);
+                template_path = new std::string(optarg);
                 break;
             case 'c':
                 only_compile |= 1;
@@ -72,12 +72,12 @@ int parse_args(int argc, char** argv, cmp_args& ret)
                 bits = atoi(optarg);
                 break;
             case 'o':
-                output = std::string(optarg);
+                output = new std::string(optarg);
                 break;
             case 'i':
                 optind--;
                 for (; optind < argc && argv[optind][0] != '-'; optind++)
-                    inputs.push_back(std::string(argv[optind]));
+                    inputs->push_back(std::string(argv[optind]));
                 break;
             case 'v':
                 print_version();
@@ -88,29 +88,31 @@ int parse_args(int argc, char** argv, cmp_args& ret)
         }
     }
 
-    if (!inputs.size())
+    if (!inputs->size())
     {
         print_help();
         return -1;
     }
 
-    if (!output.size())
+    if (!output->size())
     {
         //output = inputs.front();
         ERR(err_t::IO_CMD_ARG_NO_OUTPUT);
     }
 
-    ret = cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
-    return 0;
+    return new cmp_args(bits, inputs, output, template_path, assembler, no_warn, pedantic_err, only_compile);
 }
 
 int main(int argc, char** argv)
 {
-    cmp_args args;
-    if (parse_args(argc, argv, args))
+    cmp_args* args;
+    if (!(args = parse_args(argc, argv)))
         return -1;
 
-    compiler cmp = compiler(args);
-    return cmp.compile();
+    compiler cmp = compiler(*args);
+    int ret = cmp.compile();
+    delete args;
+
+    return ret;
 }
 

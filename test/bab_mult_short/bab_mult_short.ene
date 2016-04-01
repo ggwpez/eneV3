@@ -1,20 +1,4 @@
-void printf(u8°° str, u32° a, u32° b, u32° ab);
-void putchar(u8° c);
-
-u32°: test_c;
-void assert(i32° v)
-{
-    if (v)
-    {
-	   printf("%02d: OK  ", test_c~);
-    }
-    else
-    {
-	   printf("%02d: ###### ERR ######", test_c~);
-    }
-
-    test_c$=~1+;
-}
+#use "../lib/assert.ene"
 
 u32 bab_mult_short(u32° a, u32° b)
 {
@@ -23,8 +7,6 @@ u32 bab_mult_short(u32° a, u32° b)
 
 void main()
 {
-	test_c = 0;
-
 	assert(bab_mult_short(20, 18)  360?);
 	assert(bab_mult_short(10, 10)  100?);
 	assert(bab_mult_short( 5, 15)   75?);

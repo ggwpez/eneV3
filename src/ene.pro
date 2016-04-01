@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0
+QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0 -fno-exceptions
 
 OTHER_FILES += \
     template.nasm \
