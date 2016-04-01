@@ -402,7 +402,16 @@ tast* scoper::convert(OperatorUNode* code)
         case op::DRF:
             if (!last_types->size())
                 WAR(war_t::READING_UNINIT_MEM, ret);
-            else if (!dynamic_cast<ptr_t*>(last_type))
+            if (ptr_t* p = dynamic_cast<ptr_t*>(last_type))
+            {
+                std::wcout << L"cast from: "; last_type->print(std::wcout);
+                std::wcout << L" to: "; p->to->print(std::wcout);
+                std::wcout << std::endl;
+
+                last_types->pop();
+                last_types->push(p->to);
+            }
+            else
                 WAR(war_t::READING_NON_PTR_TYPE, ret);
             break;
         case op::POP:

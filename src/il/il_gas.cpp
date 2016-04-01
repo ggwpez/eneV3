@@ -312,7 +312,7 @@ void il_gas::generate(OperatorNode* code)
 
 void il_gas::generate(ReturnNode* code)
 {
-    eml(L"xor " << rax << L", " << rax);
+    eml(L"xor " << rax << L", " << rax << L"\t# clearing for return node");
     generate(code->val);
     POP(rax);
 
