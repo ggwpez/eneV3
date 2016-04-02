@@ -17,3 +17,13 @@ fptr_t::~fptr_t()
     delete this->args;
     delete this->ret;
 }
+
+void fptr_t::print(std::wostream& out)
+{
+    out << L"<fptr_t>";
+}
+
+bool fptr_t::operator==(const itype& other) const
+{
+
+}

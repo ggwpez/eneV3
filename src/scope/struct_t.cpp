@@ -1,6 +1,6 @@
 #include "struct_t.h"
 
-struct_t::struct_t()
+struct_t::struct_t() : itype(-1)
 {
 
 }

@@ -10,5 +10,13 @@ value_t::value_t(value_type t) : itype(value_stack_sizes[(int)t])
 
 void value_t::print(std::wostream& out)
 {
-    out << L"<value_t <name=" << value_type_strings[(int)this->value] << L">>";
+    out << value_type_strings[(int)this->value];
+}
+
+bool value_t::operator==(const itype& other) const
+{
+    if (value_t const* p = dynamic_cast<value_t const*>(&other))
+        return this->value == p->value;
+    else
+        return false;
 }

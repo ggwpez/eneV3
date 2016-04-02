@@ -14,3 +14,8 @@ void void_t::print(std::wostream& out)
 {
     out << L"<void_t>";
 }
+
+bool void_t::operator==(const itype& other) const
+{
+
+}

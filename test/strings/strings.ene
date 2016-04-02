@@ -17,11 +17,11 @@ u8 strcmp(u8°° a, u8°° b)
 
 u32 len(u8°°° a)
 {
-	u32°: l;
+	u16°: l;
 	l = 0;
 
 
-	return l~;
+	return l u8°°~~;
 }
 
 void main()

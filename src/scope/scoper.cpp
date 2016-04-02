@@ -126,12 +126,18 @@ tast* scoper::convert(ReturnUNode* code)
 
 tast* scoper::convert(TypeUNode* code)
 {
+    tast* ret;
     if (dynamic_cast<AtomTypeUNode*>(code))
-        return convert(dynamic_cast<AtomTypeUNode*>(code));
+        ret = convert(dynamic_cast<AtomTypeUNode*>(code));
     else if (dynamic_cast<FptrTypeUNode*>(code))
-        return convert(dynamic_cast<FptrTypeUNode*>(code));
+        ret = convert(dynamic_cast<FptrTypeUNode*>(code));
     else
         ERR(err_t::GEN_SCR);
+
+    if (last_types->size())     //perform the cast
+        last_types->pop();
+    last_types->push(dynamic_cast<TypeNode*>(ret)->t);
+    return ret;
 };
 
 tast* scoper::convert(AtomTypeUNode* code)
@@ -245,14 +251,26 @@ tast* scoper::convert(FunctionUNode* code)
         mng->add_var(v);
     }
 
-    BlockNode* b = convert(code->code);
+    while (last_types->size())
+        last_types->pop();
 
+    BlockNode* b = convert(code->code);
     for (VariableNode* v : tmp_args)            //mng->leave() dosent delete VariableNodes
         delete v;
-    mng->leave();
 
-    mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
     FunctionNode* f = new FunctionNode(h, b);
+
+    if (!last_types->size())                    //TODO ### check for void
+        WAR(war_t::NO_RET_TYPE, f);
+    else if (!(*last_type == *h->type->t))
+    {
+        WAR(war_t::WRONG_RET_TYPE, f);
+        last_types->pop();
+    }
+
+
+    mng->leave();
+    mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
     //f->set_pos(code);
     mng->add_fun(f);
     return f;
@@ -402,8 +420,13 @@ tast* scoper::convert(OperatorUNode* code)
         case op::DRF:
             if (!last_types->size())
                 WAR(war_t::READING_UNINIT_MEM, ret);
-            else if (!dynamic_cast<ptr_t*>(last_type))
-                WAR(war_t::READING_NON_PTR_TYPE, ret);
+            if (ptr_t* v = dynamic_cast<ptr_t*>(last_type))
+            {
+                last_types->pop();
+                last_types->push(v->to);                            //this isnt a use after free, right?
+            }
+            else
+                WAR(war_t::READING_NON_PTR_TYPE, ret, last_type);
             break;
         case op::POP:
             if (!last_types->size())

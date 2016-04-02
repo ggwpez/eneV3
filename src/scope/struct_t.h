@@ -6,12 +6,12 @@
 #include "itype.h"
 #include "string_def.h"
 
-class struct_t
+class struct_t : itype
 {
 public:
     struct_t();
 
-    void print(std::wostream& out);
+    void print(std::wostream& out) override;
 
     schar* name;
     std::vector<itype*>* member;

@@ -1,6 +1,6 @@
 #include "array_t.h"
 
-array_t::array_t()
+array_t::array_t() : itype(-1)
 {
 }
 

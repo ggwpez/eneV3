@@ -22,8 +22,16 @@ ptr_t::~ptr_t()
 
 void ptr_t::print(std::wostream& out)
 {
-    out << L"<ptr_t <to=";
+    out << L"(ptr ";
     if (to)
         this->to->print(out);
-    out << L">>";
+    out << L")";
+}
+
+bool ptr_t::operator==(const itype& other) const
+{
+    if (ptr_t const* p = dynamic_cast<ptr_t const*>(&other))
+        return *this->to == *p;
+    else
+        return false;
 }

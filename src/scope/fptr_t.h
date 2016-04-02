@@ -11,6 +11,9 @@ public:
     fptr_t(std::vector<itype*>* args, itype* ret);
     ~fptr_t();
 
+    void print(std::wostream& out) override;
+    bool operator==(const itype& other) const override;
+
     std::vector<itype*>* args;
     itype* ret;
 };

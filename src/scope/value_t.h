@@ -27,7 +27,8 @@ class value_t : public itype
 public:
     value_t(value_type t);
 
-    void print(std::wostream& out);
+    void print(std::wostream& out) override;
+    bool operator==(const itype& other) const override;
 
     value_type value;
 };

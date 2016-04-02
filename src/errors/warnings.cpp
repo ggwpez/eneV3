@@ -41,11 +41,29 @@ void reading_uninit_mem(va_list ap)
 void reading_non_ptr_type(va_list ap)
 {
     OperatorNode* r = va_arg(ap, OperatorNode*);
+    itype*        t = va_arg(ap, itype*);
 
     w_out << L"Operator ";
     r->print(w_out);
-    w_out << L" is dereferencing non pointer type";
+    w_out << L" is dereferencing non pointer type ";
+    t->print(w_out);
     r->print_pos(w_out);
+}
+
+void no_ret_type(va_list ap)
+{
+    FunctionNode* b = va_arg(ap, FunctionNode*);
+
+    w_out << L"The code of the function " << b->head->name->str << L" has no obvious return type";
+    b->code->print_pos(w_out);
+}
+
+void wrong_ret_type(va_list ap)
+{
+    FunctionNode* b = va_arg(ap, FunctionNode*);
+
+    w_out << L"The code of the function " << b->head->name->str << L" does not match its return type";
+    b->code->print_pos(w_out);
 }
 
 void op_insuff_ops(va_list ap)
@@ -89,6 +107,12 @@ int WAR(war_t type, ...)
             break;
         case war_t::READING_NON_PTR_TYPE:
             reading_non_ptr_type(ap);
+            break;
+        case war_t::NO_RET_TYPE:
+            no_ret_type(ap);
+            break;
+        case war_t::WRONG_RET_TYPE:
+            wrong_ret_type(ap);
             break;
         case war_t::OP_INSUFF_OPS:
             op_insuff_ops(ap);
