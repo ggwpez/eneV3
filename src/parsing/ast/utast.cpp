@@ -194,7 +194,7 @@ StringNode::~StringNode()
 
 void StringNode::print(std::wostream& out) const
 {
-    out << L"<StringNode <str \"" << this->str << L"\">>";
+    out << L'"' << this->str << L'"';
 }
 
 BoolNode::BoolNode(BoolNode* n) : ast(n)

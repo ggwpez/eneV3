@@ -3,6 +3,7 @@
 
 #include "parsing/ast/ast.h"
 #include "string_def.h"
+#include "name_mng.h"
 
 #include <stack>
 #include <vector>
@@ -54,12 +55,13 @@ struct sc_local_alloc
 class scope
 {
 public:
-    scope();
+    scope(name_mng* names);
     ~scope();
 
     void enter();
     void leave();
 
+    void scope::add_type(IdentNode* name);
     void add_type(IdentNode* name, TypeNode* t);
     void add_type(IdentNode* name, itype* t);
     void add_var(VariableNode* var);
@@ -80,6 +82,8 @@ public:
     bool is_fun_reg(IdentNode* name);
 
     void dump();
+
+    name_mng* names;
 
     std::vector<sc_local_alloc*>* scopes;
     std::vector<sc_type*>*  gl_types;

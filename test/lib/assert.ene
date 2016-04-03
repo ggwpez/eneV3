@@ -1,15 +1,20 @@
 #use "io.ene"
 
 u32°: test_c;
+void assert_init() [global]
+{
+	test_c = 0;
+}
+
 void assert(i32° v) [global]
 {
     if (v~)
     {
-	   printf("%02d: OK  ", test_c~);
+	   printf("(%02d: OK)  ", test_c~);
     }
     else
     {
-	   printf("%02d: ###### ERR ######", test_c~);
+	   printf("%02d: ###### ERR ###### ", test_c~);
     }
 
     test_c$=~1+;

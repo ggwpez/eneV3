@@ -16,8 +16,10 @@ enum class war_t : int
     CALLING_UMIMPL_FUNC,
     READING_UNINIT_MEM,
     READING_NON_PTR_TYPE,
+    ASSIGN_NO_TYPE,
     NO_RET_TYPE,
     WRONG_RET_TYPE,
+    VOID_RET,
     OP_INSUFF_OPS,
     ARG_COUNT_WRONG,
     size

@@ -4,6 +4,7 @@
 #include "value_t.h"
 #include "void_t.h"
 #include "target.h"
+#include "ptr_t.h"
 
 sc_type::sc_type(IdentNode* name, itype *type)
 {
@@ -65,8 +66,10 @@ sc_local_alloc::~sc_local_alloc()
     delete this->vars;
 }
 
-scope::scope()
+scope::scope(name_mng* names)
 {
+    this->names = names;
+
     this->scopes = new std::vector<sc_local_alloc*>();
     this->gl_types = new std::vector<sc_type*>();
     this->gl_heads = new std::vector<sc_head*>();
@@ -77,8 +80,13 @@ scope::scope()
     //register inbuild types like i8 i16...
     for (value_type t : target->types)
         if (t != value_type::size)
-            this->gl_types->push_back(new sc_type(new IdentNode(value_type_strings[(int)t]), new value_t(t)));
+        {
+            itype* vt = new value_t(t);
 
+            std::wstring name = std::wstring(value_type_strings[(int)t]) +std::wstring(L"°");
+            this->gl_types->push_back(new sc_type(new IdentNode(names->get_mem(name.c_str())), new ptr_t(vt)));         //dont change the push_back order, or its use after free
+            this->gl_types->push_back(new sc_type(new IdentNode(names->get_mem(value_type_strings[(int)t])), vt));      //add the correlating pointer types, like i8° i16°...
+        }
 
     this->gl_types->push_back(new sc_type(new IdentNode(L"void"), new void_t()));
 }

@@ -17,5 +17,5 @@ void void_t::print(std::wostream& out)
 
 bool void_t::operator==(const itype& other) const
 {
-
+    return dynamic_cast<void_t const*>(&other);
 }

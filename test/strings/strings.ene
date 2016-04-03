@@ -2,33 +2,56 @@
 
 u8°: str0;
 u8°: str1;
+u8°: str2;
+u8°: str3;
 
-u8 strcmp(u8°° a, u8°° b)
+## strcmp
+u8 cmp(u8°°° a, u8°°° b)
 {
-	while (a~~ a~~ b~~ ?&)
-	{
-		a = a~1+;
-		b = b~1+;
-	}
-
-	return a~~ b~~ -;
-}
-
-
-u32 len(u8°°° a)
-{
-	u16°: l;
+	u32°: l;
 	l = 0;
 
+	while (a~~ l~+~$ b~~ l~+~ ?&)
+	{
+		l$ =~1+;
+	}
 
-	return l u8°°~~;
+	return a~~ l~+~ b~~ l~+~ -;
+}
+
+## strlen
+u32 len(u8°°° a)
+{
+	u32°: l;
+	l = 0;
+	
+	while(a~~ l~+~)
+	{
+		l$=~1+;
+	}
+
+	return l~;
 }
 
 void main()
 {
-	str0 = "A";
-	str1 = "sdf";
+	str0 = "asdf";
+	str1 = "asdf";
+	str2 = "lelle";
+	str3 = "";
 
-	printf("Length of str0 is: %u", len(str0));
+	assert_init();
+
+	assert(len(str0) 4?);
+	assert(len(str1) 4?);
+	assert(len(str2) 5?);
+	assert(len(str3) 0?);
+
+	assert(cmp(str0, str1)!);
+	assert(cmp(str0, str2));
+	assert(cmp(str2, str3));
+	assert(cmp(str3, str3)!);
+	assert(cmp(str2, str2)!);
+
 	putchar(10);
 }

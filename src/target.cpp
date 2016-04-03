@@ -1,16 +1,16 @@
 #include "target.h"
 
-target_t::target_t(size_t bits,  schar* int_t,
+target_t::target_t(size_t bits,  schar* int_t, schar* string_t,
          std::array<std::array<const schar*, 4>, 4> const& regs,
          std::array<const schar*, 4> const& s_strs,
          std::array<const value_type, (int)value_type::size> const& types,
          as assembler)
-    : bits(bits), bytes(bits >> 3), int_t(int_t), regs(regs), s_strs(s_strs), types(types), assembler(assembler)
+    : bits(bits), bytes(bits >> 3), int_t(int_t), string_t(string_t), regs(regs), s_strs(s_strs), types(types), assembler(assembler)
 {
 
 }
 
-target_t target_nasm_64 = target_t(64, L"i64",
+target_t target_nasm_64 = target_t(64, L"i64", L"u8°",
                            {{{ L"rax", L"rbx", L"rcx", L"rdx" },
                              { L"eax", L"ebx", L"ecx", L"edx" },
                              { L" ax", L" bx", L" cx", L" dx" },
@@ -23,7 +23,7 @@ target_t target_nasm_64 = target_t(64, L"i64",
                                value_type::F32, value_type::F64 }},
                                as::NASM );
 
-target_t target_nasm_32 = target_t(32, L"i32",
+target_t target_nasm_32 = target_t(32, L"i32", L"u8°",
                            {{{ L"eax", L"ebx", L"ecx", L"edx" },
                              { L"eax", L"ebx", L"ecx", L"edx" },
                              { L" ax", L" bx", L" cx", L" dx" },
@@ -36,7 +36,7 @@ target_t target_nasm_32 = target_t(32, L"i32",
                                value_type::F32, value_type::F64 }},
                                as::NASM );
 
-target_t target_nasm_16 = target_t(16, L"i16",
+target_t target_nasm_16 = target_t(16, L"i16", L"u8°",
                            {{{ L" ax", L" bx", L" cx", L" dx" },
                              { L" ax", L" bx", L" cx", L" dx" },
                              { L" ax", L" bx", L" cx", L" dx" },
@@ -49,7 +49,7 @@ target_t target_nasm_16 = target_t(16, L"i16",
                                value_type::F32, value_type::F64 }},
                                as::NASM );
 
-target_t target_gas_64 = target_t(64, L"i64",
+target_t target_gas_64 = target_t(64,  L"i64", L"u8°",
                            {{{ L"rax", L"rbx", L"rcx", L"rdx" },
                              { L"eax", L"ebx", L"ecx", L"edx" },
                              { L" ax", L" bx", L" cx", L" dx" },
@@ -62,7 +62,7 @@ target_t target_gas_64 = target_t(64, L"i64",
                                value_type::F32, value_type::F64 }},
                                as::GAS );
 
-target_t target_gas_32 = target_t(32, L"i32",
+target_t target_gas_32 = target_t(32,  L"i32", L"u8°",
                            {{{ L"eax", L"ebx", L"ecx", L"edx" },
                              { L"eax", L"ebx", L"ecx", L"edx" },
                              { L" ax", L" bx", L" cx", L" dx" },
@@ -75,7 +75,7 @@ target_t target_gas_32 = target_t(32, L"i32",
                                value_type::F32, value_type::F64 }},
                                as::GAS );
 
-target_t target_gas_16 = target_t(16, L"i16",
+target_t target_gas_16 = target_t(16,  L"i16", L"u8°",
                            {{{ L" ax", L" bx", L" cx", L" dx" },
                              { L" ax", L" bx", L" cx", L" dx" },
                              { L" ax", L" bx", L" cx", L" dx" },

@@ -85,9 +85,11 @@ protected:
 
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);
-    virtual void generate_ssp_init() = 0;
-    virtual void generate_ssp_check() = 0;
-    std::wstring *generate_string_name(schar* content);
+
+    void generate_output_init();
+    void generate_output_end();
+    std::wstring* generate_string_name(schar* content, bool& already_registered);
+    virtual schar const* get_cc() = 0;                         //return the string needed for commenting out a line, aka // ; #
 
     int str_c, sml_c, grt_c, blk_c, ssp_c, anym_c;
     std::stack<schar*> funtion_returns;

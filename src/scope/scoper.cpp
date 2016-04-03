@@ -5,6 +5,7 @@
 
 #include "ptr_t.h"
 #include "fptr_t.h"
+#include "void_t.h"
 
 #define last_type (!last_types->size() ? nullptr : last_types->top())
 #define clear_types while(last_types->size()) {last_types->pop();}
@@ -15,6 +16,7 @@ scoper::scoper(uast* input, scope* mng)
     this->mng = mng;
 
     this->int_type = mng->get_type(&IdentNode(target->int_t));
+    this->string_type = mng->get_type(&IdentNode(target->string_t));
 
     this->last_types = new std::stack<itype*>();
     own_types = new std::vector<itype*>();
@@ -103,10 +105,22 @@ tast* scoper::convert(ExpressionTermUNode* code)
 tast* scoper::convert(AssignUNode* code)
 {
     ExpressionTermNode* nterm = convert(code->term);
-    AssignNode* ret = new AssignNode(nterm, last_type);
 
-    if (!last_type)
-        WAR(war_t::READING_UNINIT_MEM, ret);
+    itype* src = last_type;
+    if (last_types->size())
+        last_types->pop();
+    else
+        WAR(war_t::ASSIGN_NO_TYPE, code);
+    itype* dest = last_type;
+    if (last_types->size())
+        last_types->pop();
+    else
+        WAR(war_t::ASSIGN_NO_TYPE, code);
+
+    AssignNode* ret = new AssignNode(nterm, dest, src);
+
+
+
     return ret;
 };
 
@@ -255,23 +269,16 @@ tast* scoper::convert(FunctionUNode* code)
         last_types->pop();
 
     BlockNode* b = convert(code->code);
-    for (VariableNode* v : tmp_args)            //mng->leave() dosent delete VariableNodes
+    for (VariableNode* v : tmp_args)                //mng->leave() dosent delete VariableNodes
         delete v;
 
     FunctionNode* f = new FunctionNode(h, b);
 
-    if (!last_types->size())                    //TODO ### check for void
-        WAR(war_t::NO_RET_TYPE, f);
-    else if (!(*last_type == *h->type->t))
-    {
-        WAR(war_t::WRONG_RET_TYPE, f);
+    while (last_types->size())                         //pop return values
         last_types->pop();
-    }
-
 
     mng->leave();
-    mng->rm_head(h);                            //headers signal extern functions, since it has a body now, rm it from the extern list
-    //f->set_pos(code);
+    mng->rm_head(h);                                //headers signal extern functions, since it has a body now, rm it from the extern list
     mng->add_fun(f);
     return f;
 };
@@ -374,13 +381,13 @@ tast* scoper::convert(IdentNode* code)
 tast* scoper::convert(NumNode* code)
 {
     last_types->push(int_type);
-    //last_types->push(nullptr);
     assert(this->last_types->size());
     return new NumNode(code);
 }
 
 tast* scoper::convert(StringNode* code)
 {
+    last_types->push(string_type);
     return new StringNode(code);
 };
 
@@ -396,10 +403,11 @@ tast* scoper::convert(BoolNode* code)
 
 tast* scoper::convert(OperatorUNode* code)
 {
-    OperatorNode* ret = new OperatorNode(code->oper, last_type);
+    itype* target_t = last_type;
+    OperatorNode* ret = new OperatorNode(code->oper, target_t);
     ret->set_pos(code);
 
-    switch (ret->oper)      //ROAD CLOSED, spaghetti code ahead
+    switch (ret->oper)
     {
         case op::ADD: case op::SUB: case op::MUL: case op::DIV: case op::EQU: case op::AND: case op::OR: case op::SML: case op::GRT:
             if (last_types->size() < 2)
@@ -420,10 +428,11 @@ tast* scoper::convert(OperatorUNode* code)
         case op::DRF:
             if (!last_types->size())
                 WAR(war_t::READING_UNINIT_MEM, ret);
-            if (ptr_t* v = dynamic_cast<ptr_t*>(last_type))
+            else if (ptr_t* v = dynamic_cast<ptr_t*>(last_type))
             {
                 last_types->pop();
                 last_types->push(v->to);                            //this isnt a use after free, right?
+                target_t = last_type;
             }
             else
                 WAR(war_t::READING_NON_PTR_TYPE, ret, last_type);
@@ -445,6 +454,7 @@ tast* scoper::convert(OperatorUNode* code)
             break;
     }
 
+    ret->operand_type = target_t;
     return ret;
 };
 

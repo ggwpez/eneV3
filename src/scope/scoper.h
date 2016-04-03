@@ -20,6 +20,7 @@ private:
     uast* input;
     scope* mng;
     itype* int_type;
+    itype* string_type;
     std::stack<itype*>* last_types;
     std::vector<itype*>* own_types;
 

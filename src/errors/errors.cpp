@@ -116,7 +116,11 @@ void il_cant_assign_to_type(va_list ap)
     AssignNode* t = va_arg(ap, AssignNode*);
 
     e_out << L"Cant write to type ";
-    t->to_write->print(e_out);
+    if (t->dest)
+        t->dest->print(e_out);
+    else
+        e_out << L"<null>";
+
     e_out << L" in ";
     t->print(e_out);
     t->print_pos(e_out);

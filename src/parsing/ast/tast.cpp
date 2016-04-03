@@ -53,9 +53,9 @@ ExpressionNode::~ExpressionNode()
 
 void ExpressionNode::print(std::wostream& out) const
 {
-    out << L"<ExpressionNode <exp ";
+    //out << L"<ExpressionNode <exp ";
     this->exp->print(out);
-    out << L">>";
+    //out << L">>";
 }
 
 ExpressionTermNode::ExpressionTermNode(tast_arr* exps) : ast(exps->empty() ? nullptr : exps->front(), exps->empty() ? nullptr : exps->back())
@@ -65,10 +65,11 @@ ExpressionTermNode::ExpressionTermNode(tast_arr* exps) : ast(exps->empty() ? nul
 
 void ExpressionTermNode::print(std::wostream& out) const
 {
-    out << L"<FunctionNode <exps ";
-    for (tast* it : *this->exps)
-        it->print(out), out << L' ';
-    out << L">>";
+    //out << L"<FunctionNode <exps ";
+    for (tast_arr::const_iterator it = exps->begin(); it != exps->end(); it++)
+        (*it)->print(out), out << (it +1 == exps->end() ? L"" : L" ");
+    out << L';';
+    //out << L">>";
 }
 
 ExpressionTermNode::~ExpressionTermNode()
@@ -91,9 +92,9 @@ PushNode::~PushNode()
 
 void PushNode::print(std::wostream& out) const
 {
-    out << "<push ";
+    //out << "<push ";
     v->print(out);
-    out << L'>';
+    //out << L'>';
 }
 
 ArgNode::ArgNode(IdentNode* name, TypeNode* type) : ast(type, name)
@@ -196,9 +197,7 @@ VariableNode::~VariableNode()
 
 void VariableNode::print(std::wostream& out) const
 {
-    out << L"<VariableNode <type_name ";
-    this->type->print(out);
-    out << L"><var_name " << this->var_name->str << L">>>";
+    out << this->var_name->str;
 }
 
 ListNode::ListNode(tast_arr* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
@@ -216,17 +215,15 @@ ListNode::~ListNode()
 
 void ListNode::print(std::wostream& out) const
 {
-    out << L"<ListNode <items ";
-    for (tast* item : *items)
-        item->print(out);
-
-    out << L">>";
+    for (tast_arr::const_iterator it = items->begin(); it != items->end(); it++)
+        (*it)->print(out), out << (it +1 == items->end() ? L"" : L", ");
 }
 
-AssignNode::AssignNode(ExpressionTermNode* term, itype* to_write) : ast(term)
+AssignNode::AssignNode(ExpressionTermNode* term, itype* dest, itype *src) : ast(term)
 {
     this->term = term;
-    this->to_write = to_write;
+    this->dest = dest;
+    this->src = src;
 }
 
 AssignNode::~AssignNode()
@@ -236,10 +233,8 @@ AssignNode::~AssignNode()
 
 void AssignNode::print(std::wostream& out) const
 {
-    out << L"<AssignNode <term ";
-    //if (term)
-        this->term->print(out);
-    out << L">>";
+    out << L" = ";
+    this->term->print(out);
 }
 
 FunctionHeaderNode::FunctionHeaderNode(TypeNode* type, IdentNode* name, ListArgNode* args, int args_size, FMod mods) : ast(type, args)
@@ -269,13 +264,12 @@ FunctionHeaderNode::~FunctionHeaderNode()
 
 void FunctionHeaderNode::print(std::wostream& out) const
 {
-    out << L"<FunctionHeaderNode <type ";
     this->type->print(out);
-    out << L"><name ";
+    out << L' ';
     this->name->print(out);
-    out << L"><args ";
+    out << L" (";
     this->args->print(out);
-    out << L">>";
+    out << L')';
 }
 
 FunctionExternNode::FunctionExternNode(IdentNode* fname)
@@ -302,11 +296,9 @@ FunctionNode::~FunctionNode()
 
 void FunctionNode::print(std::wostream& out) const
 {
-    out << L"<FunctionNode <head ";
     this->head->print(out);
-    out << L"><code ";
+    out << L' ';
     this->code->print(out);
-    out << L">>";
 }
 
 ListArgNode::ListArgNode(std::vector<ArgNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
@@ -332,10 +324,10 @@ ListArgNode::~ListArgNode()
 
 void ListArgNode::print(std::wostream &out) const
 {
-    out << L"<ListArgNode <items ";
-    for (tast* item : *items)
-        item->print(out);
-    out << L">>";
+    out << L'(';
+    for (std::vector<ArgNode*>::const_iterator it = items->begin(); it != items->end(); it++)
+        (*it)->print(out), out << (it +1 == items->end() ? L"" : L", ");
+    out << L')';
 }
 
 ListTypeNode::ListTypeNode(std::vector<TypeNode*>* items) : ast(items->empty() ? nullptr : items->front(), items->empty() ? nullptr : items->back())
@@ -353,10 +345,8 @@ ListTypeNode::~ListTypeNode()
 
 void ListTypeNode::print(std::wostream &out) const
 {
-    out << L"<ListTypeNode <types ";
     for (TypeNode* item : *items)
         item->print(out);
-    out << L">>";
 }
 
 FunctionCallNode::FunctionCallNode(IdentNode* target, TypeNode *return_type, ListNode* args, int args_size) : ast(target, args)
@@ -369,11 +359,10 @@ FunctionCallNode::FunctionCallNode(IdentNode* target, TypeNode *return_type, Lis
 
 void FunctionCallNode::print(std::wostream& out) const
 {
-    out << L"<FunctionCallNode <target ";
     this->target->print(out);
-    out << L"><args ";
+    out << L'(';
     this->args->print(out);
-    out << L">>";
+    out << L')';
 }
 
 FunctionCallNode::~FunctionCallNode()
@@ -412,9 +401,8 @@ ReturnNode::~ReturnNode()
 
 void ReturnNode::print(std::wostream& out) const
 {
-    out << L"<ReturnNode <val ";
+    out << L"return ";
     this->val->print(out);
-    out << L">>";
 }
 
 IfNode::IfNode(ExpressionTermNode* cond, BlockNode* true_block, BlockNode* false_block) : ast(cond, false_block ? false_block : true_block)

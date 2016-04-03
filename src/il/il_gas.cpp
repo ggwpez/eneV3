@@ -16,6 +16,22 @@ il_gas::~il_gas()
 
 }
 
+schar const* il_gas::get_cc()
+{
+    return L"# ";
+}
+
+void il_gas::generate()
+{
+    il::generate_output_init();
+    generate(input);
+    il::generate_output_end();
+
+    *ss << ".bss"  << endl << ss_bss ->str()  <<
+           ".text" << endl << ss_codeh->str() << ss_code->str() <<
+           ".data" << endl << ss_data->str();
+}
+
 void il_gas::generate(ProgramNode* code)
 {
     for (tast* block : *code->code)
@@ -57,19 +73,39 @@ void il_gas::generate(AssignNode* code)
     POP(rax);
     POP(rcx);
 
-    switch (code->to_write->size)
+    eml(L"xor " << rdx << L", " << rdx);
+    switch (code->src->size)
     {
         case 1:
-            eml(L"mov [" << rcx << "], " << al);
+            eml(L"mov " << dl << L", " << al);
             break;
         case 2:
-            eml(L"mov [" << rcx << "], " << ax);
+            eml(L"mov " << dx << L", " << ax);
             break;
         case 4:
-            eml(L"mov [" << rcx << "], " << eax);
+            eml(L"mov " << edx << L", " << eax);
             break;
         case 8:
-            eml(L"mov [" << rcx << "], " << rax);
+            eml(L"mov " << rdx << L", " << rax);
+            break;
+        default:
+            ERR(err_t::IL_CANT_ASSIGN_TO_TYPE, code);
+            break;
+    }
+
+    switch (code->dest->size)
+    {
+        case 1:
+            eml(L"mov byte  [" << rcx << L"], " << dl);
+            break;
+        case 2:
+            eml(L"mov word  [" << rcx << L"], " << dx);
+            break;
+        case 4:
+            eml(L"mov dword [" << rcx << L"], " << edx);
+            break;
+        case 8:
+            eml(L"mov qword [" << rcx << L"], " << rdx);
             break;
         default:
             ERR(err_t::IL_CANT_ASSIGN_TO_TYPE, code);
@@ -136,9 +172,11 @@ void il_gas::generate(ASMNode* code)
 
 void il_gas::generate(StringNode* code)
 {
-    std::wstring* name = il::generate_string_name(code->str);
+    bool already_registered;
+    std::wstring* name = il::generate_string_name(code->str, already_registered);
 
-    emlDATA(name->c_str() << L": .asciz \"" << code->str << L'"');
+    if (already_registered)
+        emlDATA(name->c_str() << L": .asciz \"" << code->str << L'"');
     generate(&PushNode(new IdentNode(name->c_str())));
 };
 
@@ -312,7 +350,7 @@ void il_gas::generate(OperatorNode* code)
 
 void il_gas::generate(ReturnNode* code)
 {
-    eml(L"xor " << rax << L", " << rax);
+    eml(L"xor " << rax << L", " << rax << L"\t# clearing for return node");
     generate(code->val);
     POP(rax);
 
@@ -373,16 +411,6 @@ void il_gas::generate(FunctionExternNode* code)
     emlCODEH(L".extern " << code->fname->str);
 };
 
-void il_gas::generate_ssp_init()
-{
-
-}
-
-void il_gas::generate_ssp_check()
-{
-
-}
-
 void il_gas::generate(FunctionNode* code)
 {
     schar* name = code->head->name->str;
@@ -428,7 +456,7 @@ void il_gas::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++blk_c);
 
-    eml(name << ':' << std::endl);
+    eml(name << ':');
     generate(code->cond);
     POP(rax);
 
@@ -462,15 +490,6 @@ void il_gas::generate(WhileNode* code)
     eml(L"jmp " << name << L".start");
     eml(name << L".end:");
 };
-
-void il_gas::generate()
-{
-    generate(input);
-
-    *ss << ".bss"  << endl << ss_bss ->str()  <<
-           ".text" << endl << ss_codeh->str() << ss_code->str() <<
-           ".data" << endl << ss_data->str();
-}
 
 void il_gas::generate_ProgramNode_term(tast* code)
 {

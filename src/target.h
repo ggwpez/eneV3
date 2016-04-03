@@ -45,7 +45,7 @@ enum class as
 #define AS_L 2
 struct target_t
 {
-    target_t(size_t bits,  schar* int_t,
+    target_t(size_t bits,  schar* int_t, schar* string_t,
              std::array<std::array<const schar*, 4>, 4> const& regs,
              std::array<const schar*, 4> const& s_strs,
              const std::array<const value_type, (int)value_type::size> &types,
@@ -53,6 +53,7 @@ struct target_t
 
     const size_t bits, bytes;
     const schar* const int_t;
+    const schar* const string_t;
 
     std::array<std::array<const schar*, 4>, 4> regs;
     std::array<const schar*, 4> s_strs;

@@ -50,6 +50,16 @@ void reading_non_ptr_type(va_list ap)
     r->print_pos(w_out);
 }
 
+void assign_no_type(va_list ap)
+{
+    AssignNode* a = va_arg(ap, AssignNode*);
+
+    w_out << L"Assign ";
+    a->print(w_out);
+    w_out << L" has no obvious type to assign to";
+    a->print_pos(w_out);
+}
+
 void no_ret_type(va_list ap)
 {
     FunctionNode* b = va_arg(ap, FunctionNode*);
@@ -64,6 +74,14 @@ void wrong_ret_type(va_list ap)
 
     w_out << L"The code of the function " << b->head->name->str << L" does not match its return type";
     b->code->print_pos(w_out);
+}
+
+void void_ret(va_list ap)
+{
+    FunctionNode* f = va_arg(ap, FunctionNode*);
+
+    w_out << L"The code of void-function " << f->head->name->str << L" has an obvious return type";
+    f->print_pos(w_out);
 }
 
 void op_insuff_ops(va_list ap)
@@ -108,11 +126,17 @@ int WAR(war_t type, ...)
         case war_t::READING_NON_PTR_TYPE:
             reading_non_ptr_type(ap);
             break;
+        case war_t::ASSIGN_NO_TYPE:
+            assign_no_type(ap);
+            break;
         case war_t::NO_RET_TYPE:
             no_ret_type(ap);
             break;
         case war_t::WRONG_RET_TYPE:
             wrong_ret_type(ap);
+            break;
+        case war_t::VOID_RET:
+            void_ret(ap);
             break;
         case war_t::OP_INSUFF_OPS:
             op_insuff_ops(ap);

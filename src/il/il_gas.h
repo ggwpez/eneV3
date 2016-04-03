@@ -60,8 +60,8 @@ private:
 
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);
-    void generate_ssp_init() override;
-    void generate_ssp_check() override;
+
+    schar const* get_cc();
 };
 
 #endif // IL_H

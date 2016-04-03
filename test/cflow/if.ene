@@ -1,0 +1,45 @@
+#use "../lib/assert.ene"
+
+u8 test_if_2(u32° tmp)
+{
+	if (tmp~)
+	{
+		return 1;
+	}
+	
+	return 0;
+}
+
+u8 test_if_3(u32° tmp)
+{
+	if (tmp~)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+u8 test_if(u32° tmp)
+{
+	if (test_if_2(tmp~))
+	{
+		return test_if_3(tmp~)!;
+	}
+
+	return 0;
+}
+
+void main()
+{
+	assert_init();
+
+	assert(test_if(1));
+	assert(test_if(654));
+	assert(test_if(0)!);
+	assert(test_if(65 65-)!);
+
+	putchar(10);
+}

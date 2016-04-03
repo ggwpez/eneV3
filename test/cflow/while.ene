@@ -1,0 +1,46 @@
+#use "../lib/assert.ene"
+
+u8 test_while_2(u32° tmp)
+{
+	u32°: c;
+	c = 0;
+
+	while (tmp~ 4 >)
+	{
+		tmp$ =~1-;
+		c$ =~1+;
+	}
+
+	return c~;
+}
+
+u8 test_while(u32° tmp)
+{
+	u32°: c;
+	c = 0;
+
+	while (tmp~ 5 <)
+	{
+		tmp$ =~1+;
+		c$ =~1+;
+	}
+
+	return c~;
+}
+
+void main()
+{
+	assert_init();
+
+	assert(test_while(2));
+	assert(test_while(6)!);
+	assert(test_while(0));
+	assert(test_while(5)!);
+
+	assert(test_while_2(2)!);
+	assert(test_while_2(6));
+	assert(test_while_2(0)!);
+	assert(test_while_2(5));
+
+	putchar(10);
+}

@@ -13,6 +13,13 @@ name_mng::~name_mng()
         delete[] n;
 }
 
+schar* name_mng::get_mem(schar* n)
+{
+    size_t l = wcslen(n);
+
+    return this->get_mem(n, l);
+}
+
 schar* name_mng::get_mem(schar* n, size_t l)
 {
     for (schar* s : names)

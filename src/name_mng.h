@@ -14,6 +14,7 @@ public:
     ~name_mng();
 
     schar* get_mem(schar* n, size_t l);
+    schar* get_mem(schar* n);
 
 private:
     std::vector<schar*> names;

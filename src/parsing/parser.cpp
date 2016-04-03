@@ -527,6 +527,8 @@ IfUNode* parser::parse_if(int s, int& l)
 
     if (input[s +l]->type == tok_type::ELSE)
         false_block = parse_block(s + (++l), block_l);
+    else
+        false_block = new BlockUNode(new uast_arr());
     l += block_l;
 
     return new IfUNode(cond, true_block, false_block);

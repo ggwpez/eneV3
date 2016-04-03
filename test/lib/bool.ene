@@ -1,0 +1,7 @@
+# BOOL HEADER
+
+#def BOOL_DEF 1
+
+#def bool i64
+#def false 0
+#def true 1

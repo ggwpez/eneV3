@@ -50,12 +50,14 @@ public:
 class AssignNode : public tast
 {
 public:
-    AssignNode(ExpressionTermNode* term, itype* to_write);
+    AssignNode(ExpressionTermNode* term, itype* dest, itype* src);
     ~AssignNode();
     void print(std::wostream& out) const;
 
     ExpressionTermNode* term;
-    itype* to_write;
+
+    itype* dest;
+    itype* src;
 };
 
 class PushNode : public tast
