@@ -245,6 +245,17 @@ public:
     BlockUNode* block;
 };
 
+class ForUNode : public uast
+{
+public:
+    ForUNode(ExpressionTermUNode* init, ExpressionTermUNode* cond, ExpressionTermUNode* inc, BlockUNode* block);
+    ~ForUNode();
+    void print(std::wostream& out) const;
+
+    ExpressionTermUNode* init,* cond,* inc;
+    BlockUNode* block;
+};
+
 class OperatorUNode : public uast, public tast
 {
 public:

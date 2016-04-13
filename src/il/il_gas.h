@@ -57,6 +57,7 @@ private:
     void generate(AnomymousCallNode* code) override;
     void generate(IfNode* code) override;
     void generate(WhileNode* code) override;
+    void generate(ForNode* code) override;
 
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);

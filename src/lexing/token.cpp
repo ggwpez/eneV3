@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"\\", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"return", L"struct",
+const schar* tok_strings[] = { L"<ident>", L"<string>", L"<number>", L"<operator>", L":", L"::", L",", L"°", L"=", L"(", L")", L"[", L"]", L"{", L"}", L".", L";", L"\\", L"while", L"for", L"if", L"asm", L"namespace", L"else", L"break", L"goon", L"return", L"struct",
                     /*praep*/  L"#", L"def", L"use", L"pragma", L"<newline>",
                                L"EOS" };
 const schar* op_strings[] = { L"+", L"-", L"*", L"/", L"~", L"?", L"<", L">", L"!", L"^", L"$", L"&", L"|" };
@@ -28,11 +28,11 @@ tok::tok()
 
 void tok::print_pos(std::wostream& out)
 {
-    out << L" in file "<< this->pos_file
-        << L" line " << this->pos_st_line
-        << L" pos " << this->pos_st_line_char
-        << L" to line " << this->pos_en_line
-        << L" pos " << this->pos_en_line_char;
+    out << L" in file " << this->pos_file
+        << L" line " << std::to_wstring(this->pos_st_line)
+        << L" pos " << std::to_wstring(this->pos_st_line_char)
+        << L" to line " << std::to_wstring(this->pos_en_line)
+        << L" pos " << std::to_wstring(this->pos_en_line_char);
 }
 
 void tok::set_pos_st(int pos_line, int pos_line_char)

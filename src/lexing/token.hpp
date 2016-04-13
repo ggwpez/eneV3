@@ -33,6 +33,7 @@ enum class tok_type
     NSPACE,
     ELSE,
     BREAK,
+    GOON,
     RETURN,
     STRUCT,
     PRAEP,
@@ -82,7 +83,8 @@ public:
     void set_pos_en(int pos_line, int pos_line_char);
     tok_type type;
 
-    char* pos_file, pos_st_line, pos_st_line_char,
+    char* pos_file;
+    int pos_st_line, pos_st_line_char,
           pos_en_line, pos_en_line_char;
 
     union

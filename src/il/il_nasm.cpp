@@ -359,7 +359,7 @@ void il_nasm::generate(ReturnNode* code)
 
 void il_nasm::generate(BreakNode* code)
 {
-
+    eml("jmp .end");
 };
 
 void il_nasm::generate(GoOnNode* code)
@@ -477,20 +477,51 @@ void il_nasm::generate(IfNode* code)
 
 void il_nasm::generate(WhileNode* code)
 {
-    std::wstring name = std::wstring(L"__while_") + std::to_wstring(++blk_c);
+    std::wstring name = std::wstring(L"__while_") +std::to_wstring(++blk_c),
+                 start_name= name +std::wstring(L".start"),
+                 code_name = name +std::wstring(L".code"),
+                 end_name  = name +std::wstring(L".end");
 
-    eml(name << L".start:");
+    eml(start_name << L':');
     generate(code->cond);
-    POP(L"eax");
+    POP(rax);
     eml(L"test " << rax << ", -1");
-    eml(L"jnz " << name << L".code");
-    eml(L"jmp " << name << L".end");
+    eml(L"jnz " << code_name);
+    eml(L"jmp " << end_name);
 
-    eml(name << L".code:");
+    eml(code_name << L':');
     generate(code->block);
 
-    eml(L"jmp " << name << L".start");
-    eml(name << L".end:");
+    eml(L"jmp " << start_name);
+    eml(end_name << L':');
+};
+
+void il_nasm::generate(ForNode* code)
+{
+    code->print(std::wcerr);
+
+    std::wstring name = std::wstring(L"__for_") + std::to_wstring(++blk_c),
+                 start_name= name +std::wstring(L".start"),
+                 check_name= name +std::wstring(L".check"),
+                 code_name = name +std::wstring(L".code"),
+                 end_name  = name +std::wstring(L".end");
+
+    eml(start_name << L':');                    //int i = 0;
+    generate(code->init);
+
+    eml(check_name << L':');                    //i < LENGTH
+    generate(code->cond);
+    POP(rax);
+    eml(L"test " << rax << ", -1");
+    eml(L"jnz " << code_name);
+    eml(L"jmp " << end_name);
+
+    eml(code_name << L':');
+    generate(code->block);              //do stuff in the loop
+    generate(code->inc);                //i++
+    eml("jmp " << check_name);          //start over
+
+    eml(end_name << L':');
 };
 
 void il_nasm::generate_ProgramNode_term(tast* code)
@@ -559,6 +590,8 @@ void il_nasm::generate(tast* code)
         generate(dynamic_cast<IfNode*>(code));
     else if (dynamic_cast<WhileNode*>(code))
         generate(dynamic_cast<WhileNode*>(code));
+    else if (dynamic_cast<ForNode*>(code))
+        generate(dynamic_cast<ForNode*>(code));
     else
         ERR(err_t::GEN, L"Type error");
 }

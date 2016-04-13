@@ -441,6 +441,33 @@ void WhileNode::print(std::wostream& out) const
 
 }
 
+ForNode::ForNode(ExpressionTermNode* init, ExpressionTermNode* cond, ExpressionTermNode* inc, BlockNode* block)
+{
+    this->init = init;
+    this->cond = cond;
+    this->inc = inc;
+    this->block = block;
+}
+
+ForNode::~ForNode()
+{
+    delete this->init;
+    delete this->cond;
+    delete this->inc;
+    delete this->block;
+}
+
+void ForNode::print(std::wostream& out) const
+{
+    out << L"for (<init "; this->init->print(out); out << L">;<cond ";
+    this->cond->print(out); out << L">;<inc ";
+    this->inc->print(out); out << L">;)" << std::endl;
+
+    out << L"{\n";
+    this->block->print(out);
+    out << L"}\n";
+}
+
 OperatorNode::OperatorNode(op oper)
 {
     this->oper = oper;

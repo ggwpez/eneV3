@@ -29,8 +29,11 @@ private:
     AssignUNode*            parse_assign(int s, int& l);
     StringNode*             parse_string(int s, int& l);
     WhileUNode*             parse_while(int s, int& l);
+    ForUNode*               parse_for(int s, int& l);
     IfUNode*                parse_if(int s, int& l);
     ReturnUNode*            parse_return(int s, int& l);
+    BreakNode*              parse_break(int s, int& l);
+    GoOnNode*               parse_goon(int s, int& l);
     ProgramUNode*           parse_program(int s, int& l);
     ArgUNode*               parse_arg(int s, int& l);
     ListArgUNode*           parse_arg_list(int s, int& l);

@@ -207,10 +207,16 @@ uast* parser::parse_block_statement(int s, int& l)
         return parse_single_ident_block(s, l);
     else if (input[s]->type == tok_type::WHILE)
         return parse_while(s, l);
+    else if (input[s]->type == tok_type::FOR)
+        return parse_for(s, l);
     else if (input[s]->type == tok_type::IF)
         return parse_if(s, l);
     else if (input[s]->type == tok_type::RETURN)
         return parse_return(s, l);
+    else if (input[s]->type == tok_type::BREAK)
+        return parse_break(s, l);
+    else if (input[s]->type == tok_type::GOON)
+        return parse_goon(s, l);
     else if (input[s]->type == tok_type::ASM)
         return parse_asm(s, l);
     else if (input[s]->type == tok_type::LBRK)
@@ -331,7 +337,11 @@ ExpressionTermUNode* parser::parse_expression_term(int s, int& l)
        l += exp_l;
        term->push_back(expressionAST);
 
-       if (input[s +l]->type == tok_type::SEMI) break;
+       if (input[s +l]->type == tok_type::SEMI)
+       {
+           //l++;
+           break;
+       }
        //if (expressionAST is AssignUNode && toMatch[s +l] is TokSemi)
         //   l--;
     }
@@ -509,6 +519,25 @@ WhileUNode* parser::parse_while(int s, int& l)
     return new WhileUNode(cond, block);
 }
 
+ForUNode* parser::parse_for(int s, int& l)
+{
+    tassert(tok_type::FOR,  input[s]);
+    tassert(tok_type::LBRK, input[s +1]);
+
+    int init_l = 0, cond_l = 0, inc_l = 0, block_l = 0; l = 2;
+    ExpressionTermUNode* init = parse_expression_term(s +l, init_l); l += init_l;
+    tassert(tok_type::SEMI, input[s +l]); l++;
+    ExpressionTermUNode* cond = parse_expression_term(s +l, cond_l); l += cond_l;
+    tassert(tok_type::SEMI, input[s +l]); l++;
+    ExpressionTermUNode*  inc = parse_expression_term(s +l,  inc_l); l +=  inc_l;
+    tassert(tok_type::SEMI, input[s +l]); l++;
+
+    tassert(tok_type::RBRK, input[s +l]); l++;
+    BlockUNode* block = parse_block(s +l, block_l); l += block_l;
+
+    return new ForUNode(init, cond, inc, block);
+}
+
 IfUNode* parser::parse_if(int s, int& l)
 {
     tassert(tok_type::IF, input[s]);
@@ -543,4 +572,18 @@ ReturnUNode* parser::parse_return(int s, int& l)
     l += retv_l;
 
     return new ReturnUNode(val);
+}
+
+BreakNode* parser::parse_break(int s, int& l)
+{
+    tassert(tok_type::BREAK, input[s]); l = 1;
+
+    return new BreakNode();
+}
+
+GoOnNode* parser::parse_goon(int s, int& l)         //actually is continue
+{
+    tassert(tok_type::BREAK, input[s]); l = 1;
+
+    return new GoOnNode();
 }

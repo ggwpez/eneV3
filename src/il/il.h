@@ -65,12 +65,10 @@ protected:
     virtual void generate_op_cpy(OperatorNode* code) = 0;
     virtual void generate_op_and(OperatorNode* code) = 0;
     virtual void generate_op_or (OperatorNode* code) = 0;
-    void generate(OperatorNode* code);
     virtual void generate(ReturnNode* code) = 0;
     virtual void generate(BreakNode* code) = 0;
     virtual void generate(GoOnNode* code) = 0;
     virtual void generate(TypeNode* code) = 0;
-    void generate_global(VariableNode* code);
     virtual void generate_local(VariableNode* code) = 0;
     virtual void generate(ArgNode* code) = 0;
     virtual void generate(ListNode* code) = 0;
@@ -82,6 +80,10 @@ protected:
     virtual void generate(AnomymousCallNode* code) = 0;
     virtual void generate(IfNode* code) = 0;
     virtual void generate(WhileNode* code) = 0;
+    virtual void generate(ForNode* code) = 0;
+
+    void generate(OperatorNode* code);
+    void generate_global(VariableNode* code);
 
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);

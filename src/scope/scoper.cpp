@@ -350,6 +350,17 @@ tast* scoper::convert(WhileUNode* code)
     return new WhileNode(cond, b);
 };
 
+tast* scoper::convert(ForUNode* code)
+{
+    ExpressionTermNode* init = convert(code->init),
+                      * cond = convert(code->cond),
+                      *  inc = convert(code-> inc);
+
+    BlockNode* block = convert(code->block);
+
+    return new ForNode(init, cond, inc, block);
+};
+
 tast* scoper::convert(IdentNode* code)
 {
     tast* to_add = NULL;
@@ -518,6 +529,8 @@ tast* scoper::convert(uast* code)
         convert(dynamic_cast<IfUNode*>(code));
     else if(dynamic_cast<WhileUNode*>(code))
         convert(dynamic_cast<WhileUNode*>(code));
+    else if (dynamic_cast<ForUNode*>(code))
+        convert(dynamic_cast<ForUNode*>(code));
     else if(dynamic_cast<IdentNode*>(code))
         convert(dynamic_cast<IdentNode*>(code));
     else if(dynamic_cast<StringNode*>(code))

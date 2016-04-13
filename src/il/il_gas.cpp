@@ -491,6 +491,11 @@ void il_gas::generate(WhileNode* code)
     eml(name << L".end:");
 };
 
+void il_gas::generate(ForNode* code)
+{
+      eml("<ForNode STUB>");
+};
+
 void il_gas::generate_ProgramNode_term(tast* code)
 {
     if (VariableNode* v = dynamic_cast<VariableNode*>(code))

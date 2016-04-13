@@ -1,0 +1,39 @@
+#use "../lib/assert.ene"
+
+u8 test_for1(u32° tmp)
+{
+	u32°: c;
+
+	for (c = 0; c~ tmp~ <; c$=~1+;)
+	{
+		## lel
+	}
+
+	return c~;
+}
+
+u8 test_for2(u32° tmp)
+{
+	u32°: c;
+
+	for (c = 0; c~ tmp~ <; c$=~1+;)
+	{
+		if (c~ 3 >)
+		{
+			break;
+		}
+	}
+
+	return c~;
+}
+
+void main()
+{
+	assert_init();
+
+	assert(test_for1(3) 3 ?);
+	assert(test_for2(6) 4 ?);
+	printf("Got: %u   But wanted: %u\n", test_for2(6), 4);
+
+	putchar(10);
+}

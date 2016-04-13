@@ -382,6 +382,27 @@ void WhileUNode::print(std::wostream& out) const
 
 }
 
+ForUNode::ForUNode(ExpressionTermUNode* init, ExpressionTermUNode* cond, ExpressionTermUNode* inc, BlockUNode* block)
+{
+    this->init  = init;
+    this->cond  = cond;
+    this->inc   = inc;
+    this->block = block;
+}
+
+ForUNode::~ForUNode()
+{
+    delete this->init;
+    delete this->cond;
+    delete this->inc;
+    delete this->block;
+}
+
+void ForUNode::print(std::wostream &out) const
+{
+
+}
+
 void BinaryUNode::print(std::wostream& out) const
 {
 

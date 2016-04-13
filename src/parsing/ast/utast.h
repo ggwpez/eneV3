@@ -6,6 +6,7 @@
 class BreakNode : public uast, public tast
 {
 public:
+    BreakNode();
     BreakNode(BreakNode* n);
     void print(std::wostream& out) const;
 };
@@ -13,6 +14,7 @@ public:
 class GoOnNode : public uast, public tast
 {
 public:
+    GoOnNode();
     GoOnNode(GoOnNode* n);
     GoOnNode(tok* n);
     void print(std::wostream& out) const;

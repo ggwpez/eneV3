@@ -222,12 +222,22 @@ void ASMNode::print(std::wostream& out) const
 
 }
 
+BreakNode::BreakNode()
+{
+
+}
+
 BreakNode::BreakNode(BreakNode* n) : ast(n)
 {
 
 }
 
 void BreakNode::print(std::wostream& out) const
+{
+
+}
+
+GoOnNode::GoOnNode()
 {
 
 }

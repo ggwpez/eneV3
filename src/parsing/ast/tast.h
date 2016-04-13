@@ -249,6 +249,17 @@ public:
     BlockNode* block;
 };
 
+class ForNode : public tast
+{
+public:
+    ForNode(ExpressionTermNode* init, ExpressionTermNode* cond, ExpressionTermNode* inc, BlockNode* block);
+    ~ForNode();
+    void print(std::wostream& out) const;
+
+    ExpressionTermNode* init,* cond,* inc;
+    BlockNode* block;
+};
+
 class OperatorNode : public uast, public tast
 {
 public:
