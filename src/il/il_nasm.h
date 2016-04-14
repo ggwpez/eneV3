@@ -6,10 +6,8 @@
 class il_nasm : public il
 {
 public:
-    il_nasm(ProgramNode* code, std::wostringstream* ss);
+    il_nasm(ProgramNode* code, std::vector<op*>& out);
     ~il_nasm();
-
-    void generate() override;
 
 private:
     void generate_ProgramNode_term(tast* code) override;

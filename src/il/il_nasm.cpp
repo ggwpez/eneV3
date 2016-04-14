@@ -6,8 +6,8 @@
 
 using namespace std;
 
-il_nasm::il_nasm(ProgramNode* code, std::wostringstream* ss)
-    : il(code, ss)
+il_nasm::il_nasm(ProgramNode* code, std::vector<op*>& out)
+    : il(code, out)
 {
 
 }
@@ -20,17 +20,6 @@ il_nasm::~il_nasm()
 schar const* il_nasm::get_cc()
 {
     return L"; ";
-}
-
-void il_nasm::generate()
-{
-    il::generate_output_init();
-    generate(input);
-    il::generate_output_end();
-
-    *ss << "section .bss"  << endl << ss_bss->str()  <<
-           "section .text" << endl << ss_codeh->str() << ss_code->str() <<
-           "section .data" << endl << ss_data->str();
 }
 
 void il_nasm::generate(ProgramNode* code)
@@ -359,7 +348,7 @@ void il_nasm::generate(ReturnNode* code)
 
 void il_nasm::generate(BreakNode* code)
 {
-    eml("jmp .end");
+    eml("jmp " << il::__str_break << std::to_wstring(brk_c));
 };
 
 void il_nasm::generate(GoOnNode* code)
@@ -450,7 +439,7 @@ void il_nasm::generate(FunctionCallNode* code)
 void il_nasm::generate(AnomymousCallNode* code)
 {
     POP(rax);
-    PUSH(L"anonym_end_" << ++anym_c);
+    //PUSH(L"anonym_end_" << ++anym_c);
     eml(L"jmp " << rax);
 
     eml(L"anonym_end_" << anym_c << L':');
@@ -458,29 +447,32 @@ void il_nasm::generate(AnomymousCallNode* code)
 
 void il_nasm::generate(IfNode* code)
 {
-    std::wstring name = std::wstring(L"__if_") + std::to_wstring(++blk_c);
+    std::wstring name = il::__str_if + std::to_wstring(++if_c),
+                 else_name = name +il::__str_else,
+                 end_name  = name +il::__str_end;
 
     eml(name << ':');
     generate(code->cond);
     POP(rax);
 
     eml(L"test " << rax << ", -1");
-    eml(L"jz " << name << L".else");
+    eml(L"jz " << else_name);
     generate(code->true_block);
-    eml(L"jmp " << name << L".end");
+    eml(L"jmp " << end_name);
 
-    eml(name << L".else:");
+    eml(else_name << L':');
     generate(code->false_block);
 
-    eml(name << L".end:");
+    eml(end_name << L':');
 };
 
 void il_nasm::generate(WhileNode* code)
 {
-    std::wstring name = std::wstring(L"__while_") +std::to_wstring(++blk_c),
-                 start_name= name +std::wstring(L".start"),
-                 code_name = name +std::wstring(L".code"),
-                 end_name  = name +std::wstring(L".end");
+    int my_brk = ++brk_c;
+    std::wstring name = il::__str_while +std::to_wstring(my_brk),
+                 start_name= name +il::__str_start,
+                 code_name = name +il::__str_code,
+                 end_name  = name +il::__str_end;
 
     eml(start_name << L':');
     generate(code->cond);
@@ -493,18 +485,18 @@ void il_nasm::generate(WhileNode* code)
     generate(code->block);
 
     eml(L"jmp " << start_name);
+    eml(il::__str_break << std::to_wstring(my_brk) << L':');
     eml(end_name << L':');
 };
 
 void il_nasm::generate(ForNode* code)
 {
-    code->print(std::wcerr);
-
-    std::wstring name = std::wstring(L"__for_") + std::to_wstring(++blk_c),
-                 start_name= name +std::wstring(L".start"),
-                 check_name= name +std::wstring(L".check"),
-                 code_name = name +std::wstring(L".code"),
-                 end_name  = name +std::wstring(L".end");
+    int my_brk = ++brk_c;
+    std::wstring name = il::__str_for + std::to_wstring(my_brk),
+                 start_name= name +il::__str_start,
+                 check_name= name +il::__str_check,
+                 code_name = name +il::__str_code,
+                 end_name  = name +il::__str_end;
 
     eml(start_name << L':');                    //int i = 0;
     generate(code->init);
@@ -521,6 +513,7 @@ void il_nasm::generate(ForNode* code)
     generate(code->inc);                //i++
     eml("jmp " << check_name);          //start over
 
+    eml(il::__str_break << std::to_wstring(my_brk) << L':');
     eml(end_name << L':');
 };
 

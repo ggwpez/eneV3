@@ -45,7 +45,11 @@ HEADERS += \
     scope/fptr_t.h \
     praep.h \
     name_mng.h \
-    parsing/fmod.h
+    parsing/fmod.h \
+    il/gen.h \
+    il/op.h \
+    gen/gen.h \
+    gen/op.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -74,4 +78,8 @@ SOURCES += \
     scope/fptr_t.cpp \
     praep.cpp \
     name_mng.cpp \
-    parsing/fmod.cpp
+    parsing/fmod.cpp \
+    il/gen.cpp \
+    il/op.cpp \
+    gen/gen.cpp \
+    gen/op.cpp

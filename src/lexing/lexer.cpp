@@ -131,7 +131,7 @@ tok* lexer::number(int s, int& l)
     while ((s + l) < length && isdigit(input[s +l]))
         l++;
 
-    buf = malloc((l +1) * sizeof(schar));
+    buf = malloc((l +1) *sizeof(schar));
     wcpncpy(buf, input +s, l);
     buf[l] = L'\0';
     number = wcstol(buf, nullptr, 10);

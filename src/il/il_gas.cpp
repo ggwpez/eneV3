@@ -5,8 +5,8 @@
 
 using namespace std;
 
-il_gas::il_gas(ProgramNode* code, std::wostringstream* ss)
-    : il(code, ss)
+il_gas::il_gas(ProgramNode* code, std::vector<op*>& out)
+    : il(code, out)
 {
 
 }
@@ -19,17 +19,6 @@ il_gas::~il_gas()
 schar const* il_gas::get_cc()
 {
     return L"# ";
-}
-
-void il_gas::generate()
-{
-    il::generate_output_init();
-    generate(input);
-    il::generate_output_end();
-
-    *ss << ".bss"  << endl << ss_bss ->str()  <<
-           ".text" << endl << ss_codeh->str() << ss_code->str() <<
-           ".data" << endl << ss_data->str();
 }
 
 void il_gas::generate(ProgramNode* code)
@@ -445,7 +434,7 @@ void il_gas::generate(FunctionCallNode* code)
 void il_gas::generate(AnomymousCallNode* code)
 {
     POP(rax);
-    PUSH(L"anonym_end_" << ++anym_c);
+    //PUSH(L"anonym_end_" << ++anym_c);
     eml(L"jmp " << rax);
 
     eml(L"anonym_end_" << anym_c << L':');
@@ -454,7 +443,7 @@ void il_gas::generate(AnomymousCallNode* code)
 
 void il_gas::generate(IfNode* code)
 {
-    std::wstring name = std::wstring(L"__if_") + std::to_wstring(++blk_c);
+    std::wstring name = std::wstring(L"__if_") + std::to_wstring(++brk_c);
 
     eml(name << ':');
     generate(code->cond);
@@ -475,7 +464,7 @@ void il_gas::generate(IfNode* code)
 
 void il_gas::generate(WhileNode* code)
 {
-    std::wstring name = std::wstring(L"__while_") + std::to_wstring(++blk_c);
+    std::wstring name = std::wstring(L"__while_") + std::to_wstring(++brk_c);
 
     eml(name << L".start:");
     generate(code->cond);

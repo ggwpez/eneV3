@@ -8,7 +8,7 @@
 #define null nullptr
 #define tassert(tt, to) {if (to->type != tt) ERR(err_t::PAR_WRONG_BUT, (int)tt, to); }
 
-parser::parser(std::vector<tok *> *input)
+parser::parser(std::vector<tok*> *input)
 {
     this->input = *input;
     this->length = input->size();
@@ -525,12 +525,32 @@ ForUNode* parser::parse_for(int s, int& l)
     tassert(tok_type::LBRK, input[s +1]);
 
     int init_l = 0, cond_l = 0, inc_l = 0, block_l = 0; l = 2;
-    ExpressionTermUNode* init = parse_expression_term(s +l, init_l); l += init_l;
-    tassert(tok_type::SEMI, input[s +l]); l++;
-    ExpressionTermUNode* cond = parse_expression_term(s +l, cond_l); l += cond_l;
-    tassert(tok_type::SEMI, input[s +l]); l++;
-    ExpressionTermUNode*  inc = parse_expression_term(s +l,  inc_l); l +=  inc_l;
-    tassert(tok_type::SEMI, input[s +l]); l++;
+    ExpressionTermUNode* init,* cond,* inc;
+
+    if (input[s +l]->type == tok_type::SEMI)            //empty expression?
+    { init = new ExpressionTermUNode(new uast_arr()); l++; }
+    else
+    {
+        init = parse_expression_term(s +l, init_l); l += init_l;
+        tassert(tok_type::SEMI, input[s +l]); l++;
+    }
+    //
+    if (input[s +l]->type == tok_type::SEMI)
+    { cond = new ExpressionTermUNode(new uast_arr()); l++; }
+    else
+    {
+        cond = parse_expression_term(s +l, cond_l); l += cond_l;
+        tassert(tok_type::SEMI, input[s +l]); l++;
+    }
+    //tassert(tok_type::SEMI, input[s +l]); l++;
+    if (input[s +l]->type == tok_type::SEMI)
+    { inc = new ExpressionTermUNode(new uast_arr()); l++; }
+    else
+    {
+        inc = parse_expression_term(s +l,  inc_l); l +=  inc_l;
+        tassert(tok_type::SEMI, input[s +l]); l++;
+    }
+    //tassert(tok_type::SEMI, input[s +l]); l++;
 
     tassert(tok_type::RBRK, input[s +l]); l++;
     BlockUNode* block = parse_block(s +l, block_l); l += block_l;

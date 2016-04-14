@@ -11,6 +11,7 @@
 #include "errors/errors.hpp"
 #include "target.h"
 #include "name_mng.h"
+#include "gen/gen.h"
 
 #include <string.h>
 
@@ -44,7 +45,9 @@ struct comp_alloc
     uast* un_ast;
     scoper* scr;
     ProgramNode* t_ast;
-    il* gen;
+    il* il_gen;
+    std::vector<op*>* il_ops;
+    gen* asm_gen;
 };
 
 class compiler

@@ -2,30 +2,27 @@
 #include "errors/warnings.h"
 #include "errors/errors.hpp"
 
-il::il(ProgramNode *code, std::wostringstream *ss)
+il::il(ProgramNode *code)
 {
     input = code;
-    this->ss = ss;
 
-    ss_code  = new std::wostringstream();
-    ss_codeh = new std::wostringstream();
-    ss_data  = new std::wostringstream();
-    ss_bss   = new std::wostringstream();
-
+    out = new std::vector<op*>();
     funtion_returns = std::stack<schar*>();
     registered_strings = std::unordered_map<schar*, std::wstring*>();
-    str_c = blk_c = sml_c = grt_c = ssp_c = anym_c = 0;
+    str_c = brk_c = sml_c = grt_c = ssp_c = anym_c = if_c = while_c = 0;
 }
 
 il::~il()
 {
     for (std::pair<schar*, std::wstring*> i : this->registered_strings)
         delete i.second;
+}
 
-    delete ss_code;
-    delete ss_codeh;
-    delete ss_data;
-    delete ss_bss;
+std::vector<op*>* il::generate()
+{
+    il::generate_output_init();
+    generate(input);
+    il::generate_output_end();
 }
 
 void il::generate_sf_enter(int size)

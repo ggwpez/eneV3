@@ -6,10 +6,8 @@
 class il_gas : public il
 {
 public:
-    il_gas(ProgramNode* code, std::wostringstream *ss);
+    il_gas(ProgramNode* code, std::vector<op *> &out);
     ~il_gas();
-
-    void generate() override;
 
 private:
     void generate_ProgramNode_term(tast* code) override;

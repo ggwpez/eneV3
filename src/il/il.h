@@ -9,13 +9,14 @@
 #include "parsing/ast/uast.h"
 #include "string_def.h"
 #include "scope/scope.hpp"
+#include "../gen/gen.h"
 
-#define POP(t)  (eml(L"pop  " << t))
-#define PUSH(t) (eml(L"push " << t))
+#define POP(t) out->push_back(new op(op_t::POP, t))//(eml(L"pop  " << t))
+#define PUSH(t) out->push_back(new op(op_t::PUSH, t))
 #define em(s) emCODE(s)
 #define eml(s) emlCODE(s)
-#define emCODE(s) _ss_em(ss_code, s)
-#define emlCODE(s) _ss_em(ss_code, s << std::endl)
+#define emCODE(s) out->push_back(new op(op_t::EM, em_stream_t::CODE, s))//_ss_em(ss_code, s)
+#define emlCODE(s) out->push_back(new op(op_t::EML, em_stream_t::CODE, s     ))
 #define emCODEH(s) _ss_em(ss_codeh, s)
 #define emlCODEH(s) _ss_em(ss_codeh, s << std::endl)
 #define emBSS(s) _ss_em(ss_bss, s)
@@ -27,15 +28,14 @@
 class il
 {
 public:
-    il(ProgramNode* code, std::wostringstream *ss);
+    il(ProgramNode* code);
     virtual ~il();
 
-    virtual void generate() = 0;
+    std::vector<op*>* generate();
 
 protected:
     ProgramNode* input;
-    std::wostringstream* ss;       //code header, all what should stand at the beginning of code
-    std::wostringstream* ss_code,* ss_codeh,* ss_data,* ss_bss;
+    std::vector<op*>* out;
 
     virtual void generate_ProgramNode_term(tast* code) = 0;
     virtual void generate(tast* code) = 0;
@@ -93,9 +93,27 @@ protected:
     std::wstring* generate_string_name(schar* content, bool& already_registered);
     virtual schar const* get_cc() = 0;                         //return the string needed for commenting out a line, aka // ; #
 
-    int str_c, sml_c, grt_c, blk_c, ssp_c, anym_c;
+    int str_c, sml_c, grt_c, brk_c, ssp_c, anym_c, if_c, while_c;
     std::stack<schar*> funtion_returns;
     std::unordered_map<schar*, std::wstring*> registered_strings;
+
+    // Stack logik
+    void acum_push(schar const* str);
+    void acum_push(int a);
+    void acum_pop (schar const* str);
+    std::stack<schar*> acum_stack;
+
+    // constants
+    schar const* const __str_start  = L"__start_";
+    schar const* const __str_code   = L"__code_";
+    schar const* const __str_check  = L"__ckeck_";
+    schar const* const __str_end    = L"__end_";
+
+    schar const* const __str_if     = L"__if_";
+    schar const* const __str_else   = L"__else_";
+    schar const* const __str_while  = L"__while_";
+    schar const* const __str_for    = L"__for_";
+    schar const* const __str_break  = L"__break_";
 };
 
 #endif // IL_H

@@ -106,7 +106,7 @@ void arg_count_wrong(va_list ap)
 
 int WAR(war_t type, ...)
 {
-    if (!inited) return;
+    if (!inited) return -1;
     war_next();
 
     va_list ap;

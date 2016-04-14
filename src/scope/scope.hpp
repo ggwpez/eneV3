@@ -61,7 +61,7 @@ public:
     void enter();
     void leave();
 
-    void scope::add_type(IdentNode* name);
+    void add_type(IdentNode* name);
     void add_type(IdentNode* name, TypeNode* t);
     void add_type(IdentNode* name, itype* t);
     void add_var(VariableNode* var);

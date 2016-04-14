@@ -6,7 +6,7 @@ u8 test_for1(u32° tmp)
 
 	for (c = 0; c~ tmp~ <; c$=~1+;)
 	{
-		## lel
+		c = c~;				## weil ichs kann
 	}
 
 	return c~;
@@ -20,11 +20,49 @@ u8 test_for2(u32° tmp)
 	{
 		if (c~ 3 >)
 		{
-			break;
+			break;			## break for node
 		}
 	}
 
 	return c~;
+}
+
+u8 test_for3(u32° tmp)
+{
+	for (;tmp~; tmp$=~1-;)
+	{
+		if (tmp~ 10 <)
+		{
+			break;			## break for node
+		}
+	}
+
+	return tmp~;
+}
+
+u8 test_mixed(u32° a, u32° b)
+{
+	u32°: c;
+	u32°: ret;
+	u32°: i;
+	c = 0;
+	ret = 0;
+
+	for (i = 0; i~ a~ <; i$=~1+;)
+	{
+		c = 0;
+		while (c~ a~ <)
+		{
+			if (c~ b~ >)
+			{
+				break;
+			}
+			ret$ = ~ 1+;
+			c$ =~1+;
+		}
+	}
+
+	return ret~;
 }
 
 void main()
@@ -33,7 +71,15 @@ void main()
 
 	assert(test_for1(3) 3 ?);
 	assert(test_for2(6) 4 ?);
-	printf("Got: %u   But wanted: %u\n", test_for2(6), 4);
+	assert(test_for2(2) 2 ?);
+	assert(test_for2(1) 0 ?!);
+	assert(test_for2(2) 2 ?);
+	assert(test_for3(20) 9 ?);
+	assert(test_for3(5) 5 ?);
+	assert(test_for3(6) 5 ?!);
+	assert(test_mixed(10, 5) 60 ?);
+	assert(test_mixed(20, 10) 220 ?);
+
 
 	putchar(10);
 }
