@@ -147,9 +147,11 @@ void il_gas::generate(PushNode* code)
 void il_gas::generate(PopNode* code)
 {
     if (code->target)
-        *ss << L"pop " << code->target->str;
+        POP(code->target->str);
+        //*ss << L"pop " << code->target->str;
     else
-        *ss << L"add esp, " << __BYTES__;
+        POP(L"__NONE");
+        //*ss << L"add esp, " << __BYTES__;
 };
 
 void il_gas::generate(ASMNode* code)
@@ -210,16 +212,16 @@ void il_gas::generate_op_drf(OperatorNode* code)
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov " <<  al << ", [" << rcx << "]");
+            eml(L"mov " <<  al << L", [" << rcx << L"]");
             break;
         case 2:
-            eml(L"mov " <<  ax << ", [" << rcx << "]");
+            eml(L"mov " <<  ax << L", [" << rcx << L"]");
             break;
         case 4:
-            eml(L"mov " << eax << ", [" << rcx << "]");
+            eml(L"mov " << eax << L", [" << rcx << L"]");
             break;
         case 8:
-            eml(L"mov " << rax << ", [" << rcx << "]");
+            eml(L"mov " << rax << L", [" << rcx << L"]");
             break;
         default:
             ERR(err_t::GEN_IL);
@@ -242,17 +244,18 @@ void il_gas::generate_op_sml(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rax << ", " << rcx);
+    eml(L"cmp " << rax << L", " << rcx);
     eml(L"jl " << name << L".fail");
+
     eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    eml(L"xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"not " << rax);
     eml(L"jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml("xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
@@ -266,18 +269,18 @@ void il_gas::generate_op_grt(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rax << ", " << rcx);
-    eml("jg " << name << L".fail");
-    eml("jmp " << name << L".ok");
+    eml(L"cmp " << rax << L", " << rcx);
+    eml(L"jg " << name << L".fail");
+    eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    eml(L"xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"not " << rax);
-    eml("jmp " << name << L".end");
+    eml(L"jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml("xor " << rax << ", " << rax);
-    eml("jmp " << name << L".end");
+    eml(L"xor " << rax << L", " << rax);
+    eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
     PUSH(rax);
@@ -343,7 +346,7 @@ void il_gas::generate(ReturnNode* code)
     generate(code->val);
     POP(rax);
 
-    eml("jmp end_" << this->funtion_returns.top());
+    eml(L"jmp end_" << this->funtion_returns.top());
 };
 
 void il_gas::generate(BreakNode* code)
@@ -359,7 +362,7 @@ void il_gas::generate(GoOnNode* code)
 void il_gas::generate(TypeNode* code)
 {
     em(L"# casting to ");
-    code->print(*ss_code);
+    //code->print(*ss_code);
     eml(L"");
 };
 
@@ -445,11 +448,11 @@ void il_gas::generate(IfNode* code)
 {
     std::wstring name = std::wstring(L"__if_") + std::to_wstring(++brk_c);
 
-    eml(name << ':');
+    eml(name << L':');
     generate(code->cond);
     POP(rax);
 
-    eml(L"test " << rax << ", -1");
+    eml(L"test " << rax << L", -1");
     eml(L"jz " << name << L".else");
     generate(code->true_block);
     eml(L"jmp " << name << L".end");
@@ -469,7 +472,7 @@ void il_gas::generate(WhileNode* code)
     eml(name << L".start:");
     generate(code->cond);
     POP(L"eax");
-    eml(L"test " << rax << ", -1");
+    eml(L"test " << rax << L", -1");
     eml(L"jnz " << name << L".code");
     eml(L"jmp " << name << L".end");
 
@@ -482,7 +485,7 @@ void il_gas::generate(WhileNode* code)
 
 void il_gas::generate(ForNode* code)
 {
-      eml("<ForNode STUB>");
+      eml(L"<ForNode STUB>");
 };
 
 void il_gas::generate_ProgramNode_term(tast* code)
@@ -491,6 +494,13 @@ void il_gas::generate_ProgramNode_term(tast* code)
         generate_global(v);
     else
         generate(code);
+}
+
+void il_gas::initalize_streams()
+{
+    emlBSS(L".bss");
+    emlCODEH(L".text");
+    emlDATA(L".data");
 }
 
 void il_gas::generate(tast* code)

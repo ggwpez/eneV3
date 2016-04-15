@@ -147,9 +147,11 @@ void il_nasm::generate(PushNode* code)
 void il_nasm::generate(PopNode* code)
 {
     if (code->target)
-        *ss << L"pop " << code->target->str;
+        POP(code->target->str);
+        //*ss << L"pop " << code->target->str;
     else
-        *ss << L"add esp, " << __BYTES__;
+        POP(L"__NONE");
+        //*ss << L"add esp, " << __BYTES__;
 };
 
 void il_nasm::generate(ASMNode* code)
@@ -210,16 +212,16 @@ void il_nasm::generate_op_drf(OperatorNode* code)
     switch (code->operand_type->size)
     {
         case 1:
-            eml(L"mov  " <<  al << ", byte [" << rcx << "]");
+            eml(L"mov  " <<  al << L", byte [" << rcx << L"]");
             break;
         case 2:
-            eml(L"mov  " <<  ax << ", word [" << rcx << "]");
+            eml(L"mov  " <<  ax << L", word [" << rcx << L"]");
             break;
         case 4:
-            eml(L"mov  " << eax << ", dword [" << rcx << "]");
+            eml(L"mov  " << eax << L", dword [" << rcx << L"]");
             break;
         case 8:
-            eml(L"mov  " << rax << ", qword [" << rcx << "]");
+            eml(L"mov  " << rax << L", qword [" << rcx << L"]");
             break;
         default:
             ERR(err_t::GEN_IL);
@@ -242,17 +244,17 @@ void il_nasm::generate_op_sml(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
+    eml(L"cmp " << rcx << L", " << rax);
     eml(L"jl " << name << L".ok");
     eml(L"jmp " << name << L".fail");
 
     eml(name << L".ok:");
-    eml(L"xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"not " << rax);
     eml(L"jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml("xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
@@ -266,18 +268,18 @@ void il_nasm::generate_op_grt(OperatorNode* code)
     POP(rax);
     POP(rcx);
 
-    eml(L"cmp " << rcx << ", " << rax);
-    eml("jng " << name << L".fail");
-    eml("jmp " << name << L".ok");
+    eml(L"cmp " << rcx << L", " << rax);
+    eml(L"jng " << name << L".fail");
+    eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
-    eml(L"xor " << rax << ", " << rax);
+    eml(L"xor " << rax << L", " << rax);
     eml(L"not " << rax);
-    eml("jmp " << name << L".end");
+    eml(L"jmp " << name << L".end");
 
     eml(name << L".fail:");
-    eml("xor " << rax << ", " << rax);
-    eml("jmp " << name << L".end");
+    eml(L"xor " << rax << L", " << rax);
+    eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
     PUSH(rax);
@@ -343,12 +345,12 @@ void il_nasm::generate(ReturnNode* code)
     generate(code->val);
     POP(rax);
 
-    eml("jmp end_" << this->funtion_returns.top());
+    eml(L"jmp end_" << this->funtion_returns.top());
 };
 
 void il_nasm::generate(BreakNode* code)
 {
-    eml("jmp " << il::__str_break << std::to_wstring(brk_c));
+    eml(L"jmp " << il::__str_break << std::to_wstring(brk_c));
 };
 
 void il_nasm::generate(GoOnNode* code)
@@ -359,7 +361,7 @@ void il_nasm::generate(GoOnNode* code)
 void il_nasm::generate(TypeNode* code)
 {
     em(L"; casting to ");
-    code->print(*ss_code);
+    //code->print(*ss_code);
     eml(L"");
 };
 
@@ -451,11 +453,11 @@ void il_nasm::generate(IfNode* code)
                  else_name = name +il::__str_else,
                  end_name  = name +il::__str_end;
 
-    eml(name << ':');
+    eml(name << L':');
     generate(code->cond);
     POP(rax);
 
-    eml(L"test " << rax << ", -1");
+    eml(L"test " << rax << L", -1");
     eml(L"jz " << else_name);
     generate(code->true_block);
     eml(L"jmp " << end_name);
@@ -477,7 +479,7 @@ void il_nasm::generate(WhileNode* code)
     eml(start_name << L':');
     generate(code->cond);
     POP(rax);
-    eml(L"test " << rax << ", -1");
+    eml(L"test " << rax << L", -1");
     eml(L"jnz " << code_name);
     eml(L"jmp " << end_name);
 
@@ -504,14 +506,14 @@ void il_nasm::generate(ForNode* code)
     eml(check_name << L':');                    //i < LENGTH
     generate(code->cond);
     POP(rax);
-    eml(L"test " << rax << ", -1");
+    eml(L"test " << rax << L", -1");
     eml(L"jnz " << code_name);
     eml(L"jmp " << end_name);
 
     eml(code_name << L':');
     generate(code->block);              //do stuff in the loop
     generate(code->inc);                //i++
-    eml("jmp " << check_name);          //start over
+    eml(L"jmp " << check_name);          //start over
 
     eml(il::__str_break << std::to_wstring(my_brk) << L':');
     eml(end_name << L':');
@@ -523,6 +525,13 @@ void il_nasm::generate_ProgramNode_term(tast* code)
         generate_global(v);
     else
         generate(code);
+}
+
+void il_nasm::initalize_streams()
+{
+    emlBSS(L"section .bss");
+    emlCODEH(L"section .text");
+    emlDATA(L"section .data");
 }
 
 void il_nasm::generate(tast* code)

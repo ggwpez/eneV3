@@ -6,7 +6,7 @@ il::il(ProgramNode *code)
 {
     input = code;
 
-    out = new std::vector<op*>();
+    out = new std::vector<opcode*>();
     funtion_returns = std::stack<schar*>();
     registered_strings = std::unordered_map<schar*, std::wstring*>();
     str_c = brk_c = sml_c = grt_c = ssp_c = anym_c = if_c = while_c = 0;
@@ -18,11 +18,14 @@ il::~il()
         delete i.second;
 }
 
-std::vector<op*>* il::generate()
+std::vector<opcode*>* il::generate()
 {
     il::generate_output_init();
+    initalize_streams();
     generate(input);
     il::generate_output_end();
+
+    return this->out;
 }
 
 void il::generate_sf_enter(int size)

@@ -1,6 +1,9 @@
 #ifndef OP_H
 #define OP_H
 
+#include <sstream>
+#include <ostream>
+
 #include "../string_def.h"
 
 enum class op_t : unsigned char
@@ -22,12 +25,12 @@ enum class em_stream_t : unsigned char
 
 struct opcode
 {
-    opcode(op_t type, schar* content);
-    opcode(op_t type, em_stream_t stream, schar* content);
+    opcode(op_t type);
+    opcode(op_t type, em_stream_t stream_type);
 
     op_t type;
-    schar* content;
-    em_stream_t stream;     // not needed when when its a PUSH or POP
+    em_stream_t stream_type;     // not needed when when its a PUSH or POP
+    std::wostringstream stream;
 };
 
 #endif // OP_H

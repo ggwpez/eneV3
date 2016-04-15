@@ -46,7 +46,7 @@ struct comp_alloc
     scoper* scr;
     ProgramNode* t_ast;
     il* il_gen;
-    std::vector<op*>* il_ops;
+    std::vector<opcode*>* il_ops;
     gen* asm_gen;
 };
 

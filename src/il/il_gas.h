@@ -60,6 +60,8 @@ private:
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);
 
+    void initalize_streams();
+
     schar const* get_cc();
 };
 

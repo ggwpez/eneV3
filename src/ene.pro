@@ -46,10 +46,9 @@ HEADERS += \
     praep.h \
     name_mng.h \
     parsing/fmod.h \
-    il/gen.h \
-    il/op.h \
     gen/gen.h \
-    gen/opcode.h
+    gen/opcode.h \
+    il/out_buff.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -79,7 +78,6 @@ SOURCES += \
     praep.cpp \
     name_mng.cpp \
     parsing/fmod.cpp \
-    il/gen.cpp \
-    il/op.cpp \
     gen/gen.cpp \
-    gen/opcode.cpp
+    gen/opcode.cpp \
+    il/out_buff.cpp

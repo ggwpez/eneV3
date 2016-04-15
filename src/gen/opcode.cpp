@@ -1,16 +1,14 @@
 #include "opcode.h"
 #include "../name_mng.h"
 
-opcode::opcode(op_t type, schar* content)
+opcode::opcode(op_t type)
 {
     this->type = type;
-    this->content = name_mng::get_mem(content);
-    this->stream = em_stream_t::NONE;
+    this->stream_type = em_stream_t::CODE;
 }
 
-opcode::opcode(op_t type, em_stream_t stream, schar* content)
+opcode::opcode(op_t type, em_stream_t stream_type)
 {
     this->type = type;
-    this->content = name_mng::get_mem(content);
-    this->stream = stream;
+    this->stream_type = stream_type;
 }

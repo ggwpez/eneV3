@@ -11,19 +11,18 @@
 #include "scope/scope.hpp"
 #include "../gen/gen.h"
 
-#define POP(t) out->push_back(new opcode(op_t::POP, t))//(eml(L"pop  " << t))
-#define PUSH(t) out->push_back(new opcode(op_t::PUSH, t))
+#define POP(s) do { opcode* tmp = new opcode(op_t::POP); tmp->stream << s ; this->out->push_back(tmp); } while (0)
+#define PUSH(s) do { opcode* tmp = new opcode(op_t::PUSH); tmp->stream << s; this->out->push_back(tmp); } while (0)
 #define em(s) emCODE(s)
 #define eml(s) emlCODE(s)
-#define emCODE(s) out->push_back(new op(op_t::EM, em_stream_t::CODE, s))//_ss_em(ss_code, s)
-#define emlCODE(s) out->push_back(new op(op_t::EML, em_stream_t::CODE, s))
-#define emCODEH(s) _ss_em(ss_codeh, s)
-#define emlCODEH(s) _ss_em(ss_codeh, s << std::endl)
-#define emBSS(s) _ss_em(ss_bss, s)
-#define emlBSS(s) _ss_em(ss_bss, s << std::endl)
-#define emDATA(s) _ss_em(ss_data, s)
-#define emlDATA(s) _ss_em(ss_data, s << std::endl)
-#define _ss_em(s, msg) (*s << msg)
+#define emCODE(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::CODE); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_code, s)
+#define emlCODE(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::CODE); tmp->stream << s; this->out->push_back(tmp); } while (0)
+#define emCODEH(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::CODEH); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_codeh, s)
+#define emlCODEH(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::CODEH); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_codeh, s )
+#define emBSS(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::BSS); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_bss, s)
+#define emlBSS(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::BSS); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_bss, s )
+#define emDATA(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::DATA); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_data, s)
+#define emlDATA(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::DATA); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_data, s )
 
 class il
 {
@@ -31,11 +30,11 @@ public:
     il(ProgramNode* code);
     virtual ~il();
 
-    std::vector<op*>* generate();
+    std::vector<opcode*>* generate();
 
 protected:
     ProgramNode* input;
-    std::vector<op*>* out;
+    std::vector<opcode*>* out;
 
     virtual void generate_ProgramNode_term(tast* code) = 0;
     virtual void generate(tast* code) = 0;
@@ -88,6 +87,7 @@ protected:
     void generate_sf_enter(int size);
     void generate_sf_leave(int size);
 
+    virtual void initalize_streams() = 0;
     void generate_output_init();
     void generate_output_end();
     std::wstring* generate_string_name(schar* content, bool& already_registered);
