@@ -6,7 +6,7 @@
 class il_gas : public il
 {
 public:
-    il_gas(ProgramNode* code, std::vector<op *> &out);
+    il_gas(ProgramNode* code);
     ~il_gas();
 
 private:

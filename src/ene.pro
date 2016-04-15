@@ -49,7 +49,7 @@ HEADERS += \
     il/gen.h \
     il/op.h \
     gen/gen.h \
-    gen/op.h
+    gen/opcode.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -82,4 +82,4 @@ SOURCES += \
     il/gen.cpp \
     il/op.cpp \
     gen/gen.cpp \
-    gen/op.cpp
+    gen/opcode.cpp

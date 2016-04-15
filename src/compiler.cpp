@@ -3,7 +3,6 @@
 #include <string>
 
 #include "praep.h"
-#include "gen/gen.h"
 
 #include "compiler.h"
 
@@ -94,11 +93,11 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
 
     this->load_template(out);
     if (target->assembler == as::NASM)
-        alloc->gen = new il_nasm(alloc->t_ast);
+        alloc->il_gen = new il_nasm(alloc->t_ast);
     else
-        alloc->gen = new il_gas(alloc->t_ast);
+        alloc->il_gen = new il_gas(alloc->t_ast);
 
-    alloc->il_ops = alloc->gen->generate();
+    alloc->il_ops = alloc->il_gen->generate();
 
     if (!args->no_warn)
         war_dump(std::wcout);

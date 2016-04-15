@@ -6,8 +6,8 @@
 
 using namespace std;
 
-il_nasm::il_nasm(ProgramNode* code, std::vector<op*>& out)
-    : il(code, out)
+il_nasm::il_nasm(ProgramNode* code)
+    : il(code)
 {
 
 }

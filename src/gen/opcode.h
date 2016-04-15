@@ -20,10 +20,10 @@ enum class em_stream_t : unsigned char
     DATA
 };
 
-struct op
+struct opcode
 {
-    op(op_t type, schar* content);
-    op(op_t type, em_stream_t stream, schar* content);
+    opcode(op_t type, schar* content);
+    opcode(op_t type, em_stream_t stream, schar* content);
 
     op_t type;
     schar* content;

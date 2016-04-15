@@ -21,5 +21,5 @@ gen::~gen()
 
 void gen::generate()
 {
-    ss_code << L"; test";
+    *ss_code << L"; test";
 }

@@ -6,7 +6,7 @@
 class il_nasm : public il
 {
 public:
-    il_nasm(ProgramNode* code, std::vector<op*>& out);
+    il_nasm(ProgramNode* code);
     ~il_nasm();
 
 private:

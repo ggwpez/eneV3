@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "op.h"
+#include "opcode.h"
 
 class gen
 {
@@ -13,7 +13,6 @@ public:
 
     void generate();
 
-private:
     std::wostringstream* out;
     std::wostringstream* ss_code,* ss_codeh,* ss_data,* ss_bss;
 

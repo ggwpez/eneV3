@@ -5,8 +5,8 @@
 
 using namespace std;
 
-il_gas::il_gas(ProgramNode* code, std::vector<op*>& out)
-    : il(code, out)
+il_gas::il_gas(ProgramNode* code)
+    : il(code)
 {
 
 }

@@ -11,12 +11,12 @@
 #include "scope/scope.hpp"
 #include "../gen/gen.h"
 
-#define POP(t) out->push_back(new op(op_t::POP, t))//(eml(L"pop  " << t))
-#define PUSH(t) out->push_back(new op(op_t::PUSH, t))
+#define POP(t) out->push_back(new opcode(op_t::POP, t))//(eml(L"pop  " << t))
+#define PUSH(t) out->push_back(new opcode(op_t::PUSH, t))
 #define em(s) emCODE(s)
 #define eml(s) emlCODE(s)
 #define emCODE(s) out->push_back(new op(op_t::EM, em_stream_t::CODE, s))//_ss_em(ss_code, s)
-#define emlCODE(s) out->push_back(new op(op_t::EML, em_stream_t::CODE, s     ))
+#define emlCODE(s) out->push_back(new op(op_t::EML, em_stream_t::CODE, s))
 #define emCODEH(s) _ss_em(ss_codeh, s)
 #define emlCODEH(s) _ss_em(ss_codeh, s << std::endl)
 #define emBSS(s) _ss_em(ss_bss, s)
