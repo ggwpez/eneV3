@@ -1,7 +1,7 @@
 #ifndef SCOPE_HPP
 #define SCOPE_HPP
 
-#include "parsing/ast/ast.h"
+#include "ast/ast.h"
 #include "string_def.h"
 #include "name_mng.h"
 

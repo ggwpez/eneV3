@@ -1,10 +1,10 @@
 #include "scope.hpp"
 #include "errors/errors.hpp"
 
-#include "value_t.h"
-#include "void_t.h"
+#include "types/value_t.h"
+#include "types/void_t.h"
+#include "types/ptr_t.h"
 #include "target.h"
-#include "ptr_t.h"
 
 sc_type::sc_type(IdentNode* name, itype *type)
 {

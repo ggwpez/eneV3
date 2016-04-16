@@ -6,23 +6,25 @@
 #include <unordered_map>
 
 #include "target.h"
-#include "parsing/ast/uast.h"
+#include "ast/uast.h"
 #include "string_def.h"
 #include "scope/scope.hpp"
-#include "../gen/gen.h"
+#include "gen/gen.h"
 
-#define POP(s) do { opcode* tmp = new opcode(op_t::POP); tmp->stream << s ; this->out->push_back(tmp); } while (0)
-#define PUSH(s) do { opcode* tmp = new opcode(op_t::PUSH); tmp->stream << s; this->out->push_back(tmp); } while (0)
-#define em(s) emCODE(s)
-#define eml(s) emlCODE(s)
-#define emCODE(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::CODE); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_code, s)
-#define emlCODE(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::CODE); tmp->stream << s; this->out->push_back(tmp); } while (0)
-#define emCODEH(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::CODEH); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_codeh, s)
-#define emlCODEH(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::CODEH); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_codeh, s )
-#define emBSS(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::BSS); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_bss, s)
-#define emlBSS(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::BSS); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_bss, s )
-#define emDATA(s) do { opcode* tmp = new opcode(op_t::EM, em_stream_t::DATA); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_data, s)
-#define emlDATA(s) do { opcode* tmp = new opcode(op_t::EML, em_stream_t::DATA); tmp->stream << s; this->out->push_back(tmp); } while (0)//_ss_em(ss_data, s )
+#define POP(s)          __create_op(op_t::POP , em_stream_t::CODE, s)
+#define PUSH(s)         __create_op(op_t::PUSH, em_stream_t::CODE, s)
+#define em(s)           emCODE(s)
+#define eml(s)          emlCODE(s)
+#define emCODE(s)       __create_op(op_t::EM,  em_stream_t::CODE , s)
+#define emlCODE(s)      __create_op(op_t::EML, em_stream_t::CODE , s)
+#define emCODEH(s)      __create_op(op_t::EM , em_stream_t::CODEH, s)
+#define emlCODEH(s)     __create_op(op_t::EML, em_stream_t::CODEH, s)
+#define emBSS(s)        __create_op(op_t::EM , em_stream_t::BSS  , s)
+#define emlBSS(s)       __create_op(op_t::EML, em_stream_t::BSS  , s)
+#define emDATA(s)       __create_op(op_t::EM , em_stream_t::DATA , s)
+#define emlDATA(s)      __create_op(op_t::EML, em_stream_t::DATA , s)
+
+#define __create_op(t, st, msg) do { opcode* tmp = new opcode(t, st); tmp->stream << msg; this->out->push_back(tmp); } while (0)
 
 class il
 {

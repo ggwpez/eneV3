@@ -1,7 +1,7 @@
 #include "errors.hpp"
 #include "lexing/token.hpp"
-#include "scope/itype.h"
-#include "parsing/ast/ast.h"
+#include "scope/types/itype.h"
+#include "ast/ast.h"
 #include "warnings.h"
 #include "target.h"
 

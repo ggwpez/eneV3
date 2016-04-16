@@ -7,7 +7,7 @@
 
 #include "string_def.h"
 #include "lexing/token.hpp"
-#include "scope/itype.h"
+#include "scope/types/itype.h"
 
 class IdentNode;
 

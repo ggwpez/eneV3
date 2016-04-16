@@ -2,7 +2,7 @@
 //#define TAST_H
 #pragma once
 #include "ast.h"
-#include "../fmod.h"
+#include "../parsing/fmod.h"
 
 typedef std::vector<tast*> tast_arr;
 

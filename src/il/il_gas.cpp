@@ -428,7 +428,8 @@ void il_gas::generate(FunctionCallNode* code)
         generate(t->at(i));
 
     eml(L"call " << code->target->str);
-    eml(L"add esp, " << code->args_size);
+    if (code->args_size)
+        eml(L"add esp, " << code->args_size);
 
     if (code->return_type->t->size)
         PUSH(rax);

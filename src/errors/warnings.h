@@ -1,7 +1,7 @@
 #pragma once
 
 #include "string_def.h"
-#include "parsing/ast/ast.h"
+#include "ast/ast.h"
 
 //#include <stdio.h>
 //#include <typeinfo>

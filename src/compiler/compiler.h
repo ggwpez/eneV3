@@ -1,11 +1,6 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "lexing/lexer.hpp"
-#include "parsing/parser.h"
-#include "il/il_nasm.h"
-#include "il/il_gas.h"
-#include "scope/scoper.h"
 #include "io.h"
 #include "errors/warnings.h"
 #include "errors/errors.hpp"
@@ -13,42 +8,12 @@
 #include "name_mng.h"
 #include "gen/gen.h"
 
+#include "cmp_alloc.h"
+#include "cmp_args.h"
+
 #include <string.h>
 
-struct cmp_args
-{
-    cmp_args();
-    ~cmp_args();
-    cmp_args(size_t bits, std::vector<std::string>* inputs, std::string* output, std::string* template_path,  as assembler, bool no_warn, bool pedantic_err, bool only_compile);
 
-    std::vector<std::string>* inputs;
-    std::string* output;
-    std::string* template_path;
-    size_t bits;
-    as assembler;
-    bool no_warn;
-    bool only_compile;
-    bool pedantic_err;
-};
-
-class praep;
-struct comp_alloc
-{
-    comp_alloc();
-    ~comp_alloc();
-
-    lexer* lex;
-    praep* prae;
-    std::vector<tok*>* lexer_toks;
-    std::vector<tok*>* praep_toks;
-    parser* par;
-    uast* un_ast;
-    scoper* scr;
-    ProgramNode* t_ast;
-    il* il_gen;
-    std::vector<opcode*>* il_ops;
-    gen* asm_gen;
-};
 
 class compiler
 {
@@ -65,7 +30,7 @@ private:
     cmp_args* args;
     scope* sc;
     name_mng* names;
-    std::vector<comp_alloc*>* allocs;
+    std::vector<cmp_alloc*>* allocs;
 
     void post_as(std::string& i_file, std::string& o_file);
     void post_ld(std::vector<std::string>& i_file, std::string& o_file);

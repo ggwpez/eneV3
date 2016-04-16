@@ -150,8 +150,8 @@ void il_nasm::generate(PopNode* code)
         POP(code->target->str);
         //*ss << L"pop " << code->target->str;
     else
-        POP(L"__NONE");
-        //*ss << L"add esp, " << __BYTES__;
+        //POP(L"__NONE");
+        eml(L"add esp, " << __BYTES__);
 };
 
 void il_nasm::generate(ASMNode* code)
@@ -255,7 +255,7 @@ void il_nasm::generate_op_sml(OperatorNode* code)
 
     eml(name << L".fail:");
     eml(L"xor " << rax << L", " << rax);
-    eml(L"jmp " << name << L".end");
+    //eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
     PUSH(rax);
@@ -270,7 +270,7 @@ void il_nasm::generate_op_grt(OperatorNode* code)
 
     eml(L"cmp " << rcx << L", " << rax);
     eml(L"jng " << name << L".fail");
-    eml(L"jmp " << name << L".ok");
+    //eml(L"jmp " << name << L".ok");
 
     eml(name << L".ok:");
     eml(L"xor " << rax << L", " << rax);
@@ -279,7 +279,7 @@ void il_nasm::generate_op_grt(OperatorNode* code)
 
     eml(name << L".fail:");
     eml(L"xor " << rax << L", " << rax);
-    eml(L"jmp " << name << L".end");
+    //eml(L"jmp " << name << L".end");
 
     eml(name << L".end:");
     PUSH(rax);
@@ -432,7 +432,8 @@ void il_nasm::generate(FunctionCallNode* code)
         generate(t->at(i));
 
     eml(L"call " << code->target->str);
-    eml(L"add esp, " << code->args_size);   //### TODO allign to stack size
+    if (code->args_size)
+        eml(L"add esp, " << code->args_size);   //### TODO allign to stack size
 
     if (code->return_type->t->size)
         PUSH(rax);

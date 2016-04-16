@@ -3,9 +3,9 @@
 #include "errors/warnings.h"
 #include "target.h"
 
-#include "ptr_t.h"
-#include "fptr_t.h"
-#include "void_t.h"
+#include "types/ptr_t.h"
+#include "types/fptr_t.h"
+#include "types/void_t.h"
 
 #define last_type (!last_types->size() ? nullptr : last_types->top())
 #define clear_types while(last_types->size()) {last_types->pop();}

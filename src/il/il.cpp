@@ -18,7 +18,7 @@ il::~il()
         delete i.second;
 }
 
-std::vector<opcode*>* il::generate()
+std::vector<opcode *> *il::generate()
 {
     il::generate_output_init();
     initalize_streams();
@@ -31,14 +31,16 @@ std::vector<opcode*>* il::generate()
 void il::generate_sf_enter(int size)
 {
     eml(L"push ebp" << std::endl <<
-        L"mov ebp, esp" << std::endl <<
-        L"sub esp, " << size);
+        L"mov ebp, esp" << std::endl);
+    if (size)
+        eml(L"sub esp, " << size);
 }
 
 void il::generate_sf_leave(int size)
 {
-    eml(L"add esp, " << size << std::endl <<
-        L"mov esp, ebp" << std::endl <<
+    if (size)
+        eml(L"add esp, " << size << std::endl);
+    eml(L"mov esp, ebp" << std::endl <<
         L"pop ebp" << std::endl <<
         L"ret ");
 }

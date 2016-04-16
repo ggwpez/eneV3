@@ -8,7 +8,7 @@
 #include "string_def.h"
 #include "target.h"
 #include "scope/scoper.h"
-#include "compiler.h"
+#include "compiler/compiler.h"
 
 class praep
 {

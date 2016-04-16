@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "lexing/token.hpp"
-#include "parsing/ast/uast.h"
+#include "ast/uast.h"
 
 class parser
 {

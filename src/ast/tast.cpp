@@ -1,4 +1,4 @@
-#include "parsing/ast/uast.h"
+#include "ast/uast.h"
 #include "errors/warnings.h"
 #include "target.h"
 

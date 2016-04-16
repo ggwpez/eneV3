@@ -4,11 +4,11 @@
 #include <iostream>
 #include <vector>
 
-#include "scope/itype.h"
+#include "scope/types/itype.h"
 #include "lexing/token.hpp"
 #include "string_def.h"
 #include "ast.h"
-#include "../fmod.h"
+#include "../parsing/fmod.h"
 
 typedef std::vector<uast*> uast_arr;
 

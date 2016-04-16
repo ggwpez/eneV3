@@ -13,7 +13,7 @@ compiler::compiler(cmp_args& args)
 {
     target = targets[(args.bits >> 5) + ((int)args.assembler *3)];
     this->args = &args;
-    this->allocs = new std::vector<comp_alloc*>();
+    this->allocs = new std::vector<cmp_alloc*>();
     this->names = new name_mng();
     this->sc = new scope(names);
     this->build_dir = io::get_dir(*args.output);
@@ -24,7 +24,7 @@ compiler::compiler(cmp_args& args)
 
 compiler::~compiler()
 {
-    for (std::vector<comp_alloc*>::const_iterator it = allocs->begin(); it != allocs->end(); it++)
+    for (std::vector<cmp_alloc*>::const_iterator it = allocs->begin(); it != allocs->end(); it++)
         delete *it;
 
     delete allocs;
@@ -77,7 +77,7 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
         war_as_error = args->pedantic_err;
     }
 
-    comp_alloc* alloc = new comp_alloc();
+    cmp_alloc* alloc = new cmp_alloc();
 
     alloc->lex = new lexer(this->names, file_name.c_str());
     alloc->lexer_toks = alloc->lex->lex();
@@ -98,7 +98,7 @@ void compiler::compile_file(std::string const& file_name, std::string& output_fi
         alloc->il_gen = new il_gas(alloc->t_ast);
 
     alloc->il_ops = alloc->il_gen->generate();
-    alloc->asm_gen = new gen(alloc->il_ops, out);
+    alloc->asm_gen = new gen(this->args, alloc->il_ops, out);
     alloc->asm_gen->generate();
 
     if (!args->no_warn)
@@ -112,9 +112,9 @@ void compiler::post_as(std::string& i_file, std::string& o_file)
 {
     std::stringstream assembler;
     if (target->assembler == as::NASM)
-        assembler << "nasm -f elf";
+        assembler << "nasm -O" << args->optimisation << " -f elf";
     else
-        assembler << "as -c --";
+        assembler << "as -O" << args->optimisation << " -c --";
 
     assembler << __BITS__ << " " << i_file << " -o " << o_file;
 
@@ -161,55 +161,4 @@ void compiler::load_template(std::wostringstream& ss)
     std::string tem_path = *this->args->template_path +std::string("/template_") +std::to_string(target->bits) +ex;
 
     io::read_file(tem_path.c_str(), ss);
-}
-
-cmp_args::cmp_args()
-{
-
-}
-
-cmp_args::~cmp_args()
-{
-    delete this->inputs;
-    delete this->output;
-    delete this->template_path;
-}
-
-cmp_args::cmp_args(size_t bits, std::vector<std::string>* inputs, std::string* output, std::string* template_path, as assembler, bool no_warn, bool pedantic_err, bool only_compile)
-    : bits(bits), inputs(inputs), output(output), template_path(template_path), assembler(assembler), no_warn(no_warn), pedantic_err(pedantic_err), only_compile(only_compile)
-{
-    if (bits == -1)
-        ERR(err_t::IO_CMD_ARG_NO_BITS);
-    if (!inputs || !inputs->size())
-        ERR(err_t::IO_CMD_ARG_NO_INPUT);
-    if (!output || !output->length())
-        ERR(err_t::IO_CMD_ARG_NO_OUTPUT);
-    if (assembler == as::size)
-        ERR(err_t::IO_CMD_ARG_NO_AS);
-}
-
-comp_alloc::comp_alloc()
-{
-
-}
-
-comp_alloc::~comp_alloc()
-{
-    delete asm_gen;
-    delete il_gen;
-    delete il_ops;
-    delete prae;
-    delete scr;
-    delete par;
-
-    delete t_ast;
-    delete un_ast;
-
-    delete praep_toks;
-
-    for (tok* t : *lexer_toks)
-        delete t;
-
-    delete lexer_toks;
-    delete lex;
 }

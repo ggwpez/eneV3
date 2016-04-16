@@ -25,30 +25,31 @@ HEADERS += \
     il/il_nasm.h \
     lexing/lexer.hpp \
     lexing/token.hpp \
-    parsing/ast/ast.h \
-    parsing/ast/tast.h \
-    parsing/ast/uast.h \
-    parsing/ast/utast.h \
     parsing/parser.h \
-    scope/array_t.h \
-    scope/itype.h \
-    scope/ptr_t.h \
     scope/scope.hpp \
     scope/scoper.h \
-    scope/struct_t.h \
-    scope/value_t.h \
-    scope/void_t.h \
-    compiler.h \
     io.h \
     string_def.h \
     target.h \
-    scope/fptr_t.h \
     praep.h \
     name_mng.h \
     parsing/fmod.h \
     gen/gen.h \
     gen/opcode.h \
-    il/out_buff.h
+    compiler/cmp_args.h \
+    compiler/compiler.h \
+    compiler/cmp_alloc.h \
+    ast/ast.h \
+    ast/tast.h \
+    ast/uast.h \
+    ast/utast.h \
+    scope/types/array_t.h \
+    scope/types/fptr_t.h \
+    scope/types/itype.h \
+    scope/types/ptr_t.h \
+    scope/types/struct_t.h \
+    scope/types/value_t.h \
+    scope/types/void_t.h
 
 SOURCES += \
     errors/errors.cpp \
@@ -58,26 +59,27 @@ SOURCES += \
     il/il_nasm.cpp \
     lexing/lexer.cpp \
     lexing/token.cpp \
-    parsing/ast/tast.cpp \
-    parsing/ast/uast.cpp \
-    parsing/ast/utast.cpp \
     parsing/parser.cpp \
-    scope/array_t.cpp \
-    scope/itype.cpp \
-    scope/ptr_t.cpp \
     scope/scope.cpp \
     scope/scoper.cpp \
-    scope/struct_t.cpp \
-    scope/value_t.cpp \
-    scope/void_t.cpp \
-    compiler.cpp \
     io.cpp \
     main.cpp \
     target.cpp \
-    scope/fptr_t.cpp \
     praep.cpp \
     name_mng.cpp \
     parsing/fmod.cpp \
     gen/gen.cpp \
     gen/opcode.cpp \
-    il/out_buff.cpp
+    compiler/cmp_args.cpp \
+    compiler/compiler.cpp \
+    compiler/cmp_alloc.cpp \
+    ast/tast.cpp \
+    ast/uast.cpp \
+    ast/utast.cpp \
+    scope/types/array_t.cpp \
+    scope/types/fptr_t.cpp \
+    scope/types/itype.cpp \
+    scope/types/ptr_t.cpp \
+    scope/types/struct_t.cpp \
+    scope/types/value_t.cpp \
+    scope/types/void_t.cpp

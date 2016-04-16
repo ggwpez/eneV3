@@ -4,7 +4,7 @@
 #include <array>
 
 #include "string_def.h"
-#include "scope/value_t.h"
+#include "scope/types/value_t.h"
 
 #define __BITS__ target->bits
 #define __BYTES__ target->bytes
