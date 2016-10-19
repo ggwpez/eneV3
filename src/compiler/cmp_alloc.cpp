@@ -7,11 +7,11 @@ cmp_alloc::cmp_alloc()
 
 cmp_alloc::~cmp_alloc()
 {
-    delete asm_gen;
+    //delete asm_gen;
 
-    for (opcode* op : *il_ops)
-        delete op;
-    delete il_ops;
+    //for (opcode* op : *il_ops)
+      //  delete op;
+    //delete il_ops;
 
     delete il_gen;
     delete prae;

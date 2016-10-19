@@ -40,6 +40,8 @@ void gen::output_opcode(opcode* op)
         *stream << L"push " << op->stream.str() << std::endl;
     else if (op->type == op_t::POP )
         *stream << L"pop  " << op->stream.str() << std::endl;
+    else if (op->type == op_t::PUSH_KILL)
+        *stream << L"add esp, " << op->stream.str() << std::endl;
 }
 
 void gen::clear_stack()
@@ -75,9 +77,16 @@ void gen::tick_automata(opcode* op)
             stack.pop_back();
 
             clear_stack();
-            ss_code << L"mov " << op->stream.str() << L", " << push->stream.str() << std::endl;
-
+            if (op->stream.str() != push->stream.str())
+                ss_code << L"mov " << op->stream.str() << L", " << push->stream.str() << std::endl;
         }
+        else
+            output_opcode(op);
+    }
+    else if (op->type == op_t::PUSH_KILL)
+    {
+        if (stack.size() && stack.back()->type == op_t::PUSH)
+            stack.pop_back();
         else
             output_opcode(op);
     }
@@ -91,7 +100,6 @@ void gen::generate()
         else
             output_opcode(op);
     }
-
 
     if (this->args->optimisation)
     {

@@ -2,6 +2,6 @@
 
 #def BOOL_DEF 1
 
-#def bool i64
+#def bool i32
 #def false 0
 #def true 1

@@ -9,6 +9,7 @@
 enum class op_t : unsigned char
 {
     PUSH,
+    PUSH_KILL,
     POP,
     EM,
     EML,

@@ -6,7 +6,7 @@
 class il_nasm : public il
 {
 public:
-    il_nasm(ProgramNode* code);
+    il_nasm(ProgramNode* code, std::wostringstream *stream);
     ~il_nasm();
 
 private:
@@ -61,6 +61,7 @@ private:
     void generate_sf_leave(int size);
 
     void initalize_streams();
+    void finalize_streams();
 
     schar const* get_cc();
 };

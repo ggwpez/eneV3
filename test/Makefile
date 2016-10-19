@@ -1,7 +1,13 @@
 SUBDIRS := $(wildcard */.)
 
-export ENE:=../../bin/ene
-export ENEFLAGS:=-b 32 -t ../../src/templates -a nasm -O1
+ENE:=../../bin/ene
+ENEBITS:=32
+ENEAS:=nasm
+ENEOP:=2
+ENEFLAGS:=-b $(ENEBITS) -t ../../src/templates -a $(ENEAS) -O$(ENEOP)
+
+export ENE
+export ENEFLAGS
 
 all: $(SUBDIRS)
 

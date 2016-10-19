@@ -1,0 +1,20 @@
+#use "../lib/assert.ene"
+
+void main()
+{
+	u32°: i;
+	u32°: c;
+	u32°: tmp;
+
+	i = 10000;
+
+	while (i~)
+	{
+		for (c = 0; c~ 10000 <; c$=~1+;)		
+		{
+			tmp = tmp~ 1+ c~ c+ +;				## 100M times
+			tmp = 5 6 9 7 4 ++++;
+		}
+		i$=~1-;
+	}
+}

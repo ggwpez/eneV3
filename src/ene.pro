@@ -1,9 +1,9 @@
 TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
-CONFIG -= qt
+CONFIG -= qt c++11
 
-QMAKE_CXXFLAGS += -fpermissive -std=c++11 -w -O0 -fno-exceptions
+QMAKE_CXXFLAGS += -fpermissive -std=c++17 -w -O0 -fno-exceptions
 
 OTHER_FILES += \
     template.nasm \
@@ -49,7 +49,9 @@ HEADERS += \
     scope/types/ptr_t.h \
     scope/types/struct_t.h \
     scope/types/value_t.h \
-    scope/types/void_t.h
+    scope/types/void_t.h \
+    il/dynamic.hpp \
+    il/nasm_optimizer.hpp
 
 SOURCES += \
     errors/errors.cpp \
@@ -82,4 +84,5 @@ SOURCES += \
     scope/types/ptr_t.cpp \
     scope/types/struct_t.cpp \
     scope/types/value_t.cpp \
-    scope/types/void_t.cpp
+    scope/types/void_t.cpp \
+    il/nasm_optimizer.cpp

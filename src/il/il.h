@@ -11,32 +11,33 @@
 #include "scope/scope.hpp"
 #include "gen/gen.h"
 
-#define POP(s)          __create_op(op_t::POP , em_stream_t::CODE, s)
-#define PUSH(s)         __create_op(op_t::PUSH, em_stream_t::CODE, s)
-#define em(s)           emCODE(s)
-#define eml(s)          emlCODE(s)
-#define emCODE(s)       __create_op(op_t::EM,  em_stream_t::CODE , s)
-#define emlCODE(s)      __create_op(op_t::EML, em_stream_t::CODE , s)
-#define emCODEH(s)      __create_op(op_t::EM , em_stream_t::CODEH, s)
-#define emlCODEH(s)     __create_op(op_t::EML, em_stream_t::CODEH, s)
-#define emBSS(s)        __create_op(op_t::EM , em_stream_t::BSS  , s)
-#define emlBSS(s)       __create_op(op_t::EML, em_stream_t::BSS  , s)
-#define emDATA(s)       __create_op(op_t::EM , em_stream_t::DATA , s)
-#define emlDATA(s)      __create_op(op_t::EML, em_stream_t::DATA , s)
-
-#define __create_op(t, st, msg) do { opcode* tmp = new opcode(t, st); tmp->stream << msg; this->out->push_back(tmp); } while (0)
+#define PUSH(t) do { std::wostringstream str; str << t; il::acum_push(str.str()); } while(0)//(eml(L"push " << t))
+#define PUSH_KILL(t) (eml(L"add esp, " << t))
+#define POP(t) do { std::wostringstream str; str << t; il::acum_pop(str.str()); } while(0)//(eml(L"pop  " << t))
+#define em(s) emCODE(s)
+#define eml(s) emlCODE(s)
+#define emCODE(s) do { _ss_em(ss_code, s); il::acum_non_immediate(); } while(0)
+#define emlCODE(s) { _ss_em(ss_code, s << std::endl); il::acum_non_immediate();  }
+#define emCODEH(s) _ss_em(ss_codeh, s)
+#define emlCODEH(s) _ss_em(ss_codeh, s << std::endl)
+#define emBSS(s) _ss_em(ss_bss, s)
+#define emlBSS(s) _ss_em(ss_bss, s << std::endl)
+#define emDATA(s) _ss_em(ss_data, s)
+#define emlDATA(s) _ss_em(ss_data, s << std::endl)
+#define _ss_em(s, msg) (*s << msg)
 
 class il
 {
 public:
-    il(ProgramNode* code);
+    il(ProgramNode* code, std::wostringstream *ss);
     virtual ~il();
 
-    std::vector<opcode*>* generate();
+    void generate();
 
 protected:
     ProgramNode* input;
-    std::vector<opcode*>* out;
+    std::wostringstream* ss;       //code header, all what should stand at the beginning of code
+    std::wostringstream* ss_code,* ss_codeh,* ss_data,* ss_bss;
 
     virtual void generate_ProgramNode_term(tast* code) = 0;
     virtual void generate(tast* code) = 0;
@@ -90,6 +91,7 @@ protected:
     void generate_sf_leave(int size);
 
     virtual void initalize_streams() = 0;
+    virtual void finalize_streams() = 0;
     void generate_output_init();
     void generate_output_end();
     std::wstring* generate_string_name(schar* content, bool& already_registered);
@@ -100,10 +102,10 @@ protected:
     std::unordered_map<schar*, std::wstring*> registered_strings;
 
     // Stack logik
-    void acum_push(schar const* str);
-    void acum_push(int a);
-    void acum_pop (schar const* str);
-    std::stack<schar*> acum_stack;
+    void acum_push(std::wstring str);
+    void acum_pop (std::wstring str);
+    void acum_non_immediate();
+    std::stack<std::wstring> acum_stack;
 
     // constants
     schar const* const __str_start  = L"__start_";

@@ -15,9 +15,9 @@ typedef std::vector<uast*> uast_arr;
 class ProgramUNode : public uast
 {
 public:
-    ProgramUNode(uast_arr* code);
-    ~ProgramUNode();
-    void print(std::wostream& out) const;
+	ProgramUNode(uast_arr* code);
+	~ProgramUNode();
+	void print(std::wostream& out) const;
 
    const uast_arr* code;
 };
@@ -25,9 +25,9 @@ public:
 class BlockUNode : public uast
 {
 public:
-    BlockUNode(uast_arr* code);
-    ~BlockUNode();
-    void print(std::wostream& out) const;
+	BlockUNode(uast_arr* code);
+	~BlockUNode();
+	void print(std::wostream& out) const;
 
    uast_arr* code;
 };
@@ -35,18 +35,18 @@ public:
 class ExpressionUNode : public uast
 {
 public:
-    ExpressionUNode(uast* exp);
-    void print(std::wostream& out) const;
+	ExpressionUNode(uast* exp);
+	void print(std::wostream& out) const;
 
-    uast* exp;
+	uast* exp;
 };
 
 class ExpressionTermUNode : public uast
 {
 public:
-    ExpressionTermUNode(uast_arr* exps);
-    ~ExpressionTermUNode();
-    void print(std::wostream& out) const;
+	ExpressionTermUNode(uast_arr* exps);
+	~ExpressionTermUNode();
+	void print(std::wostream& out) const;
 
    uast_arr* exps;
 };
@@ -54,105 +54,105 @@ public:
 class AssignUNode : public uast
 {
 public:
-    AssignUNode(ExpressionTermUNode* term);
-    ~AssignUNode();
-    void print(std::wostream& out) const;
+	AssignUNode(ExpressionTermUNode* term);
+	~AssignUNode();
+	void print(std::wostream& out) const;
 
-    ExpressionTermUNode* term;
+	ExpressionTermUNode* term;
 };
 
 class BinaryUNode : public uast
 {
 public:
-    void print(std::wostream& out) const;
+	void print(std::wostream& out) const;
 };
 
 class UnaryUNode : public uast
 {
 public:
-    void print(std::wostream& out) const;
+	void print(std::wostream& out) const;
 };
 
 class PushUNode : public uast
 {
 public:
-    PushUNode(uast* v);
-    ~PushUNode();
-    void print(std::wostream& out) const;
+	PushUNode(uast* v);
+	~PushUNode();
+	void print(std::wostream& out) const;
 
-    uast* v;
+	uast* v;
 };
 
 class ReturnUNode : public uast
 {
 public:
-    ReturnUNode(ExpressionTermUNode* val);
-    ~ReturnUNode();
-    void print(std::wostream& out) const;
+	ReturnUNode(ExpressionTermUNode* val);
+	~ReturnUNode();
+	void print(std::wostream& out) const;
 
-    ExpressionTermUNode* val;
+	ExpressionTermUNode* val;
 };
 
 class TypeUNode : public uast
 {
 /*public:
-    TypeUNode(std::vector<IdentNode*>* parts);
-    ~TypeUNode();
-    void print(std::wostream& out) const;
+	TypeUNode(std::vector<IdentNode*>* parts);
+	~TypeUNode();
+	void print(std::wostream& out) const;
 
-    std::vector<IdentNode*>* parts;*/
+	std::vector<IdentNode*>* parts;*/
 };
 
 class AtomTypeUNode : public TypeUNode
 {
 public:
-    AtomTypeUNode(std::vector<IdentNode*>* parts);
-    ~AtomTypeUNode();
-    void print(std::wostream& out) const;
+	AtomTypeUNode(std::vector<IdentNode*>* parts);
+	~AtomTypeUNode();
+	void print(std::wostream& out) const;
 
-    std::vector<IdentNode*>* parts;
+	std::vector<IdentNode*>* parts;
 };
 
 class ListTypeUNode;
 class FptrTypeUNode : public TypeUNode
 {
 public:
-    FptrTypeUNode(ListTypeUNode* args, TypeUNode* ret);
-    ~FptrTypeUNode();
-    void print(std::wostream& out) const;
+	FptrTypeUNode(ListTypeUNode* args, TypeUNode* ret);
+	~FptrTypeUNode();
+	void print(std::wostream& out) const;
 
-    ListTypeUNode* args;
-    TypeUNode* ret;
+	ListTypeUNode* args;
+	TypeUNode* ret;
 };
 
 class VariableUNode : public uast
 {
 public:
-    VariableUNode(TypeUNode* type_name, IdentNode* var_name);
-    ~VariableUNode();
-    void print(std::wostream& out) const;
+	VariableUNode(TypeUNode* type_name, IdentNode* var_name);
+	~VariableUNode();
+	void print(std::wostream& out) const;
 
-    TypeUNode* type_name;
-    IdentNode* var_name;
+	TypeUNode* type_name;
+	IdentNode* var_name;
 };
 
 class ArgUNode : public uast
 {
 public:
-    ArgUNode(IdentNode* name, TypeUNode* type);
-    ~ArgUNode();
-    void print(std::wostream& out) const;
+	ArgUNode(IdentNode* name, TypeUNode* type);
+	~ArgUNode();
+	void print(std::wostream& out) const;
 
-    IdentNode* name;
-    TypeUNode* type;
+	IdentNode* name;
+	TypeUNode* type;
 };
 
 class ListUNode : public uast               //(a, b)
 {
 public:
-    ListUNode(uast_arr* items);
-    ~ListUNode();
-    void print(std::wostream& out) const;
+	ListUNode(uast_arr* items);
+	~ListUNode();
+	void print(std::wostream& out) const;
 
    uast_arr* items;
 };
@@ -160,111 +160,121 @@ public:
 class ListArgUNode : public uast               //(int a, int b)
 {
 public:
-    ListArgUNode(std::vector<ArgUNode*>* items);
-    ~ListArgUNode();
-    void print(std::wostream& out) const;
+	ListArgUNode(std::vector<ArgUNode*>* items);
+	~ListArgUNode();
+	void print(std::wostream& out) const;
 
-    std::vector<ArgUNode*>* items;
+	std::vector<ArgUNode*>* items;
 };
 
 class ListTypeUNode : public uast               //int int
 {
 public:
-    ListTypeUNode(std::vector<TypeUNode*>* items);
-    ~ListTypeUNode();
-    void print(std::wostream& out) const;
+	ListTypeUNode(std::vector<TypeUNode*>* items);
+	~ListTypeUNode();
+	void print(std::wostream& out) const;
 
-    std::vector<TypeUNode*>* items;
+	std::vector<TypeUNode*>* items;
 };
 
 class FunctionHeaderUNode : public uast
 {
 public:
-    FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args, FMod mods);
-    ~FunctionHeaderUNode();
-    void print(std::wostream& out) const;
+	FunctionHeaderUNode(TypeUNode* type, IdentNode* name, ListArgUNode* args, FMod mods);
+	~FunctionHeaderUNode();
+	void print(std::wostream& out) const;
 
-    TypeUNode* type;
-    IdentNode* name;
-    ListArgUNode* args;
-    FMod mods;
+	TypeUNode* type;
+	IdentNode* name;
+	ListArgUNode* args;
+	FMod mods;
 };
 
 class FunctionUNode : public uast
 {
 public:
-    FunctionUNode(FunctionHeaderUNode* head, BlockUNode* code);
-    ~FunctionUNode();
-    void print(std::wostream& out) const;
+	FunctionUNode(FunctionHeaderUNode* head, BlockUNode* code);
+	~FunctionUNode();
+	void print(std::wostream& out) const;
 
-    FunctionHeaderUNode* head;
-    BlockUNode* code;
+	FunctionHeaderUNode* head;
+	BlockUNode* code;
 };
 
 class FunctionCallUNode : public uast
 {
 public:
-    FunctionCallUNode(IdentNode* target, ListUNode* args);
-    ~FunctionCallUNode();
-    void print(std::wostream& out) const;
+	FunctionCallUNode(IdentNode* target, ListUNode* args);
+	~FunctionCallUNode();
+	void print(std::wostream& out) const;
 
-    IdentNode* target;
-    ListUNode* args;
+	IdentNode* target;
+	ListUNode* args;
 };
 
 class AnomymousCallUNode : public uast
 {
 public:
-    AnomymousCallUNode(ListUNode* args);
-    ~AnomymousCallUNode();
-    void print(std::wostream& out) const;
+	AnomymousCallUNode(ListUNode* args);
+	~AnomymousCallUNode();
+	void print(std::wostream& out) const;
 
-    ListUNode* args;
+	ListUNode* args;
 };
 
 class IfUNode : public uast
 {
 public:
-    IfUNode(ExpressionTermUNode* cond, BlockUNode* true_block, BlockUNode* false_block);
-    ~IfUNode();
-    void print(std::wostream& out) const;
+	IfUNode(ExpressionTermUNode* cond, BlockUNode* true_block, BlockUNode* false_block);
+	~IfUNode();
+	void print(std::wostream& out) const;
 
-    ExpressionTermUNode* cond;
-    BlockUNode* true_block;
-    BlockUNode* false_block;
+	ExpressionTermUNode* cond;
+	BlockUNode* true_block;
+	BlockUNode* false_block;
 };
 
 class WhileUNode : public uast
 {
 public:
-    WhileUNode(ExpressionTermUNode* cond, BlockUNode* block);
-    ~WhileUNode();
-    void print(std::wostream& out) const;
+	WhileUNode(ExpressionTermUNode* cond, BlockUNode* block);
+	~WhileUNode();
+	void print(std::wostream& out) const;
 
-    ExpressionTermUNode* cond;
-    BlockUNode* block;
+	ExpressionTermUNode* cond;
+	BlockUNode* block;
 };
 
 class ForUNode : public uast
 {
 public:
-    ForUNode(ExpressionTermUNode* init, ExpressionTermUNode* cond, ExpressionTermUNode* inc, BlockUNode* block);
-    ~ForUNode();
-    void print(std::wostream& out) const;
+	ForUNode(ExpressionTermUNode* init, ExpressionTermUNode* cond, ExpressionTermUNode* inc, BlockUNode* block);
+	~ForUNode();
+	void print(std::wostream& out) const;
 
-    ExpressionTermUNode* init,* cond,* inc;
-    BlockUNode* block;
+	ExpressionTermUNode* init,* cond,* inc;
+	BlockUNode* block;
+};
+
+class StructUNode : public uast
+{
+public:
+	StructUNode(std::vector<VariableUNode*> mem_vars, std::vector<FunctionUNode*> mem_funcs);
+	~StructUNode();
+
+	std::vector<VariableUNode*> mem_vars;
+	std::vector<FunctionUNode*> mem_funcs;
 };
 
 class OperatorUNode : public uast, public tast
 {
 public:
-    OperatorUNode(op oper);
-    OperatorUNode(tok* code);
-    OperatorUNode(OperatorUNode* n);
-    void print(std::wostream& out) const;
+	OperatorUNode(op oper);
+	OperatorUNode(tok* code);
+	OperatorUNode(OperatorUNode* n);
+	void print(std::wostream& out) const;
 
-    op oper;
+	op oper;
 };
 
 //#endif // AST_H

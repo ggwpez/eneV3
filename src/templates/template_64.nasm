@@ -23,6 +23,6 @@ ret
 
 
 get_eip:
-    mov rax, [esp]
+    mov rax, [rsp]
     ret
 

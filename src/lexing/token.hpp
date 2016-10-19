@@ -59,8 +59,8 @@ enum class op : int
     NOT = 8,    // !
     POP = 9,    // ^
     CPY = 10,   // $
-    AND = 11,
-    OR = 12,
+    AND = 11,   // &
+    OR  = 12,   // |
     size
 };
 
